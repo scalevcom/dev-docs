@@ -1,13 +1,10 @@
 ---
 title: Introduction
-excerpt: >-
-  Welcome to Scalev Docs. In this space, we will introduce how to interact with
-  Scalev system so that you can utilize it in your own app or system. We
-  currently provide endpoints for managing orders, products, and bundles. The
-  API uses JSON for request and response payloads and implements role-based
-  access control for security.
+excerpt: This page outlines the general API in Scalev.
 hidden: false
 ---
+Welcome to Scalev Docs. In this space, we will introduce how to interact with Scalev system so that you can utilize it in your own app or system. We currently provide endpoints for managing orders, products, and bundles. The API uses JSON for request and response payloads and implements role-based access control for security.
+
 ## Base URL
 
 ```
