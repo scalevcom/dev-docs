@@ -121,7 +121,7 @@ For standard paginated responses, the `data` field contains:
 
 ## Support
 
-If you encounter any issues, please visit the Discussions or contact our support team at [tech@scalev.id](mailto:tech@scalev.id).
+If you encounter any issues, please visit the [Discussions](/discuss) or contact our support team at [tech@scalev.id](mailto:tech@scalev.id).
 
 ***
 
