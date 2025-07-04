@@ -125,4 +125,4 @@ If you encounter any issues, please visit the [Discussions](/discuss) or contact
 
 ***
 
-This documentation is subject to change as the Scalev API evolves. For the most up-to-date information, please refer to our developer portal.
+This documentation is subject to change as the Scalev API evolves.
