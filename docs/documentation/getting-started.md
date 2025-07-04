@@ -1,39 +1,131 @@
 ---
-title: Getting Started with Scalev
+title: Introduction
 excerpt: >-
-  This page will help you get started with Scalev. You'll be up and running in a
-  jiffy!
+  Welcome to Scalev Docs. In this space, we will introduce how to interact with
+  Scalev system so that you can utilize it in your own app or system. We
+  currently provide endpoints for managing orders, products, and bundles. The
+  API uses JSON for request and response payloads and implements role-based
+  access control for security.
 hidden: false
 ---
-Welcome to ReadMe! :owlbert:
+## Base URL
 
-You're on your way to building an awesome developer hub! Here's some of the things you'll want to check out.
+```
+https://api.scalev.id/v2
+```
 
-# 📝 Customize your docs
+## Authentication
 
-What you're looking at right now is what we call our **Guides**. It's a free-form place to write to your heart's content! And the best part is... you aren't alone! Your users can contribute (with your approval, don't worry!) using the **[Suggested Edits](https://docs.readme.com/main/docs/suggested-edits)** feature on every page. It's like GitHub Pull Requests, but for text!
+The API uses token-based authentication. Include your authentication token in the Authorization header:
 
-Want to ease your users into it with some fancy marketing pages? You can enable a **[Landing Page](https://docs.readme.com/main/docs/landing-page)**, and write as much HTML as you want to make it look like your brand.
+```
+Authorization: Bearer YOUR_TOKEN_HERE
+```
 
-# 🚦 Interactive API Docs
+## Common Response Format
 
-If you don't have an API, then no worries! ReadMe is great for any sort of documentation. But if you have an API, there are a few features to make your experience with ReadMe (and your users' experience with your developer hub!) a magical one:
+All API responses follow a consistent format:
 
-* **Upload your OpenAPI file:** First step is to describe your API to us! If you already have an OpenAPI file, there's lots of ways to upload it in the *API Reference* section. Our favorite is the GitHub Action, but you can use our CLI or you can upload it directly to the UI!
-* **Add API Keys:** Don't make your users hunt around for API keys. You can surface their API key [right in the docs](https://docs.readme.com/main/docs/personalized-docs), so they can play around with your API right inside ReadMe.
-* **Add Logs:** The coolest thing about ReadMe is you can add [real-time API Logs](https://docs.readme.com/main/docs/developer-dashboard) right to your docs, so you and your users can both see what's going on with their API. Trust us, it's magical!
+### Success Response
 
-# 📈 Know your users
+```json
+{
+  "code": 200,
+  "status": "Success",
+  "data": {
+    // Response data here
+  }
+}
+```
 
-One of the best ways to know if you're nailing the dev experience is checking out how your users are interacting with both your docs and API.
+### Error Response
 
-* **Documentation Metrics** let you see who's using your docs, what your best and worst pages are, what people are searching for and more!
-* **API Metrics** are a bit harder to set up (I promise we do our best to make it painless!), but once you set this up you'll know *everything* that's going on with your users!
+```json
+{
+  "error": "Error message",
+  "details": {
+    "field_name": ["Validation error message"]
+  }
+}
+```
 
-# 💬 We're here to help!
+## HTTP Status Codes
 
-ReadMe has a *ton* of ways to make your docs the envy of any <Glossary>parliament</Glossary> (like that mouseover!). If you get stuck, [shoot us an email](mailto:support@readme.io) or use the Intercom widget on the bottom right of any page.
+The API uses standard HTTP status codes:
 
-We're excited you're here! :blue_heart:
+* `200 OK` - Successful GET, PUT, PATCH requests
+* `201 Created` - Successful POST requests
+* `204 No Content` - Successful DELETE requests
+* `400 Bad Request` - Invalid request format or parameters
+* `401 Unauthorized` - Authentication required
+* `403 Forbidden` - Insufficient permissions
+* `404 Not Found` - Resource not found
+* `422 Unprocessable Entity` - Validation errors
+* `429 Too Many Requests` - Rate limit exceeded
+* `500 Internal Server Error` - Server error
 
-![This won't be fun to clean up...](https://owlbert.io/images/popper.gif)
+## Rate Limiting
+
+API requests are subject to rate limiting:
+
+* **All endpoints**: 30 requests per 5 seconds per IP
+
+Rate limit information is included in response headers:
+
+* `X-Ratelimit-Limit`: Request limit
+* `X-Ratelimit-Remaining`: Remaining requests
+* `X-Ratelimit-Reset`: Reset timestamp
+
+## Pagination
+
+For cursor-based paginated responses, the `data` field contains:
+
+* `results`: Array of items in the current page
+* `has_next`: Boolean indicating if there are more pages
+* `last_id`: ID of the last item in the current page (for cursor-based pagination)
+* `page_size`: Number of items per page
+
+```json
+{
+  "code": 200,
+  "status": "Success",
+  "data": {
+    "results": [
+      // Array of items
+    ],
+    "has_next": true,
+    "last_id": 123,
+    "page_size": 25
+  }
+}
+```
+
+For standard paginated responses, the `data` field contains:
+
+* `results`: Array of items in the current page
+* `has_next`: Boolean indicating if there are more pages
+* `page`: Current page number
+* `page_size`: Number of items per page
+
+```json
+{
+  "code": 200,
+  "status": "Success",
+  "data": {
+    "results": [
+      // Array of items
+    ],
+    "has_next": true,
+    "page": 1,
+    "page_size": 25
+  }
+}
+```
+
+## Support
+
+If you encounter any issues, please visit our forum at [Scalev Developers Forum](https://github.com/scalev-id/docs/discussions) or contact our support team at [tech@scalev.id](mailto:tech@scalev.id).
+
+***
+
+This documentation is subject to change as the Scalev API evolves. For the most up-to-date information, please refer to our developer portal.
