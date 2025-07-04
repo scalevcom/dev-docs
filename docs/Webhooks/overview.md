@@ -1,6 +1,6 @@
 ---
 title: Overview
-excerpt: This page outlines how webhooks in Scalev are implemented.
+excerpt: This document outlines how webhooks in Scalev are implemented.
 deprecated: false
 hidden: false
 metadata:
