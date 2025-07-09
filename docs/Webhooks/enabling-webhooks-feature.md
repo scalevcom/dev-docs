@@ -1,5 +1,5 @@
 ---
-title: Enabling Webhooks Feature
+title: Enabling Webhooks
 deprecated: false
 hidden: false
 metadata:
