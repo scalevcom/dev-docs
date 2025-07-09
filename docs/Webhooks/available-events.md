@@ -1,5 +1,6 @@
 ---
 title: Webhooks Events
+excerpt: This document explains webhooks events in Scalev and the structure.
 deprecated: false
 hidden: false
 metadata:
