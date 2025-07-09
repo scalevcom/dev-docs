@@ -8,6 +8,17 @@ metadata:
 ---
 All events in Scalev will have the following structure:
 
+| Field       | Description                                                    |
+| ----------- | -------------------------------------------------------------- |
+| `event`     | Event name, for example: `order.created`, `order.deleted`, etc |
+| `unique_id` | ID of the corresponding webhook event                          |
+| `timestamp` | Timestamp of the corresponding webhook event (ISO 8601 format) |
+| `data`      | The actual webhook event data                                  |
+
+<br />
+
+Example
+
 ```json
 {
   "event": "order.spam_created",
