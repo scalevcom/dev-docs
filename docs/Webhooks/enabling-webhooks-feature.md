@@ -9,7 +9,7 @@ metadata:
 To use webhooks feature in Scalev, you must enable it in your account and register your webhook URL.
 
 1. Create Scalev account if you don't have one. Register <Anchor label="here" target="_blank" href="https://app.scalev.id/register">here</Anchor>.
-2. Be at one of the subscription plans that allow webhooks. Hint: it's only available for Basic plan and above. For more information about our subscription plans, you can read <Anchor label="here" target="_blank" href="https://scalev.id/plan">here</Anchor>.
+2. Be at one of the subscription plans that allow webhooks. Hint: it's only available for Basic plan and above. For more information about our subscription plans, you can read <Anchor label="this page" target="_blank" href="https://scalev.id/plan">this page</Anchor>.
 3. Create a valid public endpoint in your app / system that will receive webhook requests from Scalev.
 4. Go to <Anchor label="Settings > Developers > Webhooks" target="_blank" href="https://app.scalev.id/setting/developers">Settings > Developers > Webhooks</Anchor>.
 5. Select all events that you want to listen.
