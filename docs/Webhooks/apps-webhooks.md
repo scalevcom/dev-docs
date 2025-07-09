@@ -1,5 +1,6 @@
 ---
 title: Apps Webhooks
+excerpt: This document explains how webhooks feature behave for apps.
 deprecated: false
 hidden: false
 metadata:
