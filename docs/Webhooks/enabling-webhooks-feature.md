@@ -15,7 +15,7 @@ To use webhooks feature in Scalev, you must enable it in your account and regist
 5. Fill in the required fields for webhooks:
    1. Select all events that you want to listen. Information regarding these events will be provided in [this page](/docs/available-events). If you don't select the events here, Scalev won't send you the events.
    2. Enter your endpoint (from step 3) in the **Webhook URL** field.
-   3. Toggle for ACTIVE or INACTIVE. Turn the toggle on or off depending on your development step at the moment.
+   3. Toggle for **ACTIVE** or **INACTIVE**. Turn the toggle on or off depending on your development step at the moment.
       1. If you turn the toggle off, you can save your settings but no actual webhook requests will be sent by Scalev to you.
       2. If you turn the toggle on, Scalev will start sending the events to your endpoint and your webhook will be considered as **ACTIVE**. When you first save the webhook settings with the toggle on, we send an initial request with the following payload:
          ```json
