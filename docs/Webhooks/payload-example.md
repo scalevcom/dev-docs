@@ -6,6 +6,21 @@ hidden: false
 metadata:
   robots: index
 ---
+All events in Scalev will have the following structure:
+
+```json
+{
+  "event": "order.spam_created",
+  "unique_id": "event_I7fkiBF4YksYDsKbVe5ZOEyZ",
+  "timestamp": "2025-01-29T20:28:25.046183Z",
+  "data": {}
+}
+```
+
+<br />
+
+<br />
+
 ## Order Created
 
 ```json
