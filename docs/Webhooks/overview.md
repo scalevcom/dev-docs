@@ -72,3 +72,9 @@ Scalev currently supports the following webhook events:
 * `order.status_changed`: Triggered when the status of an order changes. [Payload example](./order-status-changed-example.md)
 * `order.payment_status_changed`: Triggered when the payment status of an order changes. [Payload example](./order-payment-status-changed-example.md)
 * `order.spam_created`: Triggered when a spam order is created. [Payload example](./order-spam-created-example.md)
+
+<br />
+
+## Payload Structure
+
+All events in Scalev will have the following structure:
