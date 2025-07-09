@@ -1,6 +1,6 @@
 ---
 title: Payload Example
-excerpt: This document shows example of our webhooks payload.
+excerpt: This document shows example of our webhooks payload for various events.
 deprecated: false
 hidden: false
 metadata:
