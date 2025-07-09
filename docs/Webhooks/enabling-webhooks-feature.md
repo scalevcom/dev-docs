@@ -1,6 +1,6 @@
 ---
 title: Enabling Webhooks
-excerpt: This page outlines the steps to enable webhooks feature.
+excerpt: This document outlines the steps to enable webhooks feature.
 deprecated: false
 hidden: false
 metadata:
