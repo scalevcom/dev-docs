@@ -66,15 +66,23 @@ Events sent to you on behalf of your users will have the signature calculated us
 
 Scalev currently supports the following webhook events:
 
-* `order.created`: Triggered when a new order is created. [Payload example](./order-created-example.md)
-* `order.updated`: Triggered when an existing order is updated. [Payload example](./order-updated-example.md)
-* `order.deleted`: Triggered when an order is deleted. [Payload example](./order-deleted-example.md)
-* `order.status_changed`: Triggered when the status of an order changes. [Payload example](./order-status-changed-example.md)
-* `order.payment_status_changed`: Triggered when the payment status of an order changes. [Payload example](./order-payment-status-changed-example.md)
-* `order.spam_created`: Triggered when a spam order is created. [Payload example](./order-spam-created-example.md)
+* `order.created`: Triggered when a new order is created.
+* `order.epayment_created`: Triggered when the payment of an order using e-payment is successfully created. When this event occurs, customers can actually pay with the various methods provided by the e-payment provider in your account.
+* `order.updated`: Triggered when an existing order is updated.
+* `order.deleted`: Triggered when an order is deleted.
+* `order.status_changed`: Triggered when the status of an order changes.
+* `order.payment_status_changed`: Triggered when the payment status of an order changes.
+* `order.spam_created`: Triggered when a spam order is created.
 
 <br />
 
 ## Payload Structure
 
 All events in Scalev will have the following structure:
+
+| Field       | Description                                                    |
+| ----------- | -------------------------------------------------------------- |
+| `event`     | Event name, for example: `order.created`, `order.deleted`, etc |
+| `unique_id` | ID of the corresponding webhook event                          |
+| `timestamp` | Timestamp of the corresponding webhook event (ISO 8601 format) |
+| `data`      | The actual webhook event data                                  |
