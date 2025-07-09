@@ -8,7 +8,7 @@ metadata:
 ---
 The following is the examples of the content of `data` field in a webhook event.
 
-## order.created, order.epayment\_created, order.spam\_created, order.updated
+## `order.created`, `order.epayment_created`, `order.spam_created`, `order.updated`
 
 ```json
 {
@@ -130,7 +130,7 @@ The following is the examples of the content of `data` field in a webhook event.
 }
 ```
 
-## order.deleted
+## `order.deleted`
 
 ```json
 {
@@ -140,7 +140,7 @@ The following is the examples of the content of `data` field in a webhook event.
 }
 ```
 
-## order.payment\_status\_changed
+## `order.payment_status_changed`
 
 ```json
 {
@@ -156,7 +156,7 @@ The following is the examples of the content of `data` field in a webhook event.
 }
 ```
 
-## order.status\_changed
+## `order.status_changed`
 
 ```json
 {
