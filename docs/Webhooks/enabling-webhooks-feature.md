@@ -21,7 +21,7 @@ To use webhooks feature in Scalev, you must enable it in your account and regist
          ```json
          {
            "event": "business.test_event",
-           "timestamp": "2025-07-09T03:42:53.616800Z",
+           "timestamp": "<ISO_8601_TIMESTAMP>",
            "data": {}
          }
          ```
