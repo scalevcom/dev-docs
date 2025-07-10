@@ -144,7 +144,7 @@ The following is the examples of the content of `data` field in a webhook event.
 
 ```json
 {
-	"id": 1,
+  "id": 1,
   "order_id": "250128GGVOWU",
   "business": {},
   "is_probably_spam": false,
@@ -171,7 +171,7 @@ The following is the examples of the content of `data` field in a webhook event.
   "conflict_time": null,
   "settled_time": null,
   "transfer_time": "2025-01-27T17:00:00Z",
-	"payment_status_history": [
+  "payment_status_history": [
     {
       "at": "2025-01-28T16:27:46Z",
       "by": {
