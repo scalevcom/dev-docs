@@ -144,15 +144,53 @@ The following is the examples of the content of `data` field in a webhook event.
 
 ```json
 {
+	"id": 1,
   "order_id": "250128GGVOWU",
-  "payment_status": "unpaid",
+  "business": {},
+  "is_probably_spam": false,
+  "mark_as_spam_by": null,
+	"created_at": "2025-01-28T16:24:44Z",
+  "last_updated_at": "2025-01-28T16:27:46Z",
+  "payment_status": "paid",
+  "payment_account_id": 1,
+  "epayment_provider": null,
+	"payment_method": "bank_transfer",
+	"sub_payment_method": null,
+	"financial_entity": {
+    "code": "bni",
+    "name": "Bank Negara Indonesia"
+  },
+  "payment_account_holder": "Test Account",
+  "payment_account_number": "12345",
+  "transferproof_url": "",
+  "pg_payment_info": null,
+  "pg_reference_id": null,
+	"pg_paid_info": null,
   "unpaid_time": "2025-01-28T16:27:46Z",
   "paid_time": "2025-01-28T16:27:14Z",
   "conflict_time": null,
   "settled_time": null,
   "transfer_time": "2025-01-27T17:00:00Z",
-  "created_at": "2025-01-28T16:24:44Z",
-  "last_updated_at": "2025-01-28T16:27:46Z"
+	"payment_status_history": [
+    {
+      "at": "2025-01-28T16:27:46Z",
+      "by": {
+        "avatar": "",
+        "email": "testing@gmail.com",
+        "name": "User Testing"
+      },
+      "status": "unpaid"
+    },
+    {
+      "at": "2025-01-28T16:27:14Z",
+      "by": {
+        "avatar": "",
+        "email": "testing@gmail.com",
+        "name": "User Testing"
+      },
+      "status": "paid"
+    }
+  ]
 }
 ```
 
