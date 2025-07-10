@@ -149,14 +149,14 @@ The following is the examples of the content of `data` field in a webhook event.
   "business": {},
   "is_probably_spam": false,
   "mark_as_spam_by": null,
-	"created_at": "2025-01-28T16:24:44Z",
+  "created_at": "2025-01-28T16:24:44Z",
   "last_updated_at": "2025-01-28T16:27:46Z",
   "payment_status": "paid",
   "payment_account_id": 1,
   "epayment_provider": null,
-	"payment_method": "bank_transfer",
-	"sub_payment_method": null,
-	"financial_entity": {
+  "payment_method": "bank_transfer",
+  "sub_payment_method": null,
+  "financial_entity": {
     "code": "bni",
     "name": "Bank Negara Indonesia"
   },
