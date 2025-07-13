@@ -1,0 +1,8 @@
+---
+title: Check order settlement status
+excerpt: Check the settlement status of an order.
+api:
+  file: apiscalevid-v2openapi.json
+  operationId: ScalevApiWeb.OrderViewController.check_order_settlement
+hidden: false
+---
