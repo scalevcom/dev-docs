@@ -52,7 +52,7 @@ Before initiating the authorization flow, you must generate PKCE parameters for 
 
 1. **Generate a Code Verifier**: Create a cryptographically random string of 43-128 characters using the characters `[A-Z] / [a-z] / [0-9] / "-" / "." / "_" / "~"`
 
-2. **Create a Code Challenge**: Generate a Base64-URL-encoded SHA256 hash of the code verifier
+2. **Create a Code Challenge**: Generate a Base64-URL-encoded SHA256 hash of the code verifier. **Important**: don't remove the padding when you encode the binary string as Scalev will compare the hash with padding included.
 
 Here's how to generate these values:
 
