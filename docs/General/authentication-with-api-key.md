@@ -56,9 +56,7 @@ Authorization: Bearer rk_9z8y7x6w5v4u3t2s1r0q...
    * Key name and description
    * Key type (Secret or Restricted)
    * Scopes (for restricted keys)
-   * Status (Active/Inactive)
-   * Last used date
-   * Usage statistics
+   * Status (Active/Expired)
 
 ### Update API Key
 
