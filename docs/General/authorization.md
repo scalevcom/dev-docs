@@ -1,5 +1,5 @@
 ---
-title: Authorization
+title: Authorization with OAuth 2.0
 excerpt: >-
   This document outlines the authorization process for integrating with Scalev
   API.
