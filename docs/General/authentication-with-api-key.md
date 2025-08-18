@@ -1,5 +1,8 @@
 ---
 title: Authentication with API Key
+excerpt: >-
+  This document outlines the process of using API Key for authentication, as
+  alternative to using OAuth 2.0 flow.
 deprecated: false
 hidden: false
 metadata:
