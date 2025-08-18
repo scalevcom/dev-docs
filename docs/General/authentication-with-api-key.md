@@ -27,8 +27,8 @@ Authorization: Bearer sk_1a2b3c4d5e6f7g8h9i0j...
 
 ### Restricted Keys (`rk_...`)
 
-* **Limited Access**: Access based on explicitly assigned permissions
-* **Permission-Based**: Must specify exact permissions needed
+* **Limited Access**: Access based on explicitly assigned scopes
+* **Scope-Based**: Must specify exact scopes needed
 * **Use Case**: Third-party integrations, specialized tools, least-privilege access
 * **Security**: Safer for external integrations with limited scope
 
@@ -44,10 +44,70 @@ Authorization: Bearer rk_9z8y7x6w5v4u3t2s1r0q...
    * **Name**: Descriptive name (e.g., "Inventory Sync", "Analytics Bot")
    * **Description**: Optional purpose description
    * **Key Type**: Choose `secret` or `restricted`
-   * **Permissions**: For restricted keys, select specific permissions
+   * **Scopes**: For restricted keys, select specific scopes
    * **Expiration**: Optional expiration date
 
 > ⚠️ **Important**: The full API key is only shown once during creation. Store it securely!
+
+### View API Keys
+
+1. Go to **Settings** → **Developers** → **API Keys**
+2. View list of all your API keys with:
+   * Key name and description
+   * Key type (Secret or Restricted)
+   * Scopes (for restricted keys)
+   * Status (Active/Inactive)
+   * Last used date
+   * Usage statistics
+
+### Update API Key
+
+API key updates have different restrictions based on key type:
+
+#### Secret Keys
+
+* **Can Update**: Name, description, rate limit, expiration
+* **Cannot Update**: Key type, scopes (has full access by default)
+
+#### Restricted Keys
+
+* **Can Update**: Name, description, scopes
+* **Cannot Update**: Key type
+
+**To update an API key:**
+
+1. Go to **Settings** → **API Keys**
+2. Click on the API key you want to update
+3. Modify the allowed fields
+4. Click **Save Changes**
+
+### Rotate API Key
+
+Generate a new API key string while preserving all metadata and settings. The old key becomes invalid immediately.
+
+**To rotate an API key:**
+
+1. Go to **Settings** → **API Keys**
+2. Click on the API key you want to rotate
+3. Click **Regenerate Key**
+4. Confirm the action
+5. Copy the new API key (shown only once)
+6. Update your applications with the new key
+
+> ⚠️ **Important**: Update your applications immediately with the new key. The old key stops working as soon as regeneration completes.
+
+### Delete/Revoke API Key
+
+Permanently revoke an API key. This action cannot be undone.
+
+**To delete an API key:**
+
+1. Go to **Settings** → **API Keys**
+2. Click on the API key you want to delete
+3. Click **Delete Key**
+4. Confirm the deletion
+
+> ⚠️ **Important**: Deleted API keys cannot be recovered. Any applications using the deleted key will immediately lose access.
 
 ## Authentication Methods
 
