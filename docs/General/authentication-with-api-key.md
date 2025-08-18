@@ -66,13 +66,13 @@ API key updates have different restrictions based on key type:
 
 #### Secret Keys
 
-* **Can Update**: Name, description, rate limit, expiration
-* **Cannot Update**: Key type, scopes (has full access by default)
+* **Can Update**: Name, description
+* **Cannot Update**: Key type, scopes (has full access by default), expiration
 
 #### Restricted Keys
 
 * **Can Update**: Name, description, scopes
-* **Cannot Update**: Key type
+* **Cannot Update**: Key type, expiration
 
 **To update an API key:**
 
