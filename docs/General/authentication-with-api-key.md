@@ -76,10 +76,11 @@ API key updates have different restrictions based on key type:
 
 **To update an API key:**
 
-1. Go to **Settings** → **API Keys**
+1. Go to **Settings** → **Developers** → **API Keys**
 2. Click on the API key you want to update
-3. Modify the allowed fields
-4. Click **Save Changes**
+3. Click **Edit**
+4. Modify the allowed fields
+5. Click **Save**
 
 ### Rotate API Key
 
