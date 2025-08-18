@@ -88,9 +88,9 @@ Generate a new API key string while preserving all metadata and settings. The ol
 
 **To rotate an API key:**
 
-1. Go to **Settings** → **API Keys**
+1. Go to **Settings** → **Developers** → **API Keys**
 2. Click on the API key you want to rotate
-3. Click **Regenerate Key**
+3. Click **Rotate Key**
 4. Confirm the action
 5. Copy the new API key (shown only once)
 6. Update your applications with the new key
@@ -103,9 +103,9 @@ Permanently revoke an API key. This action cannot be undone.
 
 **To delete an API key:**
 
-1. Go to **Settings** → **API Keys**
+1. Go to **Settings** → **Developers** → **API Keys**
 2. Click on the API key you want to delete
-3. Click **Delete Key**
+3. Click **Delete**
 4. Confirm the deletion
 
 > ⚠️ **Important**: Deleted API keys cannot be recovered. Any applications using the deleted key will immediately lose access.
