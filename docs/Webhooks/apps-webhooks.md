@@ -13,8 +13,8 @@ Apps can also receive webhooks on behalf of their users. When a user authorizes 
 * Ensure your apps' requested events are within the specified events in your business settings
 * Your users must authorize your app to receive webhooks on their behalf
 
-Events sent to you on behalf of your users will have the signature calculated using **your business Client Secret**, not the user's Client Secret nor the app's Client Secret. This means:
+Events sent to you on behalf of your users will have the signature calculated using **your business Signing Secret**, not the user's Signing Secret nor the app's Client Secret. This means:
 
-* You don't need to ask your users for their Client Secret to verify webhook requests. Instead, you can use your own Client Secret to validate the signature.
-* If you have multiple apps, you can use the same Client Secret for all of them to verify webhooks. This simplifies the process of handling webhooks across different apps. We add `X-Scalev-App-Id` header to identify which app the webhook is for, so you can handle them accordingly.
-* If you also receives webhooks for your own business, you can use the same Client Secret to verify those webhooks as well. This means you don't need to maintain separate secrets for different webhook sources.
+* You don't need to ask your users for their Signing Secret to verify webhook requests. Instead, you can use your own Signing Secret to validate the signature.
+* If you have multiple apps, you can use the same Signing Secret for all of them to verify webhooks. This simplifies the process of handling webhooks across different apps. We add `X-Scalev-App-Id` header to identify which app the webhook is for, so you can handle them accordingly.
+* If you also receive webhooks for your own business, you can use the same Signing Secret to verify those webhooks as well. This means you don't need to maintain separate secrets for different webhook sources.
