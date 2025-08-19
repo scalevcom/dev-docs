@@ -30,3 +30,5 @@
 - scalevapiwebordercontrollerupdate_receipt
 - scalevapiwebordercontrollercreate_ssh
 - scalevapiwebordercontrollertrigger_purchase_event
+- scalevapiweborderviewcontrollerindex_tags
+- scalevapiwebordercontrollerupdate_tags
