@@ -1,8 +1,0 @@
----
-title: Send digital product access
-excerpt: Send email containing links to download digital products to customer.
-api:
-  file: apiscalevid-v2openapi.json
-  operationId: ScalevApiWeb.OrderViewController.send_product_digital
-hidden: false
----
