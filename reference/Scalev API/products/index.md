@@ -1,4 +1,0 @@
----
-title: Products
-hidden: false
----
