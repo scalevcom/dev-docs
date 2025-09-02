@@ -1,4 +1,0 @@
----
-title: Businesses
-hidden: false
----
