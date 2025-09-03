@@ -1,5 +1,6 @@
 - scalevapiwebstorecontrollercreate
 - scalevapiwebstorecontrollerindex
+- scalevapiwebstorecontrollerindex_simplified
 - scalevapiwebstorecontrollershow
 - scalevapiwebstorecontrollerupdate-2
 - scalevapiwebstorecontrollerupdate
@@ -33,4 +34,3 @@
 - scalevapiwebstorecontrolleradd_store_advertisers
 - scalevapiwebstorecontrollerindex_store_advertiser
 - scalevapiwebstorecontrollerremove_store_advertiser
-- scalevapiwebstorecontrollerindex_simplified
