@@ -60198,7 +60198,16 @@
             "description": "Not Found"
           }
         },
-        "security": [],
+        "security": [
+          {
+            "bearerAuth": [
+              "add_order"
+            ],
+            "oauth2": [
+              "add_order"
+            ]
+          }
+        ],
         "summary": "Get Courier Services",
         "tags": [
           "Shipping Costs"
@@ -60511,7 +60520,16 @@
             "description": "Not Found"
           }
         },
-        "security": [],
+        "security": [
+          {
+            "bearerAuth": [
+              "add_order"
+            ],
+            "oauth2": [
+              "add_order"
+            ]
+          }
+        ],
         "summary": "Search Warehouses",
         "tags": [
           "Shipping Costs"
