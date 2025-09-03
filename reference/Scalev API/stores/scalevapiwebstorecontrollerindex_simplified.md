@@ -1,5 +1,5 @@
 ---
-title: List stores
+title: List stores with simplified fields
 excerpt: >-
   Retrieves a paginated list of stores with simplified fields and optional
   filtering. The data is sorted by id in descending order and cannot be changed.
