@@ -63,28 +63,30 @@ Customers can be redirected to this page.
 
 ***
 
+<br />
+
 ## 🔹 Physical Product Orders
 
 ### 1–2. Same as digital orders
 
-* Select store → select products/bundles.
+### 3. Add shipping information
 
-### 3. Retrieve shipping information
+Required additional fields:
 
-Physical product orders require additional fields:
-
+* `address`
+* `location_id`
 * `warehouse_unique_id`
 * `shipping_cost`
 * `courier_service_id`
+* Optional: `postal_code`
 * Optional: `shipment_provider_code`
-  (for integrations such as Ninja, Lincah, or Mengantar).
 
-**How to obtain these values**:
+**How to obtain them:**
 
-1. Call **search warehouse** endpoint.
-2. Use the result to call **search courier service**.
-
-   * The response provides the required shipping fields.
+* **`address`** → provide the street address text **without district, city, or province**, since these are represented by `location_id`.
+* **`location_id`** → search district (kecamatan) using **list location** endpoint (supports partial matches).
+* **`postal_code`** → provide postal code to make the address more specific.
+* **`warehouse_unique_id`**, **`shipping_cost`**, **`courier_service_id`**, **`shipment_provider_code`** → first call **search warehouse**, then **search courier service**.
 
 ### 4. Build the order payload
 
@@ -103,6 +105,9 @@ Minimal example:
     }
   ],
   "payment_method": "invoice",
+  "address": "Jl. Pegangsaan Timur No. 28",
+  "location_id": 1,
+  "postal_code": "12345",
   "warehouse_unique_id": "warehouse_xxx",
   "courier_service_id": 1,
   "shipping_cost": 20000,
@@ -116,23 +121,10 @@ Minimal example:
 
 ### 6. Get the payment link
 
-* The response contains a `secret_slug`.
-* Construct the payment instruction URL:
+* Same as digital orders:
 
 ```
 https://app.scalev.id/order/public/<secret_slug>/success
 ```
 
-***
-
-## 🔑 Key Notes
-
-* **Digital product orders** → only need `store_id`, `customer`, `ordervariants`, `payment_method`.
-* **Physical product orders** → also require `warehouse`, `courier`, and `shipping_cost`.
-* **AI agents** can follow the same flow automatically:
-
-  1. Select store
-  2. Select products
-  3. Retrieve warehouse & courier (if physical)
-  4. Send order payload
-  5. Use `secret_slug` for payment link
+<br />
