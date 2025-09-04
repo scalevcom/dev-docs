@@ -12,7 +12,7 @@ metadata:
 
 ### 1. Pilih toko (store)
 
-* Gunakan endpoint **list store simplified**.
+* Gunakan endpoint **[list store simplified](https://developers.scalev.id/reference/scalevapiwebstorecontrollerindex_simplified)**.
 * Opsi filter:
 
   * `search`: cari nama toko.
@@ -23,8 +23,8 @@ metadata:
 
 * Gunakan:
 
-  * **list products from store** → untuk produk individual.
-  * **list bundles from store** → untuk paket produk.
+  * **[list products from store](https://developers.scalev.id/reference/scalevapiwebstorecontrollerindex_product)** → untuk produk individual.
+  * **[list bundles from store](https://developers.scalev.id/reference/scalevapiwebstorecontrollerindex_bundle)** → untuk paket produk.
 
 ### 3. Buat payload order
 
@@ -48,7 +48,7 @@ Untuk digital product, cukup field minimal berikut:
 
 ### 4. Kirim request
 
-* Hit endpoint **create order** dengan payload di atas.
+* Hit endpoint **[create order](https://developers.scalev.id/reference/scalevapiwebordercontrollercreate)** dengan payload di atas.
 
 ### 5. Dapatkan link pembayaran
 
@@ -81,8 +81,8 @@ Untuk order fisik, ada field tambahan:
 
 **Cara mendapatkannya**:
 
-1. Hit endpoint **search warehouse**.
-2. Gunakan hasilnya untuk hit endpoint **search courier service**.
+1. Hit endpoint **[search warehouse](https://developers.scalev.id/reference/scalevapiwebshippingcostcontrollersearch_warehouses)**.
+2. Gunakan hasilnya untuk hit endpoint **[search courier service](https://developers.scalev.id/reference/scalevapiwebshippingcostcontrollersearch_courier_services)**.
 
    * Response berisi keempat nilai di atas.
 
