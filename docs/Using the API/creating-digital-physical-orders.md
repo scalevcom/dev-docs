@@ -46,6 +46,24 @@ For digital product orders (which immediately create a payment request with `pen
 }
 ```
 
+Or if you want to use bundles instead of products:
+
+```json
+{
+  "store_unique_id": "store_xxx",
+  "customer_name": "John Doe",
+  "customer_phone": "62812345678",
+  "customer_email": "example@example.com",
+  "orderbundles": [
+    {
+      "quantity": 1,
+      "bundle_price_option_unique_id": "bpo_xxx"
+    }
+  ],
+  "payment_method": "invoice"
+}
+```
+
 ### 4. Send the request
 
 * Call the **[create order](https://developers.scalev.id/reference/scalevapiwebordercontrollercreate)** endpoint with the payload above.
