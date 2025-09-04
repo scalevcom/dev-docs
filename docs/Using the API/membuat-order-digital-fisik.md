@@ -46,6 +46,24 @@ Untuk digital product order yang langsung membuat payment request dengan order s
 }
 ```
 
+Atau kalau ingin menggunakan bundle alih-alih produk:
+
+```json
+{
+  "store_unique_id": "store_xxx",
+  "customer_name": "John Doe",
+  "customer_phone": "62812345678",
+  "customer_email": "example@example.com",
+  "orderbundles": [
+    {
+      "quantity": 1,
+      "bundle_price_option_unique_id": "bpo_xxx"
+    }
+  ],
+  "payment_method": "invoice"
+}
+```
+
 ### 4. Kirim request
 
 * Hit endpoint **[create order](https://developers.scalev.id/reference/scalevapiwebordercontrollercreate)** dengan payload di atas.
