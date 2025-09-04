@@ -63,28 +63,28 @@ Customer bisa diarahkan langsung ke link ini.
 
 ***
 
-## 🔹 Physical Product Orders
+## 🔹 Physical Products Orders
 
-### 1-2. Sama seperti digital orders
+### 1–2. Sama seperti order digital
 
-* Pilih store → pilih produk/bundle.
+### 3. Tambahkan data pengiriman
 
-### 3. Cari informasi pengiriman
+Field tambahan yang dibutuhkan:
 
-Untuk order fisik, ada field tambahan:
-
+* `address`
+* `location_id`
 * `warehouse_unique_id`
 * `shipping_cost`
 * `courier_service_id`
+* Opsional: `postal_code`
 * Opsional: `shipment_provider_code`
-  (untuk plugin Ninja, Lincah, atau Mengantar).
 
-**Cara mendapatkannya**:
+**Cara mendapatkannya:**
 
-1. Hit endpoint **[search warehouse](https://developers.scalev.id/reference/scalevapiwebshippingcostcontrollersearch_warehouses)**.
-2. Gunakan hasilnya untuk hit endpoint **[search courier service](https://developers.scalev.id/reference/scalevapiwebshippingcostcontrollersearch_courier_services)**.
-
-   * Response berisi keempat nilai di atas.
+* **address** → isi teks alamat **tanpa kecamatan, kota, provinsi** (karena diwakili oleh `location_id`).
+* **location_id** → cari kecamatan via endpoint **[list location](https://developers.scalev.id/reference/scalevapiweblocationcontrollerindex_locations)** (query mendukung partial match).
+* **postal_code** → isi teks kode pos alamatnya jika ingin lebih spesifik.
+* **`warehouse_unique_id`**, **`shipping_cost`**, **`courier_service_id`**, **`shipment_provider_code`** → dari endpoint **[search warehouse](https://developers.scalev.id/reference/scalevapiwebshippingcostcontrollersearch_warehouses)**, lalu lanjut ke **[search courier service](https://developers.scalev.id/reference/scalevapiwebshippingcostcontrollersearch_courier_services)**.
 
 ### 4. Buat payload order
 
@@ -103,6 +103,8 @@ Contoh minimal:
     }
   ],
   "payment_method": "invoice",
+  "address": "Jl. Pegangsaan Timur No. 28",
+  "location_id": 1,
   "warehouse_unique_id": "warehouse_xxx",
   "courier_service_id": 1,
   "shipping_cost": 20000,
@@ -112,29 +114,14 @@ Contoh minimal:
 
 ### 5. Kirim request
 
-* Hit endpoint **create order** dengan payload di atas.
+* Hit endpoint **[create order](https://developers.scalev.id/reference/scalevapiwebordercontrollercreate)** dengan payload di atas.
 
 ### 6. Dapatkan link pembayaran
 
-* Sama seperti digital orders, ambil `secret_slug` dari response.
-* Arahkan customer ke:
+* Sama seperti order digital:
 
 ```
 https://app.scalev.id/order/public/<secret_slug>/success
 ```
-
-***
-
-## 🔑 Catatan Penting
-
-* **Digital product** → cukup `store_id`, `customer`, `ordervariants`, `payment_method`.
-* **Physical product** → butuh tambahan `warehouse`, `courier`, `shipping_cost`.
-* AI agent bisa otomatis mengikuti flow ini:
-
-  1. Pilih store
-  2. Pilih produk
-  3. Cek warehouse & courier (jika fisik)
-  4. Kirim payload
-  5. Ambil `secret_slug`
 
 <br />
