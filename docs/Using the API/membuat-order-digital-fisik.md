@@ -105,6 +105,7 @@ Contoh minimal:
   "payment_method": "invoice",
   "address": "Jl. Pegangsaan Timur No. 28",
   "location_id": 1,
+  "postal_code": "12345",
   "warehouse_unique_id": "warehouse_xxx",
   "courier_service_id": 1,
   "shipping_cost": 20000,
