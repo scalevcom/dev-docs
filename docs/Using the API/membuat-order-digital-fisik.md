@@ -28,7 +28,7 @@ metadata:
 
 ### 3. Buat payload order
 
-Untuk digital product, cukup field minimal berikut:
+Untuk digital product order yang langsung membuat payment request dengan order status `pending`, cukup field minimal berikut:
 
 ```json
 {
