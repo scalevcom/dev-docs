@@ -1,5 +1,5 @@
 ---
-title: Creating Digital & Physical Orders
+title: Creating Orders
 excerpt: >-
   Scalev API allows both **humans** (via script/application) and **AI agents**
   to create orders. This guide walks you step-by-step through the process.
