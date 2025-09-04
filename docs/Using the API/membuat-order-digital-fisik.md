@@ -1,5 +1,5 @@
 ---
-title: Membuat Order Digital & Fisik
+title: Membuat Order
 excerpt: >-
   API Scalev memungkinkan order dibuat baik oleh **manusia** (via
   script/aplikasi) maupun **AI agent**. Berikut panduan step-by-step.
