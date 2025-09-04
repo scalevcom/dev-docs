@@ -2061,11 +2061,6 @@
             "nullable": true,
             "type": "object"
           },
-          "courier_aggregator_code": {
-            "description": "Courier aggregator code for the order",
-            "nullable": true,
-            "type": "string"
-          },
           "other_income_name": {
             "description": "Name of other income source",
             "nullable": true,
@@ -2841,6 +2836,16 @@
               "conflict",
               "settled"
             ],
+            "type": "string"
+          },
+          "shipment_provider_code": {
+            "description": "Shipment provider code",
+            "enum": [
+              "mengantar",
+              "lincah",
+              "ninja"
+            ],
+            "nullable": true,
             "type": "string"
           },
           "metadata": {
@@ -4284,10 +4289,6 @@
             "description": "Channel unique ID",
             "type": "string"
           },
-          "courier_aggregator_code": {
-            "description": "Courier aggregator code",
-            "type": "string"
-          },
           "courier_service_id": {
             "description": "Courier service ID",
             "type": "integer"
@@ -4431,6 +4432,16 @@
           "product_discount": {
             "description": "Product discount amount",
             "type": "number"
+          },
+          "shipment_provider_code": {
+            "description": "Shipment provider code",
+            "enum": [
+              "mengantar",
+              "lincah",
+              "ninja"
+            ],
+            "nullable": true,
+            "type": "string"
           },
           "shipping_cost": {
             "description": "Shipping cost",
@@ -7059,10 +7070,6 @@
             "description": "Channel unique ID",
             "type": "string"
           },
-          "courier_aggregator_code": {
-            "description": "Courier aggregator code",
-            "type": "string"
-          },
           "courier_service_id": {
             "description": "Courier service ID",
             "type": "integer"
@@ -7197,6 +7204,16 @@
           "product_discount": {
             "description": "Product discount amount",
             "type": "number"
+          },
+          "shipment_provider_code": {
+            "description": "Shipment provider code",
+            "enum": [
+              "mengantar",
+              "lincah",
+              "ninja"
+            ],
+            "nullable": true,
+            "type": "string"
           },
           "shipping_cost": {
             "description": "Shipping cost",
@@ -11709,10 +11726,6 @@
             "description": "Source of the cost",
             "type": "string"
           },
-          "courier_aggregator_code": {
-            "description": "Code of the courier aggregator",
-            "type": "string"
-          },
           "courier_service": {
             "properties": {
               "code": {
@@ -11771,6 +11784,10 @@
           "is_pickup": {
             "description": "Is Pickup available",
             "type": "boolean"
+          },
+          "shipment_provider_code": {
+            "description": "Code of the shipment provider",
+            "type": "string"
           },
           "warehouse": {
             "properties": {
@@ -12051,14 +12068,19 @@
             "nullable": true,
             "type": "string"
           },
-          "courier_aggregator_code": {
-            "description": "Courier aggregator code",
-            "nullable": true,
-            "type": "string"
-          },
           "is_shipment_completed": {
             "description": "Is the shipment completed",
             "type": "boolean"
+          },
+          "shipment_provider_code": {
+            "description": "Shipment provider code",
+            "enum": [
+              "mengantar",
+              "lincah",
+              "ninja"
+            ],
+            "nullable": true,
+            "type": "string"
           },
           "shipment_receipt": {
             "description": "Shipment receipt / tracking ID",
@@ -13892,11 +13914,6 @@
             },
             "type": "object"
           },
-          "courier_aggregator_code": {
-            "description": "Courier aggregator code",
-            "nullable": true,
-            "type": "string"
-          },
           "other_income_name": {
             "description": "Name of the other income",
             "nullable": true,
@@ -14522,6 +14539,16 @@
               "conflict",
               "settled"
             ],
+            "type": "string"
+          },
+          "shipment_provider_code": {
+            "description": "Shipment provider code",
+            "enum": [
+              "mengantar",
+              "lincah",
+              "ninja"
+            ],
+            "nullable": true,
             "type": "string"
           },
           "metadata": {
@@ -25689,10 +25716,6 @@
                     "description": "Channel unique ID",
                     "type": "string"
                   },
-                  "courier_aggregator_code": {
-                    "description": "Courier aggregator code",
-                    "type": "string"
-                  },
                   "courier_service_id": {
                     "description": "Courier service ID",
                     "type": "integer"
@@ -25836,6 +25859,16 @@
                   "product_discount": {
                     "description": "Product discount amount",
                     "type": "number"
+                  },
+                  "shipment_provider_code": {
+                    "description": "Shipment provider code",
+                    "enum": [
+                      "mengantar",
+                      "lincah",
+                      "ninja"
+                    ],
+                    "nullable": true,
+                    "type": "string"
                   },
                   "shipping_cost": {
                     "description": "Shipping cost",
@@ -26790,11 +26823,6 @@
                           "nullable": true,
                           "type": "object"
                         },
-                        "courier_aggregator_code": {
-                          "description": "Courier aggregator code for the order",
-                          "nullable": true,
-                          "type": "string"
-                        },
                         "other_income_name": {
                           "description": "Name of other income source",
                           "nullable": true,
@@ -27570,6 +27598,16 @@
                             "conflict",
                             "settled"
                           ],
+                          "type": "string"
+                        },
+                        "shipment_provider_code": {
+                          "description": "Shipment provider code",
+                          "enum": [
+                            "mengantar",
+                            "lincah",
+                            "ninja"
+                          ],
+                          "nullable": true,
                           "type": "string"
                         },
                         "metadata": {
@@ -28677,11 +28715,6 @@
                                 },
                                 "type": "object"
                               },
-                              "courier_aggregator_code": {
-                                "description": "Courier aggregator code",
-                                "nullable": true,
-                                "type": "string"
-                              },
                               "other_income_name": {
                                 "description": "Name of the other income",
                                 "nullable": true,
@@ -29307,6 +29340,16 @@
                                   "conflict",
                                   "settled"
                                 ],
+                                "type": "string"
+                              },
+                              "shipment_provider_code": {
+                                "description": "Shipment provider code",
+                                "enum": [
+                                  "mengantar",
+                                  "lincah",
+                                  "ninja"
+                                ],
+                                "nullable": true,
                                 "type": "string"
                               },
                               "metadata": {
@@ -32557,11 +32600,6 @@
                           "nullable": true,
                           "type": "object"
                         },
-                        "courier_aggregator_code": {
-                          "description": "Courier aggregator code for the order",
-                          "nullable": true,
-                          "type": "string"
-                        },
                         "other_income_name": {
                           "description": "Name of other income source",
                           "nullable": true,
@@ -33339,6 +33377,16 @@
                           ],
                           "type": "string"
                         },
+                        "shipment_provider_code": {
+                          "description": "Shipment provider code",
+                          "enum": [
+                            "mengantar",
+                            "lincah",
+                            "ninja"
+                          ],
+                          "nullable": true,
+                          "type": "string"
+                        },
                         "metadata": {
                           "additionalProperties": true,
                           "description": "Metadata associated with the order",
@@ -33596,10 +33644,6 @@
                     "description": "Channel unique ID",
                     "type": "string"
                   },
-                  "courier_aggregator_code": {
-                    "description": "Courier aggregator code",
-                    "type": "string"
-                  },
                   "courier_service_id": {
                     "description": "Courier service ID",
                     "type": "integer"
@@ -33734,6 +33778,16 @@
                   "product_discount": {
                     "description": "Product discount amount",
                     "type": "number"
+                  },
+                  "shipment_provider_code": {
+                    "description": "Shipment provider code",
+                    "enum": [
+                      "mengantar",
+                      "lincah",
+                      "ninja"
+                    ],
+                    "nullable": true,
+                    "type": "string"
                   },
                   "shipping_cost": {
                     "description": "Shipping cost",
@@ -34680,11 +34734,6 @@
                           "nullable": true,
                           "type": "object"
                         },
-                        "courier_aggregator_code": {
-                          "description": "Courier aggregator code for the order",
-                          "nullable": true,
-                          "type": "string"
-                        },
                         "other_income_name": {
                           "description": "Name of other income source",
                           "nullable": true,
@@ -35460,6 +35509,16 @@
                             "conflict",
                             "settled"
                           ],
+                          "type": "string"
+                        },
+                        "shipment_provider_code": {
+                          "description": "Shipment provider code",
+                          "enum": [
+                            "mengantar",
+                            "lincah",
+                            "ninja"
+                          ],
+                          "nullable": true,
                           "type": "string"
                         },
                         "metadata": {
@@ -37262,11 +37321,6 @@
                           "nullable": true,
                           "type": "object"
                         },
-                        "courier_aggregator_code": {
-                          "description": "Courier aggregator code for the order",
-                          "nullable": true,
-                          "type": "string"
-                        },
                         "other_income_name": {
                           "description": "Name of other income source",
                           "nullable": true,
@@ -38042,6 +38096,16 @@
                             "conflict",
                             "settled"
                           ],
+                          "type": "string"
+                        },
+                        "shipment_provider_code": {
+                          "description": "Shipment provider code",
+                          "enum": [
+                            "mengantar",
+                            "lincah",
+                            "ninja"
+                          ],
+                          "nullable": true,
                           "type": "string"
                         },
                         "metadata": {
@@ -39194,11 +39258,6 @@
                           "nullable": true,
                           "type": "object"
                         },
-                        "courier_aggregator_code": {
-                          "description": "Courier aggregator code for the order",
-                          "nullable": true,
-                          "type": "string"
-                        },
                         "other_income_name": {
                           "description": "Name of other income source",
                           "nullable": true,
@@ -39974,6 +40033,16 @@
                             "conflict",
                             "settled"
                           ],
+                          "type": "string"
+                        },
+                        "shipment_provider_code": {
+                          "description": "Shipment provider code",
+                          "enum": [
+                            "mengantar",
+                            "lincah",
+                            "ninja"
+                          ],
+                          "nullable": true,
                           "type": "string"
                         },
                         "metadata": {
@@ -41146,11 +41215,6 @@
                           "nullable": true,
                           "type": "object"
                         },
-                        "courier_aggregator_code": {
-                          "description": "Courier aggregator code for the order",
-                          "nullable": true,
-                          "type": "string"
-                        },
                         "other_income_name": {
                           "description": "Name of other income source",
                           "nullable": true,
@@ -41926,6 +41990,16 @@
                             "conflict",
                             "settled"
                           ],
+                          "type": "string"
+                        },
+                        "shipment_provider_code": {
+                          "description": "Shipment provider code",
+                          "enum": [
+                            "mengantar",
+                            "lincah",
+                            "ninja"
+                          ],
+                          "nullable": true,
                           "type": "string"
                         },
                         "metadata": {
@@ -43145,11 +43219,6 @@
                           "nullable": true,
                           "type": "object"
                         },
-                        "courier_aggregator_code": {
-                          "description": "Courier aggregator code for the order",
-                          "nullable": true,
-                          "type": "string"
-                        },
                         "other_income_name": {
                           "description": "Name of other income source",
                           "nullable": true,
@@ -43925,6 +43994,16 @@
                             "conflict",
                             "settled"
                           ],
+                          "type": "string"
+                        },
+                        "shipment_provider_code": {
+                          "description": "Shipment provider code",
+                          "enum": [
+                            "mengantar",
+                            "lincah",
+                            "ninja"
+                          ],
+                          "nullable": true,
                           "type": "string"
                         },
                         "metadata": {
@@ -45268,14 +45347,19 @@
                     "nullable": true,
                     "type": "string"
                   },
-                  "courier_aggregator_code": {
-                    "description": "Courier aggregator code",
-                    "nullable": true,
-                    "type": "string"
-                  },
                   "is_shipment_completed": {
                     "description": "Is the shipment completed",
                     "type": "boolean"
+                  },
+                  "shipment_provider_code": {
+                    "description": "Shipment provider code",
+                    "enum": [
+                      "mengantar",
+                      "lincah",
+                      "ninja"
+                    ],
+                    "nullable": true,
+                    "type": "string"
                   },
                   "shipment_receipt": {
                     "description": "Shipment receipt / tracking ID",
@@ -46195,11 +46279,6 @@
                           "nullable": true,
                           "type": "object"
                         },
-                        "courier_aggregator_code": {
-                          "description": "Courier aggregator code for the order",
-                          "nullable": true,
-                          "type": "string"
-                        },
                         "other_income_name": {
                           "description": "Name of other income source",
                           "nullable": true,
@@ -46975,6 +47054,16 @@
                             "conflict",
                             "settled"
                           ],
+                          "type": "string"
+                        },
+                        "shipment_provider_code": {
+                          "description": "Shipment provider code",
+                          "enum": [
+                            "mengantar",
+                            "lincah",
+                            "ninja"
+                          ],
+                          "nullable": true,
                           "type": "string"
                         },
                         "metadata": {
@@ -48361,11 +48450,6 @@
                           "nullable": true,
                           "type": "object"
                         },
-                        "courier_aggregator_code": {
-                          "description": "Courier aggregator code for the order",
-                          "nullable": true,
-                          "type": "string"
-                        },
                         "other_income_name": {
                           "description": "Name of other income source",
                           "nullable": true,
@@ -49141,6 +49225,16 @@
                             "conflict",
                             "settled"
                           ],
+                          "type": "string"
+                        },
+                        "shipment_provider_code": {
+                          "description": "Shipment provider code",
+                          "enum": [
+                            "mengantar",
+                            "lincah",
+                            "ninja"
+                          ],
+                          "nullable": true,
                           "type": "string"
                         },
                         "metadata": {
@@ -50444,11 +50538,6 @@
                           "nullable": true,
                           "type": "object"
                         },
-                        "courier_aggregator_code": {
-                          "description": "Courier aggregator code for the order",
-                          "nullable": true,
-                          "type": "string"
-                        },
                         "other_income_name": {
                           "description": "Name of other income source",
                           "nullable": true,
@@ -51224,6 +51313,16 @@
                             "conflict",
                             "settled"
                           ],
+                          "type": "string"
+                        },
+                        "shipment_provider_code": {
+                          "description": "Shipment provider code",
+                          "enum": [
+                            "mengantar",
+                            "lincah",
+                            "ninja"
+                          ],
+                          "nullable": true,
                           "type": "string"
                         },
                         "metadata": {
@@ -60687,10 +60786,6 @@
                             "description": "Source of the cost",
                             "type": "string"
                           },
-                          "courier_aggregator_code": {
-                            "description": "Code of the courier aggregator",
-                            "type": "string"
-                          },
                           "courier_service": {
                             "properties": {
                               "code": {
@@ -60749,6 +60844,10 @@
                           "is_pickup": {
                             "description": "Is Pickup available",
                             "type": "boolean"
+                          },
+                          "shipment_provider_code": {
+                            "description": "Code of the shipment provider",
+                            "type": "string"
                           },
                           "warehouse": {
                             "properties": {
