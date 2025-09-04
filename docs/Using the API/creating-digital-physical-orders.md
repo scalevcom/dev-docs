@@ -84,9 +84,9 @@ Required additional fields:
 **How to obtain them:**
 
 * **`address`** → provide the street address text **without district, city, or province**, since these are represented by `location_id`.
-* **`location_id`** → search district (kecamatan) using **list location** endpoint (supports partial matches).
+* **`location_id`** → search district (kecamatan) using **[list location](https://developers.scalev.id/reference/scalevapiweblocationcontrollerindex_locations)** endpoint (supports partial matches).
 * **`postal_code`** → provide postal code to make the address more specific.
-* **`warehouse_unique_id`**, **`shipping_cost`**, **`courier_service_id`**, **`shipment_provider_code`** → first call **search warehouse**, then **search courier service**.
+* **`warehouse_unique_id`**, **`shipping_cost`**, **`courier_service_id`**, **`shipment_provider_code`** → first call **[search warehouse](https://developers.scalev.id/reference/scalevapiwebshippingcostcontrollersearch_warehouses)**, then **[search courier service](https://developers.scalev.id/reference/scalevapiwebshippingcostcontrollersearch_courier_services)**.
 
 ### 4. Build the order payload
 
