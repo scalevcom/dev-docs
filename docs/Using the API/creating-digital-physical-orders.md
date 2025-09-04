@@ -12,7 +12,7 @@ metadata:
 
 ### 1. Select a store
 
-* Use the **list store simplified** endpoint.
+* Use the **[list store simplified](https://developers.scalev.id/reference/scalevapiwebstorecontrollerindex_simplified)** endpoint.
 * Available filters:
 
   * `search`: filter by store name.
@@ -23,12 +23,12 @@ metadata:
 
 * Use:
 
-  * **list products from store** → to retrieve individual products.
-  * **list bundles from store** → to retrieve product bundles.
+  * **[list products from store](https://developers.scalev.id/reference/scalevapiwebstorecontrollerindex_product)** → to retrieve individual products.
+  * **[list bundles from store](https://developers.scalev.id/reference/scalevapiwebstorecontrollerindex_bundle)** → to retrieve product bundles.
 
 ### 3. Build the order payload
 
-For digital product orders (which immediately create a payment request with `pending` status), the minimal payload is:
+For digital product orders (which immediately create a payment request with `pending` order status), the minimal payload is:
 
 ```json
 {
@@ -48,7 +48,7 @@ For digital product orders (which immediately create a payment request with `pen
 
 ### 4. Send the request
 
-* Call the **create order** endpoint with the payload above.
+* Call the **[create order](https://developers.scalev.id/reference/scalevapiwebordercontrollercreate)** endpoint with the payload above.
 
 ### 5. Get the payment link
 
@@ -117,7 +117,7 @@ Minimal example:
 
 ### 5. Send the request
 
-* Call the **create order** endpoint with the payload above.
+* Call the **[create order](https://developers.scalev.id/reference/scalevapiwebordercontrollercreate)** endpoint with the payload above.
 
 ### 6. Get the payment link
 
