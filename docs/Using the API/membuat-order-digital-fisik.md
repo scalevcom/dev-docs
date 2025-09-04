@@ -81,9 +81,9 @@ Field tambahan yang dibutuhkan:
 
 **Cara mendapatkannya:**
 
-* **address** → isi teks alamat **tanpa kecamatan, kota, provinsi** (karena diwakili oleh `location_id`).
-* **location_id** → cari kecamatan via endpoint **[list location](https://developers.scalev.id/reference/scalevapiweblocationcontrollerindex_locations)** (query mendukung partial match).
-* **postal_code** → isi teks kode pos alamatnya jika ingin lebih spesifik.
+* **`address`** → isi teks alamat **tanpa kecamatan, kota, provinsi** (karena diwakili oleh `location_id`).
+* **`location_id`** → cari kecamatan via endpoint **[list location](https://developers.scalev.id/reference/scalevapiweblocationcontrollerindex_locations)** (query mendukung partial match).
+* **`postal_code`** → isi teks kode pos alamatnya jika ingin lebih spesifik.
 * **`warehouse_unique_id`**, **`shipping_cost`**, **`courier_service_id`**, **`shipment_provider_code`** → dari endpoint **[search warehouse](https://developers.scalev.id/reference/scalevapiwebshippingcostcontrollersearch_warehouses)**, lalu lanjut ke **[search courier service](https://developers.scalev.id/reference/scalevapiwebshippingcostcontrollersearch_courier_services)**.
 
 ### 4. Buat payload order
