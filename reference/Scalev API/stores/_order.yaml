@@ -2,6 +2,7 @@
 - scalevapiwebstorecontrollerindex
 - scalevapiwebstorecontrollerindex_simplified
 - scalevapiwebstorecontrollershow
+- scalevapiwebstorecontrollerupdate
 - scalevapiwebstorecontrollerdelete
 - scalevapiwebstorecontrolleradd_bpos
 - scalevapiwebstorecontrollerremove_bpo
@@ -31,5 +32,4 @@
 - scalevapiwebstorecontrolleradd_store_advertisers
 - scalevapiwebstorecontrollerindex_store_advertiser
 - scalevapiwebstorecontrollerremove_store_advertiser
-- scalevapiwebstorecontrollerupdate
 - scalevapiwebfollowupchatcontrollerupdate_fuc
