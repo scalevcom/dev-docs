@@ -15,6 +15,7 @@
 - scalevapiwebfollowupchatcontrollercreate_fuc
 - scalevapiwebfollowupchatcontrollerindex_fucs
 - scalevapiwebfollowupchatcontrollershow_fuc
+- scalevapiwebfollowupchatcontrollerupdate_fuc
 - scalevapiwebfollowupchatcontrollerdelete_fuc
 - scalevapiwebstorecontrollerindex_page
 - scalevapiwebstorecontrollerindex_payment_account
@@ -32,4 +33,3 @@
 - scalevapiwebstorecontrolleradd_store_advertisers
 - scalevapiwebstorecontrollerindex_store_advertiser
 - scalevapiwebstorecontrollerremove_store_advertiser
-- scalevapiwebfollowupchatcontrollerupdate_fuc
