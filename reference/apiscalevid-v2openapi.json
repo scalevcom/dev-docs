@@ -228,12 +228,6 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "name",
-          "created_at",
-          "updated_at"
-        ],
         "title": "MailketingList",
         "type": "object"
       },
@@ -4661,12 +4655,6 @@
                 "type": "string"
               }
             },
-            "required": [
-              "id",
-              "name",
-              "created_at",
-              "updated_at"
-            ],
             "title": "MailketingList",
             "type": "object"
           },
@@ -15962,6 +15950,7 @@
     },
     "securitySchemes": {
       "bearerApiKey": {
+        "bearerFormat": "opaque",
         "scheme": "bearer",
         "type": "http"
       },
@@ -51110,12 +51099,6 @@
                                     "type": "string"
                                   }
                                 },
-                                "required": [
-                                  "id",
-                                  "name",
-                                  "created_at",
-                                  "updated_at"
-                                ],
                                 "title": "MailketingList",
                                 "type": "object"
                               },
@@ -53160,12 +53143,6 @@
                                     "type": "string"
                                   }
                                 },
-                                "required": [
-                                  "id",
-                                  "name",
-                                  "created_at",
-                                  "updated_at"
-                                ],
                                 "title": "MailketingList",
                                 "type": "object"
                               },
@@ -54199,12 +54176,6 @@
                                     "type": "string"
                                   }
                                 },
-                                "required": [
-                                  "id",
-                                  "name",
-                                  "created_at",
-                                  "updated_at"
-                                ],
                                 "title": "MailketingList",
                                 "type": "object"
                               },
@@ -57836,12 +57807,6 @@
                                     "type": "string"
                                   }
                                 },
-                                "required": [
-                                  "id",
-                                  "name",
-                                  "created_at",
-                                  "updated_at"
-                                ],
                                 "title": "MailketingList",
                                 "type": "object"
                               },
@@ -70163,69 +70128,49 @@
           "content": {
             "application/json": {
               "schema": {
-                "oneOf": [
-                  {
-                    "properties": {
-                      "payment_account_id": {
-                        "description": "Payment account ID to remove from the store",
-                        "type": "integer"
-                      }
-                    },
-                    "required": [
-                      "payment_account_id"
-                    ]
+                "properties": {
+                  "payment_account_id": {
+                    "description": "Payment account ID to remove from the store",
+                    "type": "integer"
                   },
-                  {
-                    "properties": {
-                      "xendit_va_bank_code": {
-                        "description": "Xendit VA bank code",
-                        "enum": [
-                          "BCA",
-                          "BNI",
-                          "BRI",
-                          "MANDIRI",
-                          "PERMATA",
-                          "BSI",
-                          "BJB",
-                          "CIMB",
-                          "SAHABAT_SAMPOERNA",
-                          "ARTAJASA"
-                        ],
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "xendit_va_bank_code"
-                    ]
+                  "payment_method": {
+                    "description": "Order payment method",
+                    "enum": [
+                      "gopay",
+                      "va",
+                      "qris",
+                      "card",
+                      "invoice",
+                      "alfamart",
+                      "ovo",
+                      "dana",
+                      "shopeepay",
+                      "linkaja",
+                      "no_payment",
+                      "bank_transfer",
+                      "marketplace",
+                      "cod"
+                    ],
+                    "type": "string"
                   },
-                  {
-                    "properties": {
-                      "payment_method": {
-                        "description": "Order payment method",
-                        "enum": [
-                          "gopay",
-                          "va",
-                          "qris",
-                          "card",
-                          "invoice",
-                          "alfamart",
-                          "ovo",
-                          "dana",
-                          "shopeepay",
-                          "linkaja",
-                          "no_payment",
-                          "bank_transfer",
-                          "marketplace",
-                          "cod"
-                        ],
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "payment_method"
-                    ]
+                  "sub_payment_method": {
+                    "description": "Xendit VA bank code",
+                    "enum": [
+                      "BCA",
+                      "BNI",
+                      "BRI",
+                      "MANDIRI",
+                      "PERMATA",
+                      "BSI",
+                      "BJB",
+                      "CIMB",
+                      "SAHABAT_SAMPOERNA",
+                      "ARTAJASA"
+                    ],
+                    "type": "string"
                   }
-                ]
+                },
+                "type": "object"
               }
             }
           },
