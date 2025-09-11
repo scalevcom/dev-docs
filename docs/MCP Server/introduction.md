@@ -139,11 +139,3 @@ The MCP server acts as an intelligent middleware that:
 Ready to integrate AI capabilities with your Scalev account? Follow our [OAuth 2.1 Documentation](./oauth-documentation) to set up authentication and start using the MCP server.
 
 For API endpoint documentation, refer to the [Scalev OpenAPI Documentation](https://api.scalev.id/docs) - every endpoint listed there is available as an MCP tool.
-
-## Support
-
-For questions or issues related to the MCP server:
-
-* Documentation: [https://mcp.scalev.id/docs](https://mcp.scalev.id/docs)
-* API Reference: [https://api.scalev.id/docs](https://api.scalev.id/docs)
-* Support: [support@scalev.id](mailto:support@scalev.id)
