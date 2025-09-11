@@ -79,7 +79,8 @@ function generateCodeVerifier(length = 100) {
 function base64UrlEncode(buffer) {
   return btoa(String.fromCharCode(...new Uint8Array(buffer)))
     .replace(/\+/g, "-")
-    .replace(/\//g, "_");
+    .replace(/\//g, "_")
+    .replace(/=+$/, '');
 }
 
 async function generateCodeChallenge(codeVerifier) {
@@ -90,7 +91,9 @@ async function generateCodeChallenge(codeVerifier) {
 }
 ```
 
-> 💡 **Note**: Store the code verifier securely on your client as you'll need it in Step 6 to exchange the authorization code for tokens.
+<Callout icon="💡" theme="default">
+  ### **Note**: Store the code verifier securely on your client as you'll need it in Step 6 to exchange the authorization code for tokens.
+</Callout>
 
 ## Step 3: Authorization Request
 
@@ -267,14 +270,14 @@ We impose the following limits on OAuth applications to ensure fair usage and se
 
 The OAuth endpoints may return various error responses. Common error codes include:
 
-| Error                 | Description                                                             |
-| --------------------- | ----------------------------------------------------------------------- |
-| `invalid_request`     | The request is missing a required parameter or is otherwise malformed   |
-| `invalid_client`      | Client authentication failed                                            |
-| `invalid_grant`       | The authorization code or refresh token is invalid or expired           |
-| `unauthorized_client` | The client is not authorized to use the requested grant type            |
-| `invalid_request`     | PKCE verification failed (code\_verifier doesn't match code\_challenge) |
-| `server_error`        | The server encountered an unexpected error                              |
+| Error                 | Description                                                           |
+| --------------------- | --------------------------------------------------------------------- |
+| `invalid_request`     | The request is missing a required parameter or is otherwise malformed |
+| `invalid_client`      | Client authentication failed                                          |
+| `invalid_grant`       | The authorization code or refresh token is invalid or expired         |
+| `unauthorized_client` | The client is not authorized to use the requested grant type          |
+| `invalid_request`     | PKCE verification failed (code_verifier doesn't match code_challenge) |
+| `server_error`        | The server encountered an unexpected error                            |
 
 ### PKCE-Specific Errors
 
