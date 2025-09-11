@@ -8,7 +8,7 @@ metadata:
 ---
 ## Overview
 
-This document describes the OAuth 2.1 implementation for MCP (Model Context Protocol) with dynamic client registration support. The implementation follows the OAuth 2.1 specification and allows third-party applications to securely access MCP resources on behalf of users.
+This document describes the OAuth implementation for MCP (Model Context Protocol) with dynamic client registration support. The implementation follows the OAuth 2.1 specification and allows third-party applications to securely access MCP resources on behalf of users.
 
 ### Important Architecture Note
 
