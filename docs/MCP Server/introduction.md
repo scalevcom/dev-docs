@@ -6,7 +6,7 @@ hidden: false
 metadata:
   robots: index
 ---
-The Model Context Protocol (MCP) server on Scalev provides a seamless bridge between AI assistants and the Scalev API ecosystem. It acts as a mirror to the Scalev OpenAPI library, automatically exposing all API endpoints as ready-to-use tools that AI models can leverage to perform actions on behalf of users.
+The Model Context Protocol (MCP) server on Scalev provides a seamless bridge between AI assistants and the Scalev API ecosystem. It acts as a mirror to the [Scalev OpenAPI specification](https://api.scalev.id/v2/openapi), automatically exposing all API endpoints as ready-to-use tools that AI models can leverage to perform actions on behalf of users.
 
 ## What is MCP?
 
