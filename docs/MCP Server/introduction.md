@@ -134,8 +134,4 @@ The MCP server acts as an intelligent middleware that:
 * **Token-Based Access**: OAuth tokens provide secure, time-limited access
 * **API Key Protection**: API keys are never exposed to the AI assistant directly
 
-## Next Steps
-
-Ready to integrate AI capabilities with your Scalev account? Follow our [OAuth 2.1 Documentation](./oauth-documentation) to set up authentication and start using the MCP server.
-
-For API endpoint documentation, refer to the [Scalev OpenAPI Documentation](https://api.scalev.id/docs) - every endpoint listed there is available as an MCP tool.
+<br />
