@@ -1,5 +1,5 @@
 ---
-title: Using Scalev MCP Server with Claude Desktop
+title: Connect to Claude Desktop
 deprecated: false
 hidden: false
 metadata:
