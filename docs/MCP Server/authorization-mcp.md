@@ -17,7 +17,7 @@ The MCP OAuth implementation uses a **per-api-key client registration model**:
 * Each business requires their own unique client registration
 * 1 client registration = 1 API key
 * Client credentials (client_id and client_secret) cannot be shared across multiple api keys
-* Applications must dynamically register a new client for each user who wants to connect their Scalev account
+* Applications must dynamically register a new client for each business who wants to connect their Scalev account
 
 ## Authentication Flow
 
