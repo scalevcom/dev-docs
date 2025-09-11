@@ -262,24 +262,7 @@ Leverage AI to analyze and summarize Scalev data:
 
 ## Best Practices
 
-### 1. Error Handling
-
-Always implement proper error handling:
-
-```javascript
-try {
-  const result = await mcpClient.callTool('projects.list');
-} catch (error) {
-  if (error.code === 'TOKEN_EXPIRED') {
-    await refreshToken();
-    // Retry the operation
-  } else {
-    console.error('MCP operation failed:', error);
-  }
-}
-```
-
-### 2. Rate Limiting
+### 1. Rate Limiting
 
 Respect API rate limits:
 
@@ -287,8 +270,10 @@ Respect API rate limits:
 * Cache responses when appropriate
 * Batch operations where possible
 
-### 3. Security
+### 2. Security
 
 * Never expose access tokens in client-side code
 * Use environment variables for sensitive data
 * Implement proper token storage and rotation
+
+<br />
