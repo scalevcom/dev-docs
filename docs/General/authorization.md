@@ -1,5 +1,5 @@
 ---
-title: Authorization with OAuth 2.0
+title: Authorization with OAuth
 excerpt: >-
   This document outlines the authorization process for integrating with Scalev
   API.
@@ -10,7 +10,7 @@ metadata:
 ---
 ## Overview
 
-Scalev API uses the OAuth 2.0 Authorization Code flow with PKCE (Proof Key for Code Exchange), which provides a secure way for your application to obtain permission to access resources on behalf of a user. PKCE is mandatory for all applications to enhance security. The flow consists of these key steps:
+Scalev API uses the OAuth 2.0 Authorization Code flow with PKCE (Proof Key for Code Exchange), often known as OAuth 2.1, which provides a secure way for your application to obtain permission to access resources on behalf of a user. PKCE is mandatory for all applications to enhance security. The flow consists of these key steps:
 
 0. Verifying your business
 1. Registering your application with Scalev
