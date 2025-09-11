@@ -138,65 +138,6 @@ Once connected, your AI assistant will have access to all Scalev API endpoints a
 
 For a complete list of all available tools and their parameters, see the [List of Available Tools](https://developers.scalev.id/docs/list-of-available-tools) page or visit the [scalev-mcp npm package documentation](https://www.npmjs.com/package/scalev-mcp).
 
-## Token Management
-
-### Automatic Token Refresh
-
-Since access tokens expire after 1 hour, implement automatic refresh:
-
-```javascript
-class ScalevMCPConnection {
-  constructor(accessToken, refreshToken, clientId, clientSecret) {
-    this.accessToken = accessToken;
-    this.refreshToken = refreshToken;
-    this.clientId = clientId;
-    this.clientSecret = clientSecret;
-    
-    // Schedule token refresh before expiration
-    this.scheduleTokenRefresh();
-  }
-  
-  scheduleTokenRefresh() {
-    // Refresh 5 minutes before expiration
-    setTimeout(() => {
-      this.refreshAccessToken();
-    }, 55 * 60 * 1000); // 55 minutes
-  }
-  
-  async refreshAccessToken() {
-    const response = await fetch('https://mcp.scalev.id/token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: new URLSearchParams({
-        grant_type: 'refresh_token',
-        refresh_token: this.refreshToken,
-        client_id: this.clientId,
-        client_secret: this.clientSecret
-      })
-    });
-    
-    const tokens = await response.json();
-    this.accessToken = tokens.access_token;
-    this.refreshToken = tokens.refresh_token || this.refreshToken;
-    
-    // Update MCP client with new token
-    this.updateMCPClient();
-    
-    // Schedule next refresh
-    this.scheduleTokenRefresh();
-  }
-  
-  updateMCPClient() {
-    // Reconnect with new token
-    this.mcpClient.updateHeaders({
-      'Authorization': `Bearer ${this.accessToken}`
-    });
-  }
-}
-```
-
 ## Common Use Cases
 
 ### 1. Interactive Chat Assistant
