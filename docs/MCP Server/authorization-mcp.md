@@ -53,7 +53,7 @@ Content-Type: application/json
 
 ```json
 {
-  "client_name": "Your User and App Identifier",
+  "client_name": "Your User (Scalev Business) and App Identifier",
   "redirect_uris": ["https://yourapp.com/callback"],
   "grant_types": ["authorization_code", "refresh_token"],
   "response_types": ["code"],
