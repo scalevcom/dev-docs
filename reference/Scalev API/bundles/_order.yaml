@@ -1,6 +1,5 @@
 - scalevapiwebbundlecontrollercreate
 - scalevapiwebbundlecontrollerindex
-- scalevapiwebbundlecontrollerindex_count
 - scalevapiwebbundlecontrollerindex_simplified
 - scalevapiwebbundlecontrollercreate_bpo
 - scalevapiwebbundlecontrollerindex_bpo
@@ -21,3 +20,4 @@
 - scalevapiwebbundlecontrollershow
 - scalevapiwebbundlecontrollerupdate
 - scalevapiwebbundlecontrollerdelete
+- scalevapiwebbundlecontrollershow_count

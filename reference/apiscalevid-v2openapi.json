@@ -488,6 +488,71 @@
         "title": "SimpleForOrderStore",
         "type": "object"
       },
+      "ShippingCostRequest": {
+        "description": "Schema for requesting shipping cost",
+        "properties": {
+          "courier_codes": {
+            "description": "List of courier codes",
+            "items": {
+              "description": "Schema for a courier code",
+              "enum": [
+                "ninja",
+                "ide",
+                "sicepat",
+                "sap",
+                "ncs",
+                "anteraja",
+                "sentral",
+                "jne",
+                "jnt",
+                "pos",
+                "lion",
+                "rex",
+                "jtl",
+                "tiki",
+                "rpx",
+                "pandu",
+                "wahana",
+                "pahala",
+                "jet",
+                "slis",
+                "dse",
+                "first",
+                "star",
+                "idl"
+              ],
+              "example": "jne",
+              "title": "CourierCode",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "location_id": {
+            "description": "ID of the destination location",
+            "type": "integer"
+          },
+          "postal_code": {
+            "description": "Postal code of the destination",
+            "type": "string"
+          },
+          "warehouse_id": {
+            "description": "ID of the warehouse",
+            "type": "integer"
+          },
+          "weight": {
+            "description": "Weight of the shipment in grams",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "courier_codes",
+          "weight",
+          "warehouse_id",
+          "location_id"
+        ],
+        "title": "ShippingCostRequest",
+        "type": "object"
+      },
       "BundleLine": {
         "properties": {
           "id": {
@@ -8835,6 +8900,38 @@
         "title": "ItemLabel",
         "type": "object"
       },
+      "CourierCode": {
+        "description": "Schema for a courier code",
+        "enum": [
+          "ninja",
+          "ide",
+          "sicepat",
+          "sap",
+          "ncs",
+          "anteraja",
+          "sentral",
+          "jne",
+          "jnt",
+          "pos",
+          "lion",
+          "rex",
+          "jtl",
+          "tiki",
+          "rpx",
+          "pandu",
+          "wahana",
+          "pahala",
+          "jet",
+          "slis",
+          "dse",
+          "first",
+          "star",
+          "idl"
+        ],
+        "example": "jne",
+        "title": "CourierCode",
+        "type": "string"
+      },
       "ProductTaxonomy": {
         "properties": {
           "full_path": {
@@ -9247,6 +9344,51 @@
           }
         },
         "title": "OrderStatistics",
+        "type": "object"
+      },
+      "SearchWarehouseRequest": {
+        "description": "Schema for searching warehouses",
+        "properties": {
+          "destination_id": {
+            "description": "ID of the destination location",
+            "type": "integer"
+          },
+          "order_id": {
+            "description": "ID of the order (for update order)",
+            "type": "integer"
+          },
+          "store_id": {
+            "description": "ID of the store",
+            "type": "integer"
+          },
+          "variants": {
+            "description": "List of product variant ids and their quantities",
+            "items": {
+              "properties": {
+                "qty": {
+                  "description": "Quantity of the product variant",
+                  "type": "integer"
+                },
+                "variant_id": {
+                  "description": "ID of the product variant",
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "variant_id",
+                "qty"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "store_id",
+          "destination_id",
+          "variants"
+        ],
+        "title": "SearchWarehouseRequest",
         "type": "object"
       },
       "ForOrderStore": {
@@ -12571,6 +12713,64 @@
           "business_phone"
         ],
         "title": "BusinessUser",
+        "type": "object"
+      },
+      "GetCourierServiceRequest": {
+        "description": "Schema for requesting courier services",
+        "properties": {
+          "is_show_all": {
+            "description": "Whether to show all courier services or only those available",
+            "type": "boolean"
+          },
+          "location_id": {
+            "description": "ID of the destination location",
+            "type": "integer"
+          },
+          "payment_method": {
+            "description": "Order payment method",
+            "enum": [
+              "gopay",
+              "va",
+              "qris",
+              "card",
+              "invoice",
+              "alfamart",
+              "ovo",
+              "dana",
+              "shopeepay",
+              "linkaja",
+              "no_payment",
+              "bank_transfer",
+              "marketplace",
+              "cod"
+            ],
+            "type": "string"
+          },
+          "postal_code": {
+            "description": "Postal code of the destination",
+            "type": "string"
+          },
+          "store_id": {
+            "description": "ID of the store",
+            "type": "integer"
+          },
+          "warehouse_id": {
+            "description": "ID of the warehouse",
+            "type": "integer"
+          },
+          "weight": {
+            "description": "Weight of the shipment in grams",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "store_id",
+          "location_id",
+          "warehouse_id",
+          "payment_method",
+          "weight"
+        ],
+        "title": "GetCourierServiceRequest",
         "type": "object"
       },
       "NotFoundError": {
@@ -16960,18 +17160,24 @@
                     "data": {
                       "properties": {
                         "has_next": {
+                          "default": false,
                           "example": false,
+                          "nullable": false,
                           "type": "boolean"
                         },
                         "last_id": {
                           "example": 99,
+                          "nullable": true,
                           "type": "integer"
                         },
                         "page_size": {
+                          "default": 25,
                           "example": 25,
+                          "nullable": false,
                           "type": "integer"
                         },
                         "results": {
+                          "default": [],
                           "items": {
                             "properties": {
                               "business": {
@@ -17132,6 +17338,7 @@
                             "title": "BundleList",
                             "type": "object"
                           },
+                          "nullable": false,
                           "type": "array"
                         }
                       },
@@ -17266,7 +17473,7 @@
       "get": {
         "callbacks": {},
         "description": "Retrieves the total count of bundles for the authenticated business. This endpoint does not support any filtering or pagination.",
-        "operationId": "ScalevApiWeb.BundleController.index_count",
+        "operationId": "ScalevApiWeb.BundleController.show_count",
         "parameters": [
           {
             "description": "Number of items per page (default: 25, max: 25)",
@@ -17555,18 +17762,24 @@
                     "data": {
                       "properties": {
                         "has_next": {
+                          "default": false,
                           "example": false,
+                          "nullable": false,
                           "type": "boolean"
                         },
                         "last_id": {
                           "example": 99,
+                          "nullable": true,
                           "type": "integer"
                         },
                         "page_size": {
+                          "default": 25,
                           "example": 25,
+                          "nullable": false,
                           "type": "integer"
                         },
                         "results": {
+                          "default": [],
                           "items": {
                             "properties": {
                               "bundle_price_options": {
@@ -17649,6 +17862,7 @@
                             "title": "BundleListSimplified",
                             "type": "object"
                           },
+                          "nullable": false,
                           "type": "array"
                         }
                       },
@@ -18081,18 +18295,24 @@
                     "data": {
                       "properties": {
                         "has_next": {
+                          "default": false,
                           "example": false,
+                          "nullable": false,
                           "type": "boolean"
                         },
                         "last_id": {
                           "example": 99,
+                          "nullable": true,
                           "type": "integer"
                         },
                         "page_size": {
+                          "default": 25,
                           "example": 25,
+                          "nullable": false,
                           "type": "integer"
                         },
                         "results": {
+                          "default": [],
                           "items": {
                             "properties": {
                               "bundle_id": {
@@ -18166,6 +18386,7 @@
                             "title": "BundlePriceOption",
                             "type": "object"
                           },
+                          "nullable": false,
                           "type": "array"
                         }
                       },
@@ -19454,18 +19675,24 @@
                     "data": {
                       "properties": {
                         "has_next": {
+                          "default": false,
                           "example": false,
+                          "nullable": false,
                           "type": "boolean"
                         },
                         "last_id": {
                           "example": 99,
+                          "nullable": true,
                           "type": "integer"
                         },
                         "page_size": {
+                          "default": 25,
                           "example": 25,
+                          "nullable": false,
                           "type": "integer"
                         },
                         "results": {
+                          "default": [],
                           "items": {
                             "properties": {
                               "bundle_id": {
@@ -19555,6 +19782,7 @@
                             "title": "ManagingFollowUpChat",
                             "type": "object"
                           },
+                          "nullable": false,
                           "type": "array"
                         }
                       },
@@ -20834,18 +21062,24 @@
                     "data": {
                       "properties": {
                         "has_next": {
+                          "default": false,
                           "example": false,
+                          "nullable": false,
                           "type": "boolean"
                         },
                         "last_id": {
                           "example": 99,
+                          "nullable": true,
                           "type": "integer"
                         },
                         "page_size": {
+                          "default": 25,
                           "example": 25,
+                          "nullable": false,
                           "type": "integer"
                         },
                         "results": {
+                          "default": [],
                           "items": {
                             "properties": {
                               "created_at": {
@@ -20902,6 +21136,7 @@
                             "title": "BundlePartner",
                             "type": "object"
                           },
+                          "nullable": false,
                           "type": "array"
                         }
                       },
@@ -24476,18 +24711,25 @@
                     "data": {
                       "properties": {
                         "has_next": {
+                          "default": false,
                           "example": false,
+                          "nullable": false,
                           "type": "boolean"
                         },
-                        "last_id": {
-                          "example": 99,
+                        "page": {
+                          "default": 1,
+                          "example": 1,
+                          "nullable": false,
                           "type": "integer"
                         },
                         "page_size": {
+                          "default": 25,
                           "example": 25,
+                          "nullable": false,
                           "type": "integer"
                         },
                         "results": {
+                          "default": [],
                           "items": {
                             "properties": {
                               "city_name": {
@@ -24558,6 +24800,7 @@
                             "title": "Location",
                             "type": "object"
                           },
+                          "nullable": false,
                           "type": "array"
                         }
                       },
@@ -27203,18 +27446,24 @@
                     "data": {
                       "properties": {
                         "has_next": {
+                          "default": false,
                           "example": false,
+                          "nullable": false,
                           "type": "boolean"
                         },
                         "last_id": {
                           "example": 99,
+                          "nullable": true,
                           "type": "integer"
                         },
                         "page_size": {
+                          "default": 25,
                           "example": 25,
+                          "nullable": false,
                           "type": "integer"
                         },
                         "results": {
+                          "default": [],
                           "items": {
                             "description": "Order data based on requested columns",
                             "properties": {
@@ -28201,6 +28450,7 @@
                             "title": "OrderList",
                             "type": "object"
                           },
+                          "nullable": false,
                           "type": "array"
                         }
                       },
@@ -50325,18 +50575,25 @@
                     "data": {
                       "properties": {
                         "has_next": {
+                          "default": false,
                           "example": false,
+                          "nullable": false,
                           "type": "boolean"
                         },
-                        "last_id": {
-                          "example": 99,
+                        "page": {
+                          "default": 1,
+                          "example": 1,
+                          "nullable": false,
                           "type": "integer"
                         },
                         "page_size": {
+                          "default": 25,
                           "example": 25,
+                          "nullable": false,
                           "type": "integer"
                         },
                         "results": {
+                          "default": [],
                           "items": {
                             "properties": {
                               "full_path": {
@@ -50379,6 +50636,7 @@
                             "title": "ProductTaxonomy",
                             "type": "object"
                           },
+                          "nullable": false,
                           "type": "array"
                         }
                       },
@@ -51765,18 +52023,24 @@
                     "data": {
                       "properties": {
                         "has_next": {
+                          "default": false,
                           "example": false,
+                          "nullable": false,
                           "type": "boolean"
                         },
                         "last_id": {
                           "example": 99,
+                          "nullable": true,
                           "type": "integer"
                         },
                         "page_size": {
+                          "default": 25,
                           "example": 25,
+                          "nullable": false,
                           "type": "integer"
                         },
                         "results": {
+                          "default": [],
                           "items": {
                             "properties": {
                               "business": {
@@ -52076,6 +52340,7 @@
                             "title": "ProductList",
                             "type": "object"
                           },
+                          "nullable": false,
                           "type": "array"
                         }
                       },
@@ -52210,7 +52475,7 @@
       "get": {
         "callbacks": {},
         "description": "Returns the total count of products.",
-        "operationId": "ScalevApiWeb.ProductController.index_count",
+        "operationId": "ScalevApiWeb.ProductController.show_count",
         "parameters": [
           {
             "description": "Number of items per page (default: 25, max: 25)",
@@ -52544,18 +52809,24 @@
                     "data": {
                       "properties": {
                         "has_next": {
+                          "default": false,
                           "example": false,
+                          "nullable": false,
                           "type": "boolean"
                         },
                         "last_id": {
                           "example": 99,
+                          "nullable": true,
                           "type": "integer"
                         },
                         "page_size": {
+                          "default": 25,
                           "example": 25,
+                          "nullable": false,
                           "type": "integer"
                         },
                         "results": {
+                          "default": [],
                           "items": {
                             "properties": {
                               "display": {
@@ -52721,6 +52992,7 @@
                             "title": "SimplifiedProductList",
                             "type": "object"
                           },
+                          "nullable": false,
                           "type": "array"
                         }
                       },
@@ -55210,18 +55482,24 @@
                     "data": {
                       "properties": {
                         "has_next": {
+                          "default": false,
                           "example": false,
+                          "nullable": false,
                           "type": "boolean"
                         },
                         "last_id": {
                           "example": 99,
+                          "nullable": true,
                           "type": "integer"
                         },
                         "page_size": {
+                          "default": 25,
                           "example": 25,
+                          "nullable": false,
                           "type": "integer"
                         },
                         "results": {
+                          "default": [],
                           "items": {
                             "properties": {
                               "bundle_id": {
@@ -55311,6 +55589,7 @@
                             "title": "ManagingFollowUpChat",
                             "type": "object"
                           },
+                          "nullable": false,
                           "type": "array"
                         }
                       },
@@ -56541,18 +56820,24 @@
                     "data": {
                       "properties": {
                         "has_next": {
+                          "default": false,
                           "example": false,
+                          "nullable": false,
                           "type": "boolean"
                         },
                         "last_id": {
                           "example": 99,
+                          "nullable": true,
                           "type": "integer"
                         },
                         "page_size": {
+                          "default": 25,
                           "example": 25,
+                          "nullable": false,
                           "type": "integer"
                         },
                         "results": {
+                          "default": [],
                           "items": {
                             "description": "A partner associated with a product",
                             "properties": {
@@ -56605,6 +56890,7 @@
                             "title": "ProductPartner",
                             "type": "object"
                           },
+                          "nullable": false,
                           "type": "array"
                         }
                       },
@@ -58388,6 +58674,79 @@
         "description": "Retrieve shipping cost estimates based on origin, destination, courier services, and package weight.",
         "operationId": "ScalevApiWeb.ShippingCostController.search_shipping_costs",
         "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "Schema for requesting shipping cost",
+                "properties": {
+                  "courier_codes": {
+                    "description": "List of courier codes",
+                    "items": {
+                      "description": "Schema for a courier code",
+                      "enum": [
+                        "ninja",
+                        "ide",
+                        "sicepat",
+                        "sap",
+                        "ncs",
+                        "anteraja",
+                        "sentral",
+                        "jne",
+                        "jnt",
+                        "pos",
+                        "lion",
+                        "rex",
+                        "jtl",
+                        "tiki",
+                        "rpx",
+                        "pandu",
+                        "wahana",
+                        "pahala",
+                        "jet",
+                        "slis",
+                        "dse",
+                        "first",
+                        "star",
+                        "idl"
+                      ],
+                      "example": "jne",
+                      "title": "CourierCode",
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "location_id": {
+                    "description": "ID of the destination location",
+                    "type": "integer"
+                  },
+                  "postal_code": {
+                    "description": "Postal code of the destination",
+                    "type": "string"
+                  },
+                  "warehouse_id": {
+                    "description": "ID of the warehouse",
+                    "type": "integer"
+                  },
+                  "weight": {
+                    "description": "Weight of the shipment in grams",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "courier_codes",
+                  "weight",
+                  "warehouse_id",
+                  "location_id"
+                ],
+                "title": "ShippingCostRequest",
+                "type": "object"
+              }
+            }
+          },
+          "description": "Estimate shipping cost request",
+          "required": false
+        },
         "responses": {
           "200": {
             "content": {
@@ -58611,6 +58970,72 @@
         "description": "Retrieve available courier services based on warehouse, destination, payment method, and package weight.",
         "operationId": "ScalevApiWeb.ShippingCostController.search_courier_services",
         "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "Schema for requesting courier services",
+                "properties": {
+                  "is_show_all": {
+                    "description": "Whether to show all courier services or only those available",
+                    "type": "boolean"
+                  },
+                  "location_id": {
+                    "description": "ID of the destination location",
+                    "type": "integer"
+                  },
+                  "payment_method": {
+                    "description": "Order payment method",
+                    "enum": [
+                      "gopay",
+                      "va",
+                      "qris",
+                      "card",
+                      "invoice",
+                      "alfamart",
+                      "ovo",
+                      "dana",
+                      "shopeepay",
+                      "linkaja",
+                      "no_payment",
+                      "bank_transfer",
+                      "marketplace",
+                      "cod"
+                    ],
+                    "type": "string"
+                  },
+                  "postal_code": {
+                    "description": "Postal code of the destination",
+                    "type": "string"
+                  },
+                  "store_id": {
+                    "description": "ID of the store",
+                    "type": "integer"
+                  },
+                  "warehouse_id": {
+                    "description": "ID of the warehouse",
+                    "type": "integer"
+                  },
+                  "weight": {
+                    "description": "Weight of the shipment in grams",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "store_id",
+                  "location_id",
+                  "warehouse_id",
+                  "payment_method",
+                  "weight"
+                ],
+                "title": "GetCourierServiceRequest",
+                "type": "object"
+              }
+            }
+          },
+          "description": "Search courier services request",
+          "required": false
+        },
         "responses": {
           "200": {
             "content": {
@@ -58880,6 +59305,59 @@
         "description": "Search for warehouses based on order details, store, destination, and product variants.",
         "operationId": "ScalevApiWeb.ShippingCostController.search_warehouses",
         "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "Schema for searching warehouses",
+                "properties": {
+                  "destination_id": {
+                    "description": "ID of the destination location",
+                    "type": "integer"
+                  },
+                  "order_id": {
+                    "description": "ID of the order (for update order)",
+                    "type": "integer"
+                  },
+                  "store_id": {
+                    "description": "ID of the store",
+                    "type": "integer"
+                  },
+                  "variants": {
+                    "description": "List of product variant ids and their quantities",
+                    "items": {
+                      "properties": {
+                        "qty": {
+                          "description": "Quantity of the product variant",
+                          "type": "integer"
+                        },
+                        "variant_id": {
+                          "description": "ID of the product variant",
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "variant_id",
+                        "qty"
+                      ],
+                      "type": "object"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "store_id",
+                  "destination_id",
+                  "variants"
+                ],
+                "title": "SearchWarehouseRequest",
+                "type": "object"
+              }
+            }
+          },
+          "description": "Search warehouse request",
+          "required": false
+        },
         "responses": {
           "200": {
             "content": {
@@ -61010,18 +61488,24 @@
                     "data": {
                       "properties": {
                         "has_next": {
+                          "default": false,
                           "example": false,
+                          "nullable": false,
                           "type": "boolean"
                         },
                         "last_id": {
                           "example": 99,
+                          "nullable": true,
                           "type": "integer"
                         },
                         "page_size": {
+                          "default": 25,
                           "example": 25,
+                          "nullable": false,
                           "type": "integer"
                         },
                         "results": {
+                          "default": [],
                           "items": {
                             "properties": {
                               "business_id": {
@@ -61206,6 +61690,7 @@
                             "title": "ListStore",
                             "type": "object"
                           },
+                          "nullable": false,
                           "type": "array"
                         }
                       },
@@ -61409,18 +61894,24 @@
                     "data": {
                       "properties": {
                         "has_next": {
+                          "default": false,
                           "example": false,
+                          "nullable": false,
                           "type": "boolean"
                         },
                         "last_id": {
                           "example": 99,
+                          "nullable": true,
                           "type": "integer"
                         },
                         "page_size": {
+                          "default": 25,
                           "example": 25,
+                          "nullable": false,
                           "type": "integer"
                         },
                         "results": {
+                          "default": [],
                           "items": {
                             "properties": {
                               "business_id": {
@@ -61515,6 +62006,7 @@
                             "title": "ListSimplifiedStore",
                             "type": "object"
                           },
+                          "nullable": false,
                           "type": "array"
                         }
                       },
@@ -66587,18 +67079,24 @@
                     "data": {
                       "properties": {
                         "has_next": {
+                          "default": false,
                           "example": false,
+                          "nullable": false,
                           "type": "boolean"
                         },
                         "last_id": {
                           "example": 99,
+                          "nullable": true,
                           "type": "integer"
                         },
                         "page_size": {
+                          "default": 25,
                           "example": 25,
+                          "nullable": false,
                           "type": "integer"
                         },
                         "results": {
+                          "default": [],
                           "items": {
                             "properties": {
                               "available_qty": {
@@ -66806,6 +67304,7 @@
                             "title": "BundleList",
                             "type": "object"
                           },
+                          "nullable": false,
                           "type": "array"
                         }
                       },
@@ -68218,18 +68717,24 @@
                     "data": {
                       "properties": {
                         "has_next": {
+                          "default": false,
                           "example": false,
+                          "nullable": false,
                           "type": "boolean"
                         },
                         "last_id": {
                           "example": 99,
+                          "nullable": true,
                           "type": "integer"
                         },
                         "page_size": {
+                          "default": 25,
                           "example": 25,
+                          "nullable": false,
                           "type": "integer"
                         },
                         "results": {
+                          "default": [],
                           "items": {
                             "properties": {
                               "bundle_id": {
@@ -68319,6 +68824,7 @@
                             "title": "ManagingFollowUpChat",
                             "type": "object"
                           },
+                          "nullable": false,
                           "type": "array"
                         }
                       },
@@ -69250,18 +69756,24 @@
                     "data": {
                       "properties": {
                         "has_next": {
+                          "default": false,
                           "example": false,
+                          "nullable": false,
                           "type": "boolean"
                         },
                         "last_id": {
                           "example": 99,
+                          "nullable": true,
                           "type": "integer"
                         },
                         "page_size": {
+                          "default": 25,
                           "example": 25,
+                          "nullable": false,
                           "type": "integer"
                         },
                         "results": {
+                          "default": [],
                           "items": {
                             "properties": {
                               "id": {
@@ -69297,6 +69809,7 @@
                             "title": "PageSimple",
                             "type": "object"
                           },
+                          "nullable": false,
                           "type": "array"
                         }
                       },
@@ -69499,18 +70012,24 @@
                     "data": {
                       "properties": {
                         "has_next": {
+                          "default": false,
                           "example": false,
+                          "nullable": false,
                           "type": "boolean"
                         },
                         "last_id": {
                           "example": 99,
+                          "nullable": true,
                           "type": "integer"
                         },
                         "page_size": {
+                          "default": 25,
                           "example": 25,
+                          "nullable": false,
                           "type": "integer"
                         },
                         "results": {
+                          "default": [],
                           "items": {
                             "properties": {
                               "account_holder": {
@@ -69575,6 +70094,7 @@
                             "title": "PaymentAccountList",
                             "type": "object"
                           },
+                          "nullable": false,
                           "type": "array"
                         }
                       },
@@ -70641,18 +71161,24 @@
                     "data": {
                       "properties": {
                         "has_next": {
+                          "default": false,
                           "example": false,
+                          "nullable": false,
                           "type": "boolean"
                         },
                         "last_id": {
                           "example": 99,
+                          "nullable": true,
                           "type": "integer"
                         },
                         "page_size": {
+                          "default": 25,
                           "example": 25,
+                          "nullable": false,
                           "type": "integer"
                         },
                         "results": {
+                          "default": [],
                           "items": {
                             "properties": {
                               "display": {
@@ -70846,6 +71372,7 @@
                             "title": "ForStoreProductList",
                             "type": "object"
                           },
+                          "nullable": false,
                           "type": "array"
                         }
                       },
@@ -71479,18 +72006,24 @@
                     "data": {
                       "properties": {
                         "has_next": {
+                          "default": false,
                           "example": false,
+                          "nullable": false,
                           "type": "boolean"
                         },
                         "last_id": {
                           "example": 99,
+                          "nullable": true,
                           "type": "integer"
                         },
                         "page_size": {
+                          "default": 25,
                           "example": 25,
+                          "nullable": false,
                           "type": "integer"
                         },
                         "results": {
+                          "default": [],
                           "items": {
                             "description": "Store Sales Person Simple Schema",
                             "properties": {
@@ -71765,6 +72298,7 @@
                             "title": "StoreSalesPersonSimple",
                             "type": "object"
                           },
+                          "nullable": false,
                           "type": "array"
                         }
                       },
@@ -72124,18 +72658,24 @@
                     "data": {
                       "properties": {
                         "has_next": {
+                          "default": false,
                           "example": false,
+                          "nullable": false,
                           "type": "boolean"
                         },
                         "last_id": {
                           "example": 99,
+                          "nullable": true,
                           "type": "integer"
                         },
                         "page_size": {
+                          "default": 25,
                           "example": 25,
+                          "nullable": false,
                           "type": "integer"
                         },
                         "results": {
+                          "default": [],
                           "items": {
                             "properties": {
                               "business_phone": {
@@ -72206,6 +72746,7 @@
                             "title": "BusinessUser",
                             "type": "object"
                           },
+                          "nullable": false,
                           "type": "array"
                         }
                       },
@@ -72728,18 +73269,24 @@
                     "data": {
                       "properties": {
                         "has_next": {
+                          "default": false,
                           "example": false,
+                          "nullable": false,
                           "type": "boolean"
                         },
                         "last_id": {
                           "example": 99,
+                          "nullable": true,
                           "type": "integer"
                         },
                         "page_size": {
+                          "default": 25,
                           "example": 25,
+                          "nullable": false,
                           "type": "integer"
                         },
                         "results": {
+                          "default": [],
                           "items": {
                             "properties": {
                               "business_phone": {
@@ -72810,6 +73357,7 @@
                             "title": "BusinessUser",
                             "type": "object"
                           },
+                          "nullable": false,
                           "type": "array"
                         }
                       },
@@ -73753,18 +74301,24 @@
                     "data": {
                       "properties": {
                         "has_next": {
+                          "default": false,
                           "example": false,
+                          "nullable": false,
                           "type": "boolean"
                         },
                         "last_id": {
                           "example": 99,
+                          "nullable": true,
                           "type": "integer"
                         },
                         "page_size": {
+                          "default": 25,
                           "example": 25,
+                          "nullable": false,
                           "type": "integer"
                         },
                         "results": {
+                          "default": [],
                           "items": {
                             "properties": {
                               "content_type": {
@@ -73792,6 +74346,7 @@
                             "title": "DigitalProductFile",
                             "type": "object"
                           },
+                          "nullable": false,
                           "type": "array"
                         }
                       },

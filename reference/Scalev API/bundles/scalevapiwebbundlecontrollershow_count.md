@@ -5,6 +5,6 @@ excerpt: >-
   endpoint does not support any filtering or pagination.
 api:
   file: apiscalevid-v2openapi.json
-  operationId: ScalevApiWeb.BundleController.index_count
+  operationId: ScalevApiWeb.BundleController.show_count
 hidden: false
 ---

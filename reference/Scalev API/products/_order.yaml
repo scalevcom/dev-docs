@@ -2,7 +2,6 @@
 - scalevapiwebproductcontrollershow_taxonomy
 - scalevapiwebproductcontrollercreate
 - scalevapiwebproductcontrollerindex
-- scalevapiwebproductcontrollerindex_count
 - scalevapiwebproductcontrollerindex_simplified
 - scalevapiwebproductcontrollershow
 - scalevapiwebproductcontrollerupdate
@@ -23,3 +22,4 @@
 - scalevapiwebproductcontrollerindex_digital_product_files
 - scalevapiwebproductcontrollershow_digital_product_file
 - scalevapiwebproductcontrollerdelete_digital_product_file
+- scalevapiwebproductcontrollershow_count
