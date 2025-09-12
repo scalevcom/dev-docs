@@ -58668,9 +58668,1015 @@
         ]
       }
     },
-    "/v2/shipping-costs": {},
-    "/v2/shipping-costs/search-courier-service": {},
-    "/v2/shipping-costs/search-warehouse": {},
+    "/v2/shipping-costs": {
+      "post": {
+        "callbacks": {},
+        "description": "Retrieve shipping cost estimates based on origin, destination, courier services, and package weight.",
+        "operationId": "ScalevApiWeb.ShippingCostController.search_shipping_costs",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "Schema for requesting shipping cost",
+                "properties": {
+                  "courier_codes": {
+                    "description": "List of courier codes",
+                    "items": {
+                      "description": "Schema for a courier code",
+                      "enum": [
+                        "ninja",
+                        "ide",
+                        "sicepat",
+                        "sap",
+                        "ncs",
+                        "anteraja",
+                        "sentral",
+                        "jne",
+                        "jnt",
+                        "pos",
+                        "lion",
+                        "rex",
+                        "jtl",
+                        "tiki",
+                        "rpx",
+                        "pandu",
+                        "wahana",
+                        "pahala",
+                        "jet",
+                        "slis",
+                        "dse",
+                        "first",
+                        "star",
+                        "idl"
+                      ],
+                      "example": "jne",
+                      "title": "CourierCode",
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "location_id": {
+                    "description": "ID of the destination location",
+                    "type": "integer"
+                  },
+                  "postal_code": {
+                    "description": "Postal code of the destination",
+                    "type": "string"
+                  },
+                  "warehouse_id": {
+                    "description": "ID of the warehouse",
+                    "type": "integer"
+                  },
+                  "weight": {
+                    "description": "Weight of the shipment in grams",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "courier_codes",
+                  "weight",
+                  "warehouse_id",
+                  "location_id"
+                ],
+                "title": "ShippingCostRequest",
+                "type": "object"
+              }
+            }
+          },
+          "description": "Estimate shipping cost request",
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 200,
+                      "type": "integer"
+                    },
+                    "data": {
+                      "description": "List of shipping cost results",
+                      "items": {
+                        "description": "Schema for a single shipping cost result",
+                        "properties": {
+                          "cost": {
+                            "description": "Cost of the shipment",
+                            "format": "float",
+                            "type": "number"
+                          },
+                          "cost_source": {
+                            "description": "Source of the cost",
+                            "type": "string"
+                          },
+                          "courier_service": {
+                            "properties": {
+                              "code": {
+                                "description": "Code for the courier service",
+                                "type": "string"
+                              },
+                              "courier": {
+                                "properties": {
+                                  "code": {
+                                    "description": "Courier code",
+                                    "type": "string"
+                                  },
+                                  "courier_type": {
+                                    "description": "Type of the courier",
+                                    "enum": [
+                                      "instant",
+                                      "cashless",
+                                      "standard"
+                                    ],
+                                    "example": "standard",
+                                    "title": "CourierType",
+                                    "type": "string"
+                                  },
+                                  "id": {
+                                    "description": "Courier ID",
+                                    "type": "integer"
+                                  },
+                                  "name": {
+                                    "description": "Courier name",
+                                    "type": "string"
+                                  }
+                                },
+                                "title": "CourierLocationData",
+                                "type": "object"
+                              },
+                              "id": {
+                                "description": "Courier Service ID",
+                                "type": "integer"
+                              },
+                              "name": {
+                                "description": "Name of the courier service",
+                                "type": "string"
+                              }
+                            },
+                            "title": "CourierServiceLocationData",
+                            "type": "object"
+                          },
+                          "etd": {
+                            "description": "Estimated time of delivery",
+                            "type": "string"
+                          },
+                          "weight": {
+                            "description": "Weight of the shipment in grams",
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "cost_source",
+                          "courier_service",
+                          "weight",
+                          "etd",
+                          "cost"
+                        ],
+                        "title": "ShippingCostResult",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "status": {
+                      "example": "Success",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Products list"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 400,
+                      "type": "integer"
+                    },
+                    "error": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "additionalProperties": true,
+                          "description": "Validation errors from changeset",
+                          "type": "object"
+                        }
+                      ]
+                    },
+                    "status": {
+                      "example": "Bad Request",
+                      "type": "string"
+                    }
+                  },
+                  "title": "BadRequestError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 401,
+                      "type": "integer"
+                    },
+                    "status": {
+                      "example": "Unauthorized",
+                      "type": "string"
+                    }
+                  },
+                  "title": "UnauthorizedError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 403,
+                      "type": "integer"
+                    },
+                    "status": {
+                      "example": "Forbidden",
+                      "type": "string"
+                    }
+                  },
+                  "title": "ForbiddenError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 404,
+                      "type": "integer"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "Not Found",
+                      "type": "string"
+                    }
+                  },
+                  "title": "NotFoundError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "bearerApiKey": [],
+            "oauth2": [
+              "add_order"
+            ]
+          }
+        ],
+        "summary": "Get Shipping Costs",
+        "tags": [
+          "Shipping Costs"
+        ]
+      }
+    },
+    "/v2/shipping-costs/search-courier-service": {
+      "post": {
+        "callbacks": {},
+        "description": "Retrieve available courier services based on warehouse, destination, payment method, and package weight.",
+        "operationId": "ScalevApiWeb.ShippingCostController.search_courier_services",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "Schema for requesting courier services",
+                "properties": {
+                  "is_show_all": {
+                    "description": "Whether to show all courier services or only those available",
+                    "type": "boolean"
+                  },
+                  "location_id": {
+                    "description": "ID of the destination location",
+                    "type": "integer"
+                  },
+                  "payment_method": {
+                    "description": "Order payment method",
+                    "enum": [
+                      "gopay",
+                      "va",
+                      "qris",
+                      "card",
+                      "invoice",
+                      "alfamart",
+                      "ovo",
+                      "dana",
+                      "shopeepay",
+                      "linkaja",
+                      "no_payment",
+                      "bank_transfer",
+                      "marketplace",
+                      "cod"
+                    ],
+                    "type": "string"
+                  },
+                  "postal_code": {
+                    "description": "Postal code of the destination",
+                    "type": "string"
+                  },
+                  "store_id": {
+                    "description": "ID of the store",
+                    "type": "integer"
+                  },
+                  "warehouse_id": {
+                    "description": "ID of the warehouse",
+                    "type": "integer"
+                  },
+                  "weight": {
+                    "description": "Weight of the shipment in grams",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "store_id",
+                  "location_id",
+                  "warehouse_id",
+                  "payment_method",
+                  "weight"
+                ],
+                "title": "GetCourierServiceRequest",
+                "type": "object"
+              }
+            }
+          },
+          "description": "Search courier services request",
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 200,
+                      "type": "integer"
+                    },
+                    "data": {
+                      "description": "List of courier services",
+                      "items": {
+                        "properties": {
+                          "cost": {
+                            "description": "Cost of the shipment",
+                            "format": "float",
+                            "type": "number"
+                          },
+                          "cost_source": {
+                            "description": "Source of the cost",
+                            "type": "string"
+                          },
+                          "courier_service": {
+                            "properties": {
+                              "code": {
+                                "description": "Code for the courier service",
+                                "type": "string"
+                              },
+                              "courier": {
+                                "properties": {
+                                  "code": {
+                                    "description": "Courier code",
+                                    "type": "string"
+                                  },
+                                  "courier_type": {
+                                    "description": "Type of the courier",
+                                    "enum": [
+                                      "instant",
+                                      "cashless",
+                                      "standard"
+                                    ],
+                                    "example": "standard",
+                                    "title": "CourierType",
+                                    "type": "string"
+                                  },
+                                  "id": {
+                                    "description": "Courier ID",
+                                    "type": "integer"
+                                  },
+                                  "name": {
+                                    "description": "Courier name",
+                                    "type": "string"
+                                  }
+                                },
+                                "title": "CourierLocationData",
+                                "type": "object"
+                              },
+                              "id": {
+                                "description": "Courier Service ID",
+                                "type": "integer"
+                              },
+                              "name": {
+                                "description": "Name of the courier service",
+                                "type": "string"
+                              }
+                            },
+                            "title": "CourierServiceLocationData",
+                            "type": "object"
+                          },
+                          "etd": {
+                            "description": "Estimated time of delivery",
+                            "type": "string"
+                          },
+                          "is_cod": {
+                            "description": "Is Cash on Delivery available",
+                            "type": "boolean"
+                          },
+                          "is_pickup": {
+                            "description": "Is Pickup available",
+                            "type": "boolean"
+                          },
+                          "shipment_provider_code": {
+                            "description": "Code of the shipment provider",
+                            "type": "string"
+                          },
+                          "warehouse": {
+                            "properties": {
+                              "address": {
+                                "description": "Address of the warehouse",
+                                "type": "string"
+                              },
+                              "city_name": {
+                                "description": "City name of the warehouse location",
+                                "type": "string"
+                              },
+                              "id": {
+                                "description": "Warehouse ID",
+                                "type": "integer"
+                              },
+                              "lincah_origin_id": {
+                                "description": "Lincah origin ID for the warehouse",
+                                "type": "string"
+                              },
+                              "mengantar_origin_id": {
+                                "description": "Mengantar origin ID for the warehouse",
+                                "type": "string"
+                              },
+                              "name": {
+                                "description": "Name of the warehouse",
+                                "type": "string"
+                              },
+                              "province_name": {
+                                "description": "Province name of the warehouse location",
+                                "type": "string"
+                              },
+                              "subdistrict_name": {
+                                "description": "Subdistrict name of the warehouse location",
+                                "type": "string"
+                              },
+                              "unique_id": {
+                                "description": "Unique identifier of the warehouse",
+                                "type": "string"
+                              }
+                            },
+                            "title": "ForLocationWarehouse",
+                            "type": "object"
+                          },
+                          "weight": {
+                            "description": "Weight of the shipment in grams",
+                            "type": "integer"
+                          }
+                        },
+                        "title": "CourierServiceResult",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "status": {
+                      "example": "Success",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Courier Services list"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 400,
+                      "type": "integer"
+                    },
+                    "error": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "additionalProperties": true,
+                          "description": "Validation errors from changeset",
+                          "type": "object"
+                        }
+                      ]
+                    },
+                    "status": {
+                      "example": "Bad Request",
+                      "type": "string"
+                    }
+                  },
+                  "title": "BadRequestError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 401,
+                      "type": "integer"
+                    },
+                    "status": {
+                      "example": "Unauthorized",
+                      "type": "string"
+                    }
+                  },
+                  "title": "UnauthorizedError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 403,
+                      "type": "integer"
+                    },
+                    "status": {
+                      "example": "Forbidden",
+                      "type": "string"
+                    }
+                  },
+                  "title": "ForbiddenError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 404,
+                      "type": "integer"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "Not Found",
+                      "type": "string"
+                    }
+                  },
+                  "title": "NotFoundError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "bearerApiKey": [],
+            "oauth2": [
+              "add_order"
+            ]
+          }
+        ],
+        "summary": "Get Courier Services",
+        "tags": [
+          "Shipping Costs"
+        ]
+      }
+    },
+    "/v2/shipping-costs/search-warehouse": {
+      "post": {
+        "callbacks": {},
+        "description": "Search for warehouses based on order details, store, destination, and product variants.",
+        "operationId": "ScalevApiWeb.ShippingCostController.search_warehouses",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "Schema for searching warehouses",
+                "properties": {
+                  "destination_id": {
+                    "description": "ID of the destination location",
+                    "type": "integer"
+                  },
+                  "order_id": {
+                    "description": "ID of the order (for update order)",
+                    "type": "integer"
+                  },
+                  "store_id": {
+                    "description": "ID of the store",
+                    "type": "integer"
+                  },
+                  "variants": {
+                    "description": "List of product variant ids and their quantities",
+                    "items": {
+                      "properties": {
+                        "qty": {
+                          "description": "Quantity of the product variant",
+                          "type": "integer"
+                        },
+                        "variant_id": {
+                          "description": "ID of the product variant",
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "variant_id",
+                        "qty"
+                      ],
+                      "type": "object"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "store_id",
+                  "destination_id",
+                  "variants"
+                ],
+                "title": "SearchWarehouseRequest",
+                "type": "object"
+              }
+            }
+          },
+          "description": "Search warehouse request",
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 200,
+                      "type": "integer"
+                    },
+                    "data": {
+                      "items": {
+                        "properties": {
+                          "destination": {
+                            "properties": {
+                              "city_name": {
+                                "description": "City Name",
+                                "type": "string"
+                              },
+                              "display": {
+                                "description": "Display Name",
+                                "type": "string"
+                              },
+                              "id": {
+                                "description": "Location ID",
+                                "type": "integer"
+                              },
+                              "jne_destination_id": {
+                                "description": "JNE Destination ID",
+                                "type": "integer"
+                              },
+                              "jne_origin_id": {
+                                "description": "JNE Origin ID",
+                                "type": "integer"
+                              },
+                              "ka_district_id": {
+                                "description": "Kargo Aman District ID",
+                                "type": "integer"
+                              },
+                              "lincah_code": {
+                                "description": "Lincah Code",
+                                "type": "string"
+                              },
+                              "lion_code": {
+                                "description": "Lion Code",
+                                "type": "string"
+                              },
+                              "mengantar_code": {
+                                "description": "Mengantar Code",
+                                "type": "string"
+                              },
+                              "ninja_l1": {
+                                "description": "Ninja L1 Code",
+                                "type": "string"
+                              },
+                              "ninja_l2": {
+                                "description": "Ninja L2 Code",
+                                "type": "string"
+                              },
+                              "province_name": {
+                                "description": "Province Name",
+                                "type": "string"
+                              },
+                              "ro_city_id": {
+                                "description": "RajaOngkir City ID",
+                                "type": "integer"
+                              },
+                              "ro_province_id": {
+                                "description": "RajaOngkir Province ID",
+                                "type": "integer"
+                              },
+                              "ro_subdistrict_id": {
+                                "description": "RajaOngkir Subdistrict ID",
+                                "type": "integer"
+                              },
+                              "subdistrict_name": {
+                                "description": "Subdistrict Name",
+                                "type": "string"
+                              }
+                            },
+                            "title": "Location",
+                            "type": "object"
+                          },
+                          "distance_km": {
+                            "description": "Distance in kilometers",
+                            "format": "float",
+                            "type": "number"
+                          },
+                          "warehouse": {
+                            "properties": {
+                              "business": {
+                                "properties": {
+                                  "id": {
+                                    "description": "Business ID",
+                                    "type": "integer"
+                                  },
+                                  "username": {
+                                    "description": "Username of the business",
+                                    "type": "string"
+                                  }
+                                },
+                                "title": "BusinessUsernameOnly",
+                                "type": "object"
+                              },
+                              "id": {
+                                "description": "Warehouse ID",
+                                "type": "integer"
+                              },
+                              "lincah_origin_id": {
+                                "description": "Lincah origin ID for the warehouse",
+                                "type": "string"
+                              },
+                              "mengantar_origin_id": {
+                                "description": "Mengantar origin ID for the warehouse",
+                                "type": "string"
+                              },
+                              "name": {
+                                "description": "Name of the warehouse",
+                                "type": "string"
+                              },
+                              "unique_id": {
+                                "description": "Unique identifier of the warehouse",
+                                "type": "string"
+                              },
+                              "warehouse_address": {
+                                "properties": {
+                                  "address": {
+                                    "description": "Full address of the warehouse",
+                                    "type": "string"
+                                  },
+                                  "city": {
+                                    "description": "City of the warehouse address",
+                                    "type": "string"
+                                  },
+                                  "id": {
+                                    "description": "Warehouse Address ID",
+                                    "type": "integer"
+                                  },
+                                  "location": {
+                                    "description": "Location ID for the address",
+                                    "type": "integer"
+                                  },
+                                  "postal_code": {
+                                    "description": "Postal code of the warehouse address",
+                                    "type": "string"
+                                  },
+                                  "province": {
+                                    "description": "Province of the warehouse address",
+                                    "type": "string"
+                                  },
+                                  "subdistrict": {
+                                    "description": "Subdistrict of the warehouse address",
+                                    "type": "string"
+                                  }
+                                },
+                                "title": "WarehouseAddressLocationData",
+                                "type": "object"
+                              }
+                            },
+                            "title": "ForLocationSearchWarehouse",
+                            "type": "object"
+                          },
+                          "warehouse_partner": {
+                            "properties": {
+                              "id": {
+                                "description": "Warehouse Partner ID",
+                                "type": "integer"
+                              },
+                              "ka_origin_id": {
+                                "description": "KA Origin ID",
+                                "type": "string"
+                              },
+                              "lincah_origin_id": {
+                                "description": "Lincah Origin ID",
+                                "type": "string"
+                              },
+                              "mengantar_origin_id": {
+                                "description": "Mengantar Origin ID",
+                                "type": "string"
+                              },
+                              "partner_id": {
+                                "description": "Partner Business ID",
+                                "type": "integer"
+                              }
+                            },
+                            "title": "WarehousePartnerSearchData",
+                            "type": "object"
+                          }
+                        },
+                        "title": "SearchWarehouseResult",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "status": {
+                      "example": "Success",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Warehouses list"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 400,
+                      "type": "integer"
+                    },
+                    "error": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "additionalProperties": true,
+                          "description": "Validation errors from changeset",
+                          "type": "object"
+                        }
+                      ]
+                    },
+                    "status": {
+                      "example": "Bad Request",
+                      "type": "string"
+                    }
+                  },
+                  "title": "BadRequestError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 401,
+                      "type": "integer"
+                    },
+                    "status": {
+                      "example": "Unauthorized",
+                      "type": "string"
+                    }
+                  },
+                  "title": "UnauthorizedError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 403,
+                      "type": "integer"
+                    },
+                    "status": {
+                      "example": "Forbidden",
+                      "type": "string"
+                    }
+                  },
+                  "title": "ForbiddenError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 404,
+                      "type": "integer"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "Not Found",
+                      "type": "string"
+                    }
+                  },
+                  "title": "NotFoundError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "bearerApiKey": [],
+            "oauth2": [
+              "add_order"
+            ]
+          }
+        ],
+        "summary": "Search Warehouses",
+        "tags": [
+          "Shipping Costs"
+        ]
+      }
+    },
     "/v2/stores": {
       "post": {
         "callbacks": {},
