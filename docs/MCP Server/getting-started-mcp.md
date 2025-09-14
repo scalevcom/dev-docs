@@ -46,10 +46,10 @@ Edit your Claude configuration file (`claude_desktop_config.json`):
         "mcp-remote",
         "https://mcp.scalev.id/sse",
         "--header",
-        "Authorization: Bearer ${TOKEN}"
+        "Authorization: Bearer ${ACCESS_TOKEN}"
       ],
       "env": {
-        "TOKEN": "..."
+        "ACCESS_TOKEN": "..."
       }
     }
   }
