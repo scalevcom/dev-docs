@@ -101,8 +101,8 @@ async function queryScalev(prompt: string, allowedTools?: string[]): Promise<str
 
 // Example usage
 const result = await queryScalev(
-  "List my active projects and their budgets",
-  ["list_projects", "get_project_details"]
+  "List my latest 3 orders on Scalev",
+  ["list_order"]
 );
 console.log(result);
 ```
