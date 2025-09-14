@@ -28,24 +28,19 @@ The Scalev MCP server transforms every endpoint from the Scalev OpenAPI specific
 
 ## Key Features
 
-### 1. Automatic Tool Generation
-
-The MCP server reads the Scalev OpenAPI specification and automatically generates corresponding MCP tools. There's no need to manually define or maintain tool definitions.
-
-### 2. Full API Parity
+### 1. Full API Parity
 
 The MCP server provides access to all Scalev REST API operations. Note: For optimal AI agent performance, we recommend whitelisting only the specific tools your application requires, as this helps prevent context overload and ensures more focused, efficient responses from the AI.
 
-### 3. Authentication via API Key or Scalev OAuth 2.1
+### 2. Authentication via API Key or Scalev OAuth 2.1
 
 The MCP server uses the same authentication as the API. Use either API key or access token from OAuth 2.1 flow. No need for separate process.
 
-### 4. Seamless AI Integration
+### 3. Seamless AI Integration
 
 AI assistants can directly:
 
 * Query Scalev resources using natural language
-* Execute complex workflows across multiple endpoints
 * Provide intelligent suggestions based on Scalev data
 * Automate repetitive tasks
 
