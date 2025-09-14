@@ -55,33 +55,3 @@ AI assistants can directly:
 * Use AI assistants to manage Scalev resources through natural conversation
 * Get intelligent insights from Scalev data
 * Automate complex multi-step processes without writing code
-
-## Getting Started
-
-To connect an AI assistant to the Scalev MCP server:
-
-1. **Authenticate**: Either get API key or get access token from your users via OAuth authorization flow.
-2. **Connect**: Configure your AI assistant with the MCP server endpoint.
-3. **Start Using**: The AI assistant can now access all Scalev API endpoints as tools.
-
-## Example Workflow
-
-Here's how an AI assistant might use the MCP server:
-
-```
-User: "Show me my 10 latest orders on Scalev and their current status"
-
-AI Assistant (via MCP):
-1. Calls the /order endpoint tool
-2. Retrieves order details
-3. Formats and presents the information
-
-User: "Update the order status for Order #250101QWERTY to confirmed"
-
-AI Assistant (via MCP):
-1. Calls the /order/{id} endpoint tool with PATCH method
-2. Updates the order status
-3. Confirms the successful update
-```
-
-<br />
