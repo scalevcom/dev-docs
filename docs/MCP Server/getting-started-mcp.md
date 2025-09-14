@@ -12,11 +12,9 @@ This guide will walk you through connecting your AI assistant to the Scalev MCP 
 
 Before you begin, ensure you have:
 
-1. **A Scalev Account** with an active API key
-   * You can obtain your API key from your [Scalev Dashboard](https://app.scalev.id/setting/developers/api-keys)
-2. **An OAuth Access Token**
-   * Follow our [Authorization Guide](https://developers.scalev.id/docs/authorization-mcp) to register a client and obtain an access token
-   * You'll need the `access_token` from the OAuth flow to connect to MCP
+1. **A Scalev Account**
+2. **An OAuth Access Token or API Key**
+   * Follow our guides on authorization, namely <Anchor label="Authorization with OAuth" target="_blank" href="https://developers.scalev.id/docs/authorization">Authorization with OAuth</Anchor> or <Anchor label="Authentication with API Key" target="_blank" href="https://developers.scalev.id/docs/authentication-with-api-key">Authentication with API Key</Anchor>. You can use either of those as bearer token to call the MCP server.
 3. **An MCP-Compatible AI Assistant** such as:
    * Claude Desktop App
    * Custom AI application with MCP client support
@@ -44,7 +42,15 @@ Edit your Claude configuration file (`claude_desktop_config.json`):
   "mcpServers": {
     "scalev": {
       "command": "npx",
-      "args": ["mcp-remote", "https://mcp.scalev.id/sse"]
+      "args": [
+        "mcp-remote",
+        "https://mcp.scalev.id/sse",
+        "--header",
+        "Authorization: Bearer ${TOKEN}"
+      ],
+      "env": {
+        "TOKEN": "..."
+      }
     }
   }
 }
@@ -69,7 +75,7 @@ interface MCPTool {
   require_approval?: "never" | "always" | "auto";
 }
 
-const ACCESS_TOKEN: string = "ACCESS_TOKEN_FROM_OAUTH_FLOW";
+const ACCESS_TOKEN: string = "API_KEY_OR_OAUTH_ACCESS_TOKEN";
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 async function queryScalev(prompt: string, allowedTools?: string[]): Promise<string> {
