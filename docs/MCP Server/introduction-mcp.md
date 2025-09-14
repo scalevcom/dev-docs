@@ -12,8 +12,7 @@ The Model Context Protocol (MCP) server on Scalev provides a seamless bridge bet
 
 MCP (Model Context Protocol) is a protocol that enables AI assistants to interact with external systems through a standardized interface. By connecting to an MCP server, AI assistants gain the ability to:
 
-* Access real-time data from external APIs
-* Execute actions in third-party systems
+* Access real-time data or execute actions on external APIs
 * Maintain context across multiple operations
 * Provide more comprehensive and actionable responses
 
@@ -22,7 +21,6 @@ MCP (Model Context Protocol) is a protocol that enables AI assistants to interac
 The Scalev MCP server transforms every endpoint from the Scalev OpenAPI specification into an MCP-compatible tool. This means:
 
 * **Complete API Coverage**: Every endpoint available in the Scalev API is automatically available as an MCP tool
-* **No Additional Configuration**: The MCP server dynamically generates tool definitions from the OpenAPI spec
 * **Real-time Synchronization**: Any updates to the Scalev API are immediately reflected in the MCP server
 * **Type-safe Operations**: All tools maintain the same request/response schemas as defined in the OpenAPI specification
 
@@ -85,38 +83,5 @@ AI Assistant (via MCP):
 2. Updates the order status
 3. Confirms the successful update
 ```
-
-## Benefits
-
-* **Zero Learning Curve**: If you know the Scalev API, you already know the MCP tools
-* **Consistent Experience**: The same API behavior, just accessed through MCP
-* **Enhanced Productivity**: Let AI handle complex API interactions
-* **Reduced Development Time**: No need to build custom integrations
-
-## Technical Architecture
-
-```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│ AI Assistant│────▶│  MCP Server │────▶│ Scalev API  │
-└─────────────┘     └─────────────┘     └─────────────┘
-                           │
-                           ▼
-                    ┌─────────────┐
-                    │OpenAPI Spec │
-                    └─────────────┘
-```
-
-The MCP server acts as an intelligent middleware that:
-
-1. Receives tool invocation requests from AI assistants
-2. Translates them to appropriate Scalev API calls
-3. Handles authentication and authorization
-4. Returns responses in MCP-compatible format
-
-## Security Considerations
-
-* **Per-User Isolation**: Each user's client registration is isolated
-* **Token-Based Access**: OAuth tokens provide secure, time-limited access
-* **API Key Protection**: API keys are never exposed to the AI assistant directly
 
 <br />
