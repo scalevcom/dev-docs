@@ -42,12 +42,9 @@ Every operation you can perform via the Scalev REST API can be performed through
 * Analytics and reporting
 * All custom endpoints specific to your Scalev implementation
 
-### 3. Authentication via OAuth 2.1
+### 3. Authentication via API Key or Scalev OAuth 2.1
 
-The MCP server uses OAuth 2.1 with dynamic client registration to ensure secure access:
-
-* Each user maintains their own client registration
-* API keys are securely linked to OAuth tokens
+The MCP server uses the same authentication as the API. Use either API key or access token from OAuth 2.1 flow. No need for separate process.
 
 ### 4. Seamless AI Integration
 
