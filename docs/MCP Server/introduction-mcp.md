@@ -34,13 +34,7 @@ The MCP server reads the Scalev OpenAPI specification and automatically generate
 
 ### 2. Full API Parity
 
-Every operation you can perform via the Scalev REST API can be performed through the MCP server:
-
-* Resource creation and management
-* Data retrieval and querying
-* Configuration updates
-* Analytics and reporting
-* All custom endpoints specific to your Scalev implementation
+The MCP server provides access to all Scalev REST API operations. Note: For optimal AI agent performance, we recommend whitelisting only the specific tools your application requires, as this helps prevent context overload and ensures more focused, efficient responses from the AI.
 
 ### 3. Authentication via API Key or Scalev OAuth 2.1
 
@@ -73,10 +67,9 @@ AI assistants can directly:
 
 To connect an AI assistant to the Scalev MCP server:
 
-1. **Register a Client**: Each user needs to register their client via the OAuth 2.1 dynamic registration endpoint
-2. **Authenticate**: Users provide their Scalev API key during the OAuth authorization flow
-3. **Connect**: Configure your AI assistant with the MCP server endpoint
-4. **Start Using**: The AI assistant can now access all Scalev API endpoints as tools
+1. **Authenticate**: Either get API key or get access token from your users via OAuth authorization flow.
+2. **Connect**: Configure your AI assistant with the MCP server endpoint.
+3. **Start Using**: The AI assistant can now access all Scalev API endpoints as tools.
 
 ## Example Workflow
 
