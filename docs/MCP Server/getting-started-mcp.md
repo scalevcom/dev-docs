@@ -144,42 +144,24 @@ Once connected, your AI assistant will have access to all Scalev API endpoints a
 
 For a complete list of all available tools and their parameters, see the [List of Available Tools](https://developers.scalev.id/docs/list-of-available-tools) page or visit the [scalev-mcp npm package documentation](https://www.npmjs.com/package/scalev-mcp).
 
-## Common Use Cases
+## Example Workflow
 
-### 1. Interactive Chat Assistant
+Here's how an AI assistant might use the MCP server:
 
-Configure your AI to answer questions about your Scalev data:
-
-```javascript
-// User: "What's the status of my highest priority tasks?"
-// AI will automatically:
-// 1. Call the tasks endpoint with priority filter
-// 2. Format and present the results
-// 3. Offer follow-up actions
 ```
+User: "Show me my 10 latest orders on Scalev and their current status"
 
-### 2. Automated Workflows
+AI Assistant (via MCP):
+1. Calls the /order endpoint tool
+2. Retrieves order details
+3. Formats and presents the information
 
-Create complex multi-step operations through natural language:
+User: "Update the order status for Order #250101QWERTY to confirmed"
 
-```javascript
-// User: "Create a new project called 'Q1 Campaign' with a $10,000 budget"
-// AI will:
-// 1. Call the create project endpoint
-// 2. Set the budget parameter
-// 3. Confirm creation and return project details
-```
-
-### 3. Data Analysis
-
-Leverage AI to analyze and summarize Scalev data:
-
-```javascript
-// User: "Analyze my project performance over the last quarter"
-// AI will:
-// 1. Fetch project data for the time period
-// 2. Calculate metrics and trends
-// 3. Generate insights and recommendations
+AI Assistant (via MCP):
+1. Calls the /order/{id} endpoint tool with PATCH method
+2. Updates the order status
+3. Confirms the successful update
 ```
 
 ## Troubleshooting
