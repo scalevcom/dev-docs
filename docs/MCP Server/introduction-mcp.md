@@ -32,7 +32,7 @@ The MCP server provides access to all Scalev REST API operations. Note: For opti
 
 ### 2. Authentication via API Key or Scalev OAuth 2.1
 
-The MCP server uses the same authentication as the API. Use either API key or access token from OAuth 2.1 flow. No need for separate process.
+The MCP server uses the same authentication as the API. Use either API key or access token from Scalev OAuth 2.1 flow. No need for separate process.
 
 ### 3. Seamless AI Integration
 
