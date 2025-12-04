@@ -18,7 +18,6 @@
 - scalevapiwebproductcontrollershow_relations
 - scalevapiwebproductcontrollerupdate_sharing
 - scalevapiwebproductcontrollershow_variant
-- scalevapiwebproductcontrollercreate_digital_product_file
 - scalevapiwebproductcontrollerindex_digital_product_files
 - scalevapiwebproductcontrollershow_digital_product_file
 - scalevapiwebproductcontrollerdelete_digital_product_file

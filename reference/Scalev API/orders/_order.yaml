@@ -32,3 +32,8 @@
 - scalevapiwebordercontrollercreate_ssh
 - scalevapiwebordercontrollertrigger_purchase_event
 - scalevapiwebordercontrollerupdate_tags
+- scalevapiweborderviewcontrollerindex_utm_campaigns
+- scalevapiweborderviewcontrollerindex_utm_contents
+- scalevapiweborderviewcontrollerindex_utm_mediums
+- scalevapiweborderviewcontrollerindex_utm_sources
+- scalevapiweborderviewcontrollerindex_utm_terms

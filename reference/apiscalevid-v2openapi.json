@@ -231,6 +231,37 @@
         "title": "MailketingList",
         "type": "object"
       },
+      "CoreBusinessMe": {
+        "properties": {
+          "account_holder": {
+            "description": "Name of the account holder",
+            "type": "string"
+          },
+          "id": {
+            "description": "Business ID",
+            "type": "integer"
+          },
+          "is_banned": {
+            "description": "Is the business banned?",
+            "type": "boolean"
+          },
+          "logo": {
+            "description": "URL to the business logo",
+            "format": "uri",
+            "type": "string"
+          },
+          "unique_id": {
+            "description": "Unique identifier for the business",
+            "type": "string"
+          },
+          "username": {
+            "description": "Username of the business",
+            "type": "string"
+          }
+        },
+        "title": "CoreBusinessMe",
+        "type": "object"
+      },
       "EnabledEpayments": {
         "properties": {
           "payment_methods": {
@@ -238,7 +269,6 @@
             "items": {
               "description": "Order e-payment method",
               "enum": [
-                "gopay",
                 "va",
                 "qris",
                 "card",
@@ -247,7 +277,8 @@
                 "ovo",
                 "dana",
                 "shopeepay",
-                "linkaja"
+                "linkaja",
+                "gopay"
               ],
               "type": "string"
             },
@@ -625,6 +656,11 @@
               "id": {
                 "description": "Variant primary key",
                 "type": "integer"
+              },
+              "image_configs": {
+                "additionalProperties": true,
+                "description": "Objects of config for each image in the same variant",
+                "type": "object"
               },
               "images": {
                 "description": "List of image URLs associated with the variant",
@@ -1242,7 +1278,6 @@
           "payment_method": {
             "description": "Order payment method",
             "enum": [
-              "gopay",
               "va",
               "qris",
               "card",
@@ -1252,6 +1287,7 @@
               "dana",
               "shopeepay",
               "linkaja",
+              "gopay",
               "no_payment",
               "bank_transfer",
               "marketplace",
@@ -1747,7 +1783,6 @@
           "payment_method": {
             "description": "Order payment method",
             "enum": [
-              "gopay",
               "va",
               "qris",
               "card",
@@ -1757,6 +1792,7 @@
               "dana",
               "shopeepay",
               "linkaja",
+              "gopay",
               "no_payment",
               "bank_transfer",
               "marketplace",
@@ -3208,7 +3244,6 @@
             "items": {
               "description": "Order payment method",
               "enum": [
-                "gopay",
                 "va",
                 "qris",
                 "card",
@@ -3218,6 +3253,7 @@
                 "dana",
                 "shopeepay",
                 "linkaja",
+                "gopay",
                 "no_payment",
                 "bank_transfer",
                 "marketplace",
@@ -3758,7 +3794,6 @@
             "items": {
               "description": "Order payment method",
               "enum": [
-                "gopay",
                 "va",
                 "qris",
                 "card",
@@ -3768,6 +3803,7 @@
                 "dana",
                 "shopeepay",
                 "linkaja",
+                "gopay",
                 "no_payment",
                 "bank_transfer",
                 "marketplace",
@@ -4548,7 +4584,6 @@
           "payment_method": {
             "description": "Order payment method",
             "enum": [
-              "gopay",
               "va",
               "qris",
               "card",
@@ -4558,6 +4593,7 @@
               "dana",
               "shopeepay",
               "linkaja",
+              "gopay",
               "no_payment",
               "bank_transfer",
               "marketplace",
@@ -4807,7 +4843,6 @@
           "payment_method": {
             "description": "Order payment method",
             "enum": [
-              "gopay",
               "va",
               "qris",
               "card",
@@ -4817,6 +4852,7 @@
               "dana",
               "shopeepay",
               "linkaja",
+              "gopay",
               "no_payment",
               "bank_transfer",
               "marketplace",
@@ -7361,7 +7397,6 @@
           "payment_method": {
             "description": "Order payment method",
             "enum": [
-              "gopay",
               "va",
               "qris",
               "card",
@@ -7371,6 +7406,7 @@
               "dana",
               "shopeepay",
               "linkaja",
+              "gopay",
               "no_payment",
               "bank_transfer",
               "marketplace",
@@ -7792,6 +7828,11 @@
                     "id": {
                       "description": "Variant primary key",
                       "type": "integer"
+                    },
+                    "image_configs": {
+                      "additionalProperties": true,
+                      "description": "Objects of config for each image in the same variant",
+                      "type": "object"
                     },
                     "images": {
                       "description": "List of image URLs associated with the variant",
@@ -8560,39 +8601,12 @@
                   "description": "Full name of the variant",
                   "type": "string"
                 },
-                "option1_color": {
-                  "description": "Color associated with the first product option",
-                  "type": "string"
-                },
-                "option1_icon_url": {
-                  "description": "Icon URL for the first product option",
-                  "format": "uri",
-                  "type": "string"
-                },
                 "option1_value": {
                   "description": "Value of the first product option",
                   "type": "string"
                 },
-                "option2_color": {
-                  "description": "Color associated with the second product option",
-                  "type": "string"
-                },
-                "option2_icon_url": {
-                  "description": "Icon URL for the second product option",
-                  "format": "uri",
-                  "type": "string"
-                },
                 "option2_value": {
                   "description": "Value of the second product option",
-                  "type": "string"
-                },
-                "option3_color": {
-                  "description": "Color associated with the third product option",
-                  "type": "string"
-                },
-                "option3_icon_url": {
-                  "description": "Icon URL for the third product option",
-                  "format": "uri",
                   "type": "string"
                 },
                 "option3_value": {
@@ -8690,6 +8704,11 @@
           "id": {
             "description": "Variant primary key",
             "type": "integer"
+          },
+          "image_configs": {
+            "additionalProperties": true,
+            "description": "Objects of config for each image in the same variant",
+            "type": "object"
           },
           "images": {
             "description": "List of image URLs associated with the variant",
@@ -10254,6 +10273,10 @@
             ],
             "type": "string"
           },
+          "is_order_hard_filter": {
+            "description": "Is order hard filter enabled?",
+            "type": "boolean"
+          },
           "dynamic_other_income_epayment_default_percentage": {
             "description": "Default percentage for dynamic e-payment income",
             "format": "float",
@@ -10407,39 +10430,12 @@
             "description": "Full name of the variant",
             "type": "string"
           },
-          "option1_color": {
-            "description": "Color associated with the first product option",
-            "type": "string"
-          },
-          "option1_icon_url": {
-            "description": "Icon URL for the first product option",
-            "format": "uri",
-            "type": "string"
-          },
           "option1_value": {
             "description": "Value of the first product option",
             "type": "string"
           },
-          "option2_color": {
-            "description": "Color associated with the second product option",
-            "type": "string"
-          },
-          "option2_icon_url": {
-            "description": "Icon URL for the second product option",
-            "format": "uri",
-            "type": "string"
-          },
           "option2_value": {
             "description": "Value of the second product option",
-            "type": "string"
-          },
-          "option3_color": {
-            "description": "Color associated with the third product option",
-            "type": "string"
-          },
-          "option3_icon_url": {
-            "description": "Icon URL for the third product option",
-            "format": "uri",
             "type": "string"
           },
           "option3_value": {
@@ -11151,7 +11147,6 @@
             "items": {
               "description": "Order payment method",
               "enum": [
-                "gopay",
                 "va",
                 "qris",
                 "card",
@@ -11161,6 +11156,7 @@
                 "dana",
                 "shopeepay",
                 "linkaja",
+                "gopay",
                 "no_payment",
                 "bank_transfer",
                 "marketplace",
@@ -11704,39 +11700,12 @@
                         "description": "Full name of the variant",
                         "type": "string"
                       },
-                      "option1_color": {
-                        "description": "Color associated with the first product option",
-                        "type": "string"
-                      },
-                      "option1_icon_url": {
-                        "description": "Icon URL for the first product option",
-                        "format": "uri",
-                        "type": "string"
-                      },
                       "option1_value": {
                         "description": "Value of the first product option",
                         "type": "string"
                       },
-                      "option2_color": {
-                        "description": "Color associated with the second product option",
-                        "type": "string"
-                      },
-                      "option2_icon_url": {
-                        "description": "Icon URL for the second product option",
-                        "format": "uri",
-                        "type": "string"
-                      },
                       "option2_value": {
                         "description": "Value of the second product option",
-                        "type": "string"
-                      },
-                      "option3_color": {
-                        "description": "Color associated with the third product option",
-                        "type": "string"
-                      },
-                      "option3_icon_url": {
-                        "description": "Icon URL for the third product option",
-                        "format": "uri",
                         "type": "string"
                       },
                       "option3_value": {
@@ -12019,6 +11988,10 @@
           "digital_only_complete_type": {
             "description": "Digital only complete type",
             "type": "string"
+          },
+          "is_order_hard_filter": {
+            "description": "Is order hard filter enabled?",
+            "type": "boolean"
           },
           "is_active": {
             "description": "Is the store active?",
@@ -12729,7 +12702,6 @@
           "payment_method": {
             "description": "Order payment method",
             "enum": [
-              "gopay",
               "va",
               "qris",
               "card",
@@ -12739,6 +12711,7 @@
               "dana",
               "shopeepay",
               "linkaja",
+              "gopay",
               "no_payment",
               "bank_transfer",
               "marketplace",
@@ -14267,7 +14240,6 @@
           "payment_method": {
             "description": "Order payment method",
             "enum": [
-              "gopay",
               "va",
               "qris",
               "card",
@@ -14277,6 +14249,7 @@
               "dana",
               "shopeepay",
               "linkaja",
+              "gopay",
               "no_payment",
               "bank_transfer",
               "marketplace",
@@ -15529,55 +15502,16 @@
             "description": "Cost of Goods Sold",
             "type": "number"
           },
-          "price_bt": {
-            "description": "Price Before Tax",
+          "cogs_bt": {
+            "description": "Cost of Goods Sold Before Tax",
             "type": "number"
           },
-          "option1_value": {
-            "description": "Option 1 Value",
+          "created_at": {
+            "format": "date-time",
             "type": "string"
           },
-          "option3_icon_url": {
-            "description": "Icon URL for the third product option",
-            "format": "uri",
-            "type": "string"
-          },
-          "option1_icon_url": {
-            "description": "Icon URL for the first product option",
-            "format": "uri",
-            "type": "string"
-          },
-          "reseller_price_bt": {
-            "description": "Reseller Price Before Tax",
-            "type": "number"
-          },
-          "option2_value": {
-            "description": "Option 2 Value",
-            "type": "string"
-          },
-          "reseller_price": {
-            "description": "Reseller Price",
-            "type": "number"
-          },
-          "fullname": {
-            "description": "Variant Fullname",
-            "type": "string"
-          },
-          "uuid": {
-            "description": "Variant UUID",
-            "type": "string"
-          },
-          "rich_description": {
-            "description": "Variant Rich Description",
-            "type": "string"
-          },
-          "option2_icon_url": {
-            "description": "Icon URL for the second product option",
-            "format": "uri",
-            "type": "string"
-          },
-          "sku": {
-            "description": "SKU",
+          "description": {
+            "description": "Variant Description",
             "type": "string"
           },
           "digital_product_files": {
@@ -15610,9 +15544,86 @@
             },
             "type": "array"
           },
-          "product_name": {
-            "description": "Product Name",
+          "form_displays": {
+            "items": {
+              "properties": {
+                "id": {
+                  "description": "Form Display ID",
+                  "type": "integer"
+                },
+                "page_display": {
+                  "properties": {
+                    "id": {
+                      "description": "Page Display ID",
+                      "type": "integer"
+                    },
+                    "page": {
+                      "properties": {
+                        "id": {
+                          "description": "Page ID",
+                          "type": "integer"
+                        },
+                        "is_published": {
+                          "description": "Is the page published?",
+                          "type": "boolean"
+                        },
+                        "name": {
+                          "description": "Name of the page",
+                          "type": "string"
+                        },
+                        "published_at": {
+                          "description": "Publication date of the page",
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "slug": {
+                          "description": "Slug for the page URL",
+                          "type": "string"
+                        },
+                        "store_id": {
+                          "description": "ID of the store the page belongs to",
+                          "type": "integer"
+                        },
+                        "unique_id": {
+                          "description": "Unique identifier for the page",
+                          "type": "string"
+                        }
+                      },
+                      "title": "PageSimple",
+                      "type": "object"
+                    }
+                  },
+                  "title": "ForProductPageDisplay",
+                  "type": "object"
+                }
+              },
+              "title": "ForProductFormDisplay",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "fullname": {
+            "description": "Variant Fullname",
             "type": "string"
+          },
+          "id": {
+            "description": "Variant ID",
+            "type": "integer"
+          },
+          "images": {
+            "items": {
+              "format": "uri",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "is_checked": {
+            "description": "Mark variant as sellable",
+            "type": "boolean"
+          },
+          "is_editable": {
+            "description": "Is Editable",
+            "type": "boolean"
           },
           "item_type": {
             "description": "Type of the product item",
@@ -15622,6 +15633,73 @@
               "course"
             ],
             "title": "ItemType",
+            "type": "string"
+          },
+          "last_updated_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "metadata": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "name": {
+            "description": "Variant Name",
+            "type": "string"
+          },
+          "option1_value": {
+            "description": "Option 1 Value",
+            "type": "string"
+          },
+          "option2_value": {
+            "description": "Option 2 Value",
+            "type": "string"
+          },
+          "option3_value": {
+            "description": "Option 3 Value",
+            "type": "string"
+          },
+          "price": {
+            "description": "Price",
+            "type": "number"
+          },
+          "price_bt": {
+            "description": "Price Before Tax",
+            "type": "number"
+          },
+          "product_id": {
+            "description": "Product ID",
+            "type": "integer"
+          },
+          "product_name": {
+            "description": "Product Name",
+            "type": "string"
+          },
+          "reseller_price": {
+            "description": "Reseller Price",
+            "type": "number"
+          },
+          "reseller_price_bt": {
+            "description": "Reseller Price Before Tax",
+            "type": "number"
+          },
+          "rich_description": {
+            "description": "Variant Rich Description",
+            "type": "string"
+          },
+          "self_file_urls": {
+            "items": {
+              "format": "uri",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "sku": {
+            "description": "SKU",
+            "type": "string"
+          },
+          "unique_id": {
+            "description": "Variant Unique ID",
             "type": "string"
           },
           "upsell_form_displays": {
@@ -15682,145 +15760,13 @@
             },
             "type": "array"
           },
-          "description": {
-            "description": "Variant Description",
+          "uuid": {
+            "description": "Variant UUID",
             "type": "string"
-          },
-          "self_file_urls": {
-            "items": {
-              "format": "uri",
-              "type": "string"
-            },
-            "type": "array"
-          },
-          "name": {
-            "description": "Variant Name",
-            "type": "string"
-          },
-          "id": {
-            "description": "Variant ID",
-            "type": "integer"
-          },
-          "option3_color": {
-            "description": "Color associated with the third product option",
-            "type": "string"
-          },
-          "unique_id": {
-            "description": "Variant Unique ID",
-            "type": "string"
-          },
-          "cogs_bt": {
-            "description": "Cost of Goods Sold Before Tax",
-            "type": "number"
-          },
-          "option2_color": {
-            "description": "Color associated with the second product option",
-            "type": "string"
-          },
-          "price": {
-            "description": "Price",
-            "type": "number"
-          },
-          "images": {
-            "items": {
-              "format": "uri",
-              "type": "string"
-            },
-            "type": "array"
           },
           "weight": {
             "description": "Weight",
             "type": "integer"
-          },
-          "form_displays": {
-            "items": {
-              "properties": {
-                "id": {
-                  "description": "Form Display ID",
-                  "type": "integer"
-                },
-                "page_display": {
-                  "properties": {
-                    "id": {
-                      "description": "Page Display ID",
-                      "type": "integer"
-                    },
-                    "page": {
-                      "properties": {
-                        "id": {
-                          "description": "Page ID",
-                          "type": "integer"
-                        },
-                        "is_published": {
-                          "description": "Is the page published?",
-                          "type": "boolean"
-                        },
-                        "name": {
-                          "description": "Name of the page",
-                          "type": "string"
-                        },
-                        "published_at": {
-                          "description": "Publication date of the page",
-                          "format": "date-time",
-                          "type": "string"
-                        },
-                        "slug": {
-                          "description": "Slug for the page URL",
-                          "type": "string"
-                        },
-                        "store_id": {
-                          "description": "ID of the store the page belongs to",
-                          "type": "integer"
-                        },
-                        "unique_id": {
-                          "description": "Unique identifier for the page",
-                          "type": "string"
-                        }
-                      },
-                      "title": "PageSimple",
-                      "type": "object"
-                    }
-                  },
-                  "title": "ForProductPageDisplay",
-                  "type": "object"
-                }
-              },
-              "title": "ForProductFormDisplay",
-              "type": "object"
-            },
-            "type": "array"
-          },
-          "is_checked": {
-            "description": "Mark variant as sellable",
-            "type": "boolean"
-          },
-          "option1_color": {
-            "description": "Color associated with the first product option",
-            "type": "string"
-          },
-          "last_updated_at": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "product_id": {
-            "description": "Product ID",
-            "type": "integer"
-          },
-          "option3_value": {
-            "description": "Option 3 Value",
-            "type": "string"
-          },
-          "metadata": {
-            "additionalProperties": true,
-            "type": "object"
-          },
-          "created_at": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "is_editable": {
-            "description": "Is Editable",
-            "type": "boolean"
           }
         },
         "title": "ProductVariant",
@@ -16582,6 +16528,11 @@
                                   "id": {
                                     "description": "Variant primary key",
                                     "type": "integer"
+                                  },
+                                  "image_configs": {
+                                    "additionalProperties": true,
+                                    "description": "Objects of config for each image in the same variant",
+                                    "type": "object"
                                   },
                                   "images": {
                                     "description": "List of image URLs associated with the variant",
@@ -22154,6 +22105,11 @@
                                     "description": "Variant primary key",
                                     "type": "integer"
                                   },
+                                  "image_configs": {
+                                    "additionalProperties": true,
+                                    "description": "Objects of config for each image in the same variant",
+                                    "type": "object"
+                                  },
                                   "images": {
                                     "description": "List of image URLs associated with the variant",
                                     "items": {
@@ -22950,6 +22906,11 @@
                                   "id": {
                                     "description": "Variant primary key",
                                     "type": "integer"
+                                  },
+                                  "image_configs": {
+                                    "additionalProperties": true,
+                                    "description": "Objects of config for each image in the same variant",
+                                    "type": "object"
                                   },
                                   "images": {
                                     "description": "List of image URLs associated with the variant",
@@ -23819,6 +23780,11 @@
                                     "description": "Variant primary key",
                                     "type": "integer"
                                   },
+                                  "image_configs": {
+                                    "additionalProperties": true,
+                                    "description": "Objects of config for each image in the same variant",
+                                    "type": "object"
+                                  },
                                   "images": {
                                     "description": "List of image URLs associated with the variant",
                                     "items": {
@@ -24476,7 +24442,7 @@
       "get": {
         "callbacks": {},
         "description": "Fetches the list of enabled e-payment methods for a specified business.",
-        "operationId": "ScalevApiWeb.BusinessGlobalController.get_enabled_epayments",
+        "operationId": "ScalevApiWeb.BusinessGlobalController.get_enabled_payments (2)",
         "parameters": [],
         "responses": {
           "200": {
@@ -24495,7 +24461,6 @@
                           "items": {
                             "description": "Order e-payment method",
                             "enum": [
-                              "gopay",
                               "va",
                               "qris",
                               "card",
@@ -24504,7 +24469,8 @@
                               "ovo",
                               "dana",
                               "shopeepay",
-                              "linkaja"
+                              "linkaja",
+                              "gopay"
                             ],
                             "type": "string"
                           },
@@ -24654,6 +24620,363 @@
           }
         ],
         "summary": "Get enabled e-payments for a business",
+        "tags": [
+          "Businesses"
+        ]
+      }
+    },
+    "/v2/businesses/enabled-payments": {
+      "get": {
+        "callbacks": {},
+        "description": "Fetches the list of enabled e-payment methods for a specified business.",
+        "operationId": "ScalevApiWeb.BusinessGlobalController.get_enabled_payments",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 200,
+                      "type": "integer"
+                    },
+                    "data": {
+                      "properties": {
+                        "payment_methods": {
+                          "description": "List of enabled payment methods",
+                          "items": {
+                            "description": "Order e-payment method",
+                            "enum": [
+                              "va",
+                              "qris",
+                              "card",
+                              "invoice",
+                              "alfamart",
+                              "ovo",
+                              "dana",
+                              "shopeepay",
+                              "linkaja",
+                              "gopay"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "vas": {
+                          "description": "List of enabled bank virtual accounts",
+                          "items": {
+                            "description": "Xendit VA bank code",
+                            "enum": [
+                              "BCA",
+                              "BNI",
+                              "BRI",
+                              "MANDIRI",
+                              "PERMATA",
+                              "BSI",
+                              "BJB",
+                              "CIMB",
+                              "SAHABAT_SAMPOERNA",
+                              "ARTAJASA"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
+                        }
+                      },
+                      "title": "EnabledEpayments",
+                      "type": "object"
+                    },
+                    "status": {
+                      "example": "Success",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Enabled E-Payments"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 400,
+                      "type": "integer"
+                    },
+                    "error": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "additionalProperties": true,
+                          "description": "Validation errors from changeset",
+                          "type": "object"
+                        }
+                      ]
+                    },
+                    "status": {
+                      "example": "Bad Request",
+                      "type": "string"
+                    }
+                  },
+                  "title": "BadRequestError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 401,
+                      "type": "integer"
+                    },
+                    "status": {
+                      "example": "Unauthorized",
+                      "type": "string"
+                    }
+                  },
+                  "title": "UnauthorizedError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 403,
+                      "type": "integer"
+                    },
+                    "status": {
+                      "example": "Forbidden",
+                      "type": "string"
+                    }
+                  },
+                  "title": "ForbiddenError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 404,
+                      "type": "integer"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "Not Found",
+                      "type": "string"
+                    }
+                  },
+                  "title": "NotFoundError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "bearerApiKey": [],
+            "oauth2": [
+              "view_order_statistics"
+            ]
+          }
+        ],
+        "summary": "Get enabled e-payments for a business",
+        "tags": [
+          "Businesses"
+        ]
+      }
+    },
+    "/v2/businesses/me": {
+      "get": {
+        "callbacks": {},
+        "description": "Retrieve information about the business associated with the authenticated user.",
+        "operationId": "ScalevApiWeb.CoreBusinessController.show",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 200,
+                      "type": "integer"
+                    },
+                    "data": {
+                      "properties": {
+                        "account_holder": {
+                          "description": "Name of the account holder",
+                          "type": "string"
+                        },
+                        "id": {
+                          "description": "Business ID",
+                          "type": "integer"
+                        },
+                        "is_banned": {
+                          "description": "Is the business banned?",
+                          "type": "boolean"
+                        },
+                        "logo": {
+                          "description": "URL to the business logo",
+                          "format": "uri",
+                          "type": "string"
+                        },
+                        "unique_id": {
+                          "description": "Unique identifier for the business",
+                          "type": "string"
+                        },
+                        "username": {
+                          "description": "Username of the business",
+                          "type": "string"
+                        }
+                      },
+                      "title": "CoreBusinessMe",
+                      "type": "object"
+                    },
+                    "status": {
+                      "example": "Success",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Business information"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 400,
+                      "type": "integer"
+                    },
+                    "error": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "additionalProperties": true,
+                          "description": "Validation errors from changeset",
+                          "type": "object"
+                        }
+                      ]
+                    },
+                    "status": {
+                      "example": "Bad Request",
+                      "type": "string"
+                    }
+                  },
+                  "title": "BadRequestError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 401,
+                      "type": "integer"
+                    },
+                    "status": {
+                      "example": "Unauthorized",
+                      "type": "string"
+                    }
+                  },
+                  "title": "UnauthorizedError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 403,
+                      "type": "integer"
+                    },
+                    "status": {
+                      "example": "Forbidden",
+                      "type": "string"
+                    }
+                  },
+                  "title": "ForbiddenError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 404,
+                      "type": "integer"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "Not Found",
+                      "type": "string"
+                    }
+                  },
+                  "title": "NotFoundError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "bearerApiKey": [],
+            "oauth2": []
+          }
+        ],
+        "summary": "Get business information",
         "tags": [
           "Businesses"
         ]
@@ -25070,7 +25393,6 @@
                   "payment_method": {
                     "description": "Order payment method",
                     "enum": [
-                      "gopay",
                       "va",
                       "qris",
                       "card",
@@ -25080,6 +25402,7 @@
                       "dana",
                       "shopeepay",
                       "linkaja",
+                      "gopay",
                       "no_payment",
                       "bank_transfer",
                       "marketplace",
@@ -25606,7 +25929,6 @@
                         "payment_method": {
                           "description": "Order payment method",
                           "enum": [
-                            "gopay",
                             "va",
                             "qris",
                             "card",
@@ -25616,6 +25938,7 @@
                             "dana",
                             "shopeepay",
                             "linkaja",
+                            "gopay",
                             "no_payment",
                             "bank_transfer",
                             "marketplace",
@@ -27694,7 +28017,6 @@
                               "payment_method": {
                                 "description": "Order payment method",
                                 "enum": [
-                                  "gopay",
                                   "va",
                                   "qris",
                                   "card",
@@ -27704,6 +28026,7 @@
                                   "dana",
                                   "shopeepay",
                                   "linkaja",
+                                  "gopay",
                                   "no_payment",
                                   "bank_transfer",
                                   "marketplace",
@@ -28779,7 +29102,6 @@
                   "payment_method": {
                     "description": "Order payment method",
                     "enum": [
-                      "gopay",
                       "va",
                       "qris",
                       "card",
@@ -28789,6 +29111,7 @@
                       "dana",
                       "shopeepay",
                       "linkaja",
+                      "gopay",
                       "no_payment",
                       "bank_transfer",
                       "marketplace",
@@ -30674,6 +30997,847 @@
         ]
       }
     },
+    "/v2/order/utm-campaigns": {
+      "get": {
+        "callbacks": {},
+        "description": "Retrieve a list of unique UTM campaign values from orders.",
+        "operationId": "ScalevApiWeb.OrderViewController.index_utm_campaigns",
+        "parameters": [
+          {
+            "description": "Search term to filter UTM campaigns",
+            "in": "query",
+            "name": "search",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 200,
+                      "type": "integer"
+                    },
+                    "data": {
+                      "properties": {
+                        "data": {
+                          "example": [
+                            "summer_sale",
+                            "black_friday",
+                            "new_product_launch",
+                            "brand_awareness"
+                          ],
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "status": {
+                      "example": "Success",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unique UTM campaigns list"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 400,
+                      "type": "integer"
+                    },
+                    "error": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "additionalProperties": true,
+                          "description": "Validation errors from changeset",
+                          "type": "object"
+                        }
+                      ]
+                    },
+                    "status": {
+                      "example": "Bad Request",
+                      "type": "string"
+                    }
+                  },
+                  "title": "BadRequestError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 401,
+                      "type": "integer"
+                    },
+                    "status": {
+                      "example": "Unauthorized",
+                      "type": "string"
+                    }
+                  },
+                  "title": "UnauthorizedError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 403,
+                      "type": "integer"
+                    },
+                    "status": {
+                      "example": "Forbidden",
+                      "type": "string"
+                    }
+                  },
+                  "title": "ForbiddenError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 404,
+                      "type": "integer"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "Not Found",
+                      "type": "string"
+                    }
+                  },
+                  "title": "NotFoundError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "bearerApiKey": [],
+            "oauth2": [
+              "view_order"
+            ]
+          }
+        ],
+        "summary": "List unique UTM campaigns",
+        "tags": [
+          "Orders"
+        ]
+      }
+    },
+    "/v2/order/utm-contents": {
+      "get": {
+        "callbacks": {},
+        "description": "Retrieve a list of unique UTM content values from orders.",
+        "operationId": "ScalevApiWeb.OrderViewController.index_utm_contents",
+        "parameters": [
+          {
+            "description": "Search term to filter UTM contents",
+            "in": "query",
+            "name": "search",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 200,
+                      "type": "integer"
+                    },
+                    "data": {
+                      "properties": {
+                        "data": {
+                          "example": [
+                            "banner_top",
+                            "sidebar_ad",
+                            "footer_link",
+                            "hero_image"
+                          ],
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "status": {
+                      "example": "Success",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unique UTM contents list"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 400,
+                      "type": "integer"
+                    },
+                    "error": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "additionalProperties": true,
+                          "description": "Validation errors from changeset",
+                          "type": "object"
+                        }
+                      ]
+                    },
+                    "status": {
+                      "example": "Bad Request",
+                      "type": "string"
+                    }
+                  },
+                  "title": "BadRequestError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 401,
+                      "type": "integer"
+                    },
+                    "status": {
+                      "example": "Unauthorized",
+                      "type": "string"
+                    }
+                  },
+                  "title": "UnauthorizedError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 403,
+                      "type": "integer"
+                    },
+                    "status": {
+                      "example": "Forbidden",
+                      "type": "string"
+                    }
+                  },
+                  "title": "ForbiddenError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 404,
+                      "type": "integer"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "Not Found",
+                      "type": "string"
+                    }
+                  },
+                  "title": "NotFoundError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "bearerApiKey": [],
+            "oauth2": [
+              "view_order"
+            ]
+          }
+        ],
+        "summary": "List unique UTM contents",
+        "tags": [
+          "Orders"
+        ]
+      }
+    },
+    "/v2/order/utm-mediums": {
+      "get": {
+        "callbacks": {},
+        "description": "Retrieve a list of unique UTM medium values from orders.",
+        "operationId": "ScalevApiWeb.OrderViewController.index_utm_mediums",
+        "parameters": [
+          {
+            "description": "Search term to filter UTM mediums",
+            "in": "query",
+            "name": "search",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 200,
+                      "type": "integer"
+                    },
+                    "data": {
+                      "properties": {
+                        "data": {
+                          "example": [
+                            "cpc",
+                            "organic",
+                            "social",
+                            "email",
+                            "referral"
+                          ],
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "status": {
+                      "example": "Success",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unique UTM mediums list"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 400,
+                      "type": "integer"
+                    },
+                    "error": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "additionalProperties": true,
+                          "description": "Validation errors from changeset",
+                          "type": "object"
+                        }
+                      ]
+                    },
+                    "status": {
+                      "example": "Bad Request",
+                      "type": "string"
+                    }
+                  },
+                  "title": "BadRequestError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 401,
+                      "type": "integer"
+                    },
+                    "status": {
+                      "example": "Unauthorized",
+                      "type": "string"
+                    }
+                  },
+                  "title": "UnauthorizedError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 403,
+                      "type": "integer"
+                    },
+                    "status": {
+                      "example": "Forbidden",
+                      "type": "string"
+                    }
+                  },
+                  "title": "ForbiddenError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 404,
+                      "type": "integer"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "Not Found",
+                      "type": "string"
+                    }
+                  },
+                  "title": "NotFoundError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "bearerApiKey": [],
+            "oauth2": [
+              "view_order"
+            ]
+          }
+        ],
+        "summary": "List unique UTM mediums",
+        "tags": [
+          "Orders"
+        ]
+      }
+    },
+    "/v2/order/utm-sources": {
+      "get": {
+        "callbacks": {},
+        "description": "Retrieve a list of unique UTM source values from orders.",
+        "operationId": "ScalevApiWeb.OrderViewController.index_utm_sources",
+        "parameters": [
+          {
+            "description": "Search term to filter UTM sources",
+            "in": "query",
+            "name": "search",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 200,
+                      "type": "integer"
+                    },
+                    "data": {
+                      "properties": {
+                        "data": {
+                          "example": [
+                            "google",
+                            "facebook",
+                            "instagram",
+                            "email"
+                          ],
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "status": {
+                      "example": "Success",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unique UTM sources list"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 400,
+                      "type": "integer"
+                    },
+                    "error": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "additionalProperties": true,
+                          "description": "Validation errors from changeset",
+                          "type": "object"
+                        }
+                      ]
+                    },
+                    "status": {
+                      "example": "Bad Request",
+                      "type": "string"
+                    }
+                  },
+                  "title": "BadRequestError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 401,
+                      "type": "integer"
+                    },
+                    "status": {
+                      "example": "Unauthorized",
+                      "type": "string"
+                    }
+                  },
+                  "title": "UnauthorizedError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 403,
+                      "type": "integer"
+                    },
+                    "status": {
+                      "example": "Forbidden",
+                      "type": "string"
+                    }
+                  },
+                  "title": "ForbiddenError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 404,
+                      "type": "integer"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "Not Found",
+                      "type": "string"
+                    }
+                  },
+                  "title": "NotFoundError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "bearerApiKey": [],
+            "oauth2": [
+              "view_order"
+            ]
+          }
+        ],
+        "summary": "List unique UTM sources",
+        "tags": [
+          "Orders"
+        ]
+      }
+    },
+    "/v2/order/utm-terms": {
+      "get": {
+        "callbacks": {},
+        "description": "Retrieve a list of unique UTM term values from orders.",
+        "operationId": "ScalevApiWeb.OrderViewController.index_utm_terms",
+        "parameters": [
+          {
+            "description": "Search term to filter UTM terms",
+            "in": "query",
+            "name": "search",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 200,
+                      "type": "integer"
+                    },
+                    "data": {
+                      "properties": {
+                        "data": {
+                          "example": [
+                            "running_shoes",
+                            "winter_jacket",
+                            "laptop",
+                            "smartphone"
+                          ],
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "status": {
+                      "example": "Success",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unique UTM terms list"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 400,
+                      "type": "integer"
+                    },
+                    "error": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "additionalProperties": true,
+                          "description": "Validation errors from changeset",
+                          "type": "object"
+                        }
+                      ]
+                    },
+                    "status": {
+                      "example": "Bad Request",
+                      "type": "string"
+                    }
+                  },
+                  "title": "BadRequestError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 401,
+                      "type": "integer"
+                    },
+                    "status": {
+                      "example": "Unauthorized",
+                      "type": "string"
+                    }
+                  },
+                  "title": "UnauthorizedError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 403,
+                      "type": "integer"
+                    },
+                    "status": {
+                      "example": "Forbidden",
+                      "type": "string"
+                    }
+                  },
+                  "title": "ForbiddenError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 404,
+                      "type": "integer"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "Not Found",
+                      "type": "string"
+                    }
+                  },
+                  "title": "NotFoundError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "bearerApiKey": [],
+            "oauth2": [
+              "view_order"
+            ]
+          }
+        ],
+        "summary": "List unique UTM terms",
+        "tags": [
+          "Orders"
+        ]
+      }
+    },
     "/v2/order/{id}": {
       "get": {
         "callbacks": {},
@@ -31142,7 +32306,6 @@
                         "payment_method": {
                           "description": "Order payment method",
                           "enum": [
-                            "gopay",
                             "va",
                             "qris",
                             "card",
@@ -31152,6 +32315,7 @@
                             "dana",
                             "shopeepay",
                             "linkaja",
+                            "gopay",
                             "no_payment",
                             "bank_transfer",
                             "marketplace",
@@ -32747,7 +33911,6 @@
                   "payment_method": {
                     "description": "Order payment method",
                     "enum": [
-                      "gopay",
                       "va",
                       "qris",
                       "card",
@@ -32757,6 +33920,7 @@
                       "dana",
                       "shopeepay",
                       "linkaja",
+                      "gopay",
                       "no_payment",
                       "bank_transfer",
                       "marketplace",
@@ -33275,7 +34439,6 @@
                         "payment_method": {
                           "description": "Order payment method",
                           "enum": [
-                            "gopay",
                             "va",
                             "qris",
                             "card",
@@ -33285,6 +34448,7 @@
                             "dana",
                             "shopeepay",
                             "linkaja",
+                            "gopay",
                             "no_payment",
                             "bank_transfer",
                             "marketplace",
@@ -35858,7 +37022,6 @@
                         "payment_method": {
                           "description": "Order payment method",
                           "enum": [
-                            "gopay",
                             "va",
                             "qris",
                             "card",
@@ -35868,6 +37031,7 @@
                             "dana",
                             "shopeepay",
                             "linkaja",
+                            "gopay",
                             "no_payment",
                             "bank_transfer",
                             "marketplace",
@@ -37794,7 +38958,6 @@
                         "payment_method": {
                           "description": "Order payment method",
                           "enum": [
-                            "gopay",
                             "va",
                             "qris",
                             "card",
@@ -37804,6 +38967,7 @@
                             "dana",
                             "shopeepay",
                             "linkaja",
+                            "gopay",
                             "no_payment",
                             "bank_transfer",
                             "marketplace",
@@ -39750,7 +40914,6 @@
                         "payment_method": {
                           "description": "Order payment method",
                           "enum": [
-                            "gopay",
                             "va",
                             "qris",
                             "card",
@@ -39760,6 +40923,7 @@
                             "dana",
                             "shopeepay",
                             "linkaja",
+                            "gopay",
                             "no_payment",
                             "bank_transfer",
                             "marketplace",
@@ -41259,7 +42423,6 @@
                   "payment_method": {
                     "description": "Order payment method",
                     "enum": [
-                      "gopay",
                       "va",
                       "qris",
                       "card",
@@ -41269,6 +42432,7 @@
                       "dana",
                       "shopeepay",
                       "linkaja",
+                      "gopay",
                       "no_payment",
                       "bank_transfer",
                       "marketplace",
@@ -41753,7 +42917,6 @@
                         "payment_method": {
                           "description": "Order payment method",
                           "enum": [
-                            "gopay",
                             "va",
                             "qris",
                             "card",
@@ -41763,6 +42926,7 @@
                             "dana",
                             "shopeepay",
                             "linkaja",
+                            "gopay",
                             "no_payment",
                             "bank_transfer",
                             "marketplace",
@@ -44805,7 +45969,6 @@
                         "payment_method": {
                           "description": "Order payment method",
                           "enum": [
-                            "gopay",
                             "va",
                             "qris",
                             "card",
@@ -44815,6 +45978,7 @@
                             "dana",
                             "shopeepay",
                             "linkaja",
+                            "gopay",
                             "no_payment",
                             "bank_transfer",
                             "marketplace",
@@ -46974,7 +48138,6 @@
                         "payment_method": {
                           "description": "Order payment method",
                           "enum": [
-                            "gopay",
                             "va",
                             "qris",
                             "card",
@@ -46984,6 +48147,7 @@
                             "dana",
                             "shopeepay",
                             "linkaja",
+                            "gopay",
                             "no_payment",
                             "bank_transfer",
                             "marketplace",
@@ -49060,7 +50224,6 @@
                         "payment_method": {
                           "description": "Order payment method",
                           "enum": [
-                            "gopay",
                             "va",
                             "qris",
                             "card",
@@ -49070,6 +50233,7 @@
                             "dana",
                             "shopeepay",
                             "linkaja",
+                            "gopay",
                             "no_payment",
                             "bank_transfer",
                             "marketplace",
@@ -51483,55 +52647,16 @@
                                 "description": "Cost of Goods Sold",
                                 "type": "number"
                               },
-                              "price_bt": {
-                                "description": "Price Before Tax",
+                              "cogs_bt": {
+                                "description": "Cost of Goods Sold Before Tax",
                                 "type": "number"
                               },
-                              "option1_value": {
-                                "description": "Option 1 Value",
+                              "created_at": {
+                                "format": "date-time",
                                 "type": "string"
                               },
-                              "option3_icon_url": {
-                                "description": "Icon URL for the third product option",
-                                "format": "uri",
-                                "type": "string"
-                              },
-                              "option1_icon_url": {
-                                "description": "Icon URL for the first product option",
-                                "format": "uri",
-                                "type": "string"
-                              },
-                              "reseller_price_bt": {
-                                "description": "Reseller Price Before Tax",
-                                "type": "number"
-                              },
-                              "option2_value": {
-                                "description": "Option 2 Value",
-                                "type": "string"
-                              },
-                              "reseller_price": {
-                                "description": "Reseller Price",
-                                "type": "number"
-                              },
-                              "fullname": {
-                                "description": "Variant Fullname",
-                                "type": "string"
-                              },
-                              "uuid": {
-                                "description": "Variant UUID",
-                                "type": "string"
-                              },
-                              "rich_description": {
-                                "description": "Variant Rich Description",
-                                "type": "string"
-                              },
-                              "option2_icon_url": {
-                                "description": "Icon URL for the second product option",
-                                "format": "uri",
-                                "type": "string"
-                              },
-                              "sku": {
-                                "description": "SKU",
+                              "description": {
+                                "description": "Variant Description",
                                 "type": "string"
                               },
                               "digital_product_files": {
@@ -51564,9 +52689,86 @@
                                 },
                                 "type": "array"
                               },
-                              "product_name": {
-                                "description": "Product Name",
+                              "form_displays": {
+                                "items": {
+                                  "properties": {
+                                    "id": {
+                                      "description": "Form Display ID",
+                                      "type": "integer"
+                                    },
+                                    "page_display": {
+                                      "properties": {
+                                        "id": {
+                                          "description": "Page Display ID",
+                                          "type": "integer"
+                                        },
+                                        "page": {
+                                          "properties": {
+                                            "id": {
+                                              "description": "Page ID",
+                                              "type": "integer"
+                                            },
+                                            "is_published": {
+                                              "description": "Is the page published?",
+                                              "type": "boolean"
+                                            },
+                                            "name": {
+                                              "description": "Name of the page",
+                                              "type": "string"
+                                            },
+                                            "published_at": {
+                                              "description": "Publication date of the page",
+                                              "format": "date-time",
+                                              "type": "string"
+                                            },
+                                            "slug": {
+                                              "description": "Slug for the page URL",
+                                              "type": "string"
+                                            },
+                                            "store_id": {
+                                              "description": "ID of the store the page belongs to",
+                                              "type": "integer"
+                                            },
+                                            "unique_id": {
+                                              "description": "Unique identifier for the page",
+                                              "type": "string"
+                                            }
+                                          },
+                                          "title": "PageSimple",
+                                          "type": "object"
+                                        }
+                                      },
+                                      "title": "ForProductPageDisplay",
+                                      "type": "object"
+                                    }
+                                  },
+                                  "title": "ForProductFormDisplay",
+                                  "type": "object"
+                                },
+                                "type": "array"
+                              },
+                              "fullname": {
+                                "description": "Variant Fullname",
                                 "type": "string"
+                              },
+                              "id": {
+                                "description": "Variant ID",
+                                "type": "integer"
+                              },
+                              "images": {
+                                "items": {
+                                  "format": "uri",
+                                  "type": "string"
+                                },
+                                "type": "array"
+                              },
+                              "is_checked": {
+                                "description": "Mark variant as sellable",
+                                "type": "boolean"
+                              },
+                              "is_editable": {
+                                "description": "Is Editable",
+                                "type": "boolean"
                               },
                               "item_type": {
                                 "description": "Type of the product item",
@@ -51576,6 +52778,73 @@
                                   "course"
                                 ],
                                 "title": "ItemType",
+                                "type": "string"
+                              },
+                              "last_updated_at": {
+                                "format": "date-time",
+                                "type": "string"
+                              },
+                              "metadata": {
+                                "additionalProperties": true,
+                                "type": "object"
+                              },
+                              "name": {
+                                "description": "Variant Name",
+                                "type": "string"
+                              },
+                              "option1_value": {
+                                "description": "Option 1 Value",
+                                "type": "string"
+                              },
+                              "option2_value": {
+                                "description": "Option 2 Value",
+                                "type": "string"
+                              },
+                              "option3_value": {
+                                "description": "Option 3 Value",
+                                "type": "string"
+                              },
+                              "price": {
+                                "description": "Price",
+                                "type": "number"
+                              },
+                              "price_bt": {
+                                "description": "Price Before Tax",
+                                "type": "number"
+                              },
+                              "product_id": {
+                                "description": "Product ID",
+                                "type": "integer"
+                              },
+                              "product_name": {
+                                "description": "Product Name",
+                                "type": "string"
+                              },
+                              "reseller_price": {
+                                "description": "Reseller Price",
+                                "type": "number"
+                              },
+                              "reseller_price_bt": {
+                                "description": "Reseller Price Before Tax",
+                                "type": "number"
+                              },
+                              "rich_description": {
+                                "description": "Variant Rich Description",
+                                "type": "string"
+                              },
+                              "self_file_urls": {
+                                "items": {
+                                  "format": "uri",
+                                  "type": "string"
+                                },
+                                "type": "array"
+                              },
+                              "sku": {
+                                "description": "SKU",
+                                "type": "string"
+                              },
+                              "unique_id": {
+                                "description": "Variant Unique ID",
                                 "type": "string"
                               },
                               "upsell_form_displays": {
@@ -51636,145 +52905,13 @@
                                 },
                                 "type": "array"
                               },
-                              "description": {
-                                "description": "Variant Description",
+                              "uuid": {
+                                "description": "Variant UUID",
                                 "type": "string"
-                              },
-                              "self_file_urls": {
-                                "items": {
-                                  "format": "uri",
-                                  "type": "string"
-                                },
-                                "type": "array"
-                              },
-                              "name": {
-                                "description": "Variant Name",
-                                "type": "string"
-                              },
-                              "id": {
-                                "description": "Variant ID",
-                                "type": "integer"
-                              },
-                              "option3_color": {
-                                "description": "Color associated with the third product option",
-                                "type": "string"
-                              },
-                              "unique_id": {
-                                "description": "Variant Unique ID",
-                                "type": "string"
-                              },
-                              "cogs_bt": {
-                                "description": "Cost of Goods Sold Before Tax",
-                                "type": "number"
-                              },
-                              "option2_color": {
-                                "description": "Color associated with the second product option",
-                                "type": "string"
-                              },
-                              "price": {
-                                "description": "Price",
-                                "type": "number"
-                              },
-                              "images": {
-                                "items": {
-                                  "format": "uri",
-                                  "type": "string"
-                                },
-                                "type": "array"
                               },
                               "weight": {
                                 "description": "Weight",
                                 "type": "integer"
-                              },
-                              "form_displays": {
-                                "items": {
-                                  "properties": {
-                                    "id": {
-                                      "description": "Form Display ID",
-                                      "type": "integer"
-                                    },
-                                    "page_display": {
-                                      "properties": {
-                                        "id": {
-                                          "description": "Page Display ID",
-                                          "type": "integer"
-                                        },
-                                        "page": {
-                                          "properties": {
-                                            "id": {
-                                              "description": "Page ID",
-                                              "type": "integer"
-                                            },
-                                            "is_published": {
-                                              "description": "Is the page published?",
-                                              "type": "boolean"
-                                            },
-                                            "name": {
-                                              "description": "Name of the page",
-                                              "type": "string"
-                                            },
-                                            "published_at": {
-                                              "description": "Publication date of the page",
-                                              "format": "date-time",
-                                              "type": "string"
-                                            },
-                                            "slug": {
-                                              "description": "Slug for the page URL",
-                                              "type": "string"
-                                            },
-                                            "store_id": {
-                                              "description": "ID of the store the page belongs to",
-                                              "type": "integer"
-                                            },
-                                            "unique_id": {
-                                              "description": "Unique identifier for the page",
-                                              "type": "string"
-                                            }
-                                          },
-                                          "title": "PageSimple",
-                                          "type": "object"
-                                        }
-                                      },
-                                      "title": "ForProductPageDisplay",
-                                      "type": "object"
-                                    }
-                                  },
-                                  "title": "ForProductFormDisplay",
-                                  "type": "object"
-                                },
-                                "type": "array"
-                              },
-                              "is_checked": {
-                                "description": "Mark variant as sellable",
-                                "type": "boolean"
-                              },
-                              "option1_color": {
-                                "description": "Color associated with the first product option",
-                                "type": "string"
-                              },
-                              "last_updated_at": {
-                                "format": "date-time",
-                                "type": "string"
-                              },
-                              "product_id": {
-                                "description": "Product ID",
-                                "type": "integer"
-                              },
-                              "option3_value": {
-                                "description": "Option 3 Value",
-                                "type": "string"
-                              },
-                              "metadata": {
-                                "additionalProperties": true,
-                                "type": "object"
-                              },
-                              "created_at": {
-                                "format": "date-time",
-                                "type": "string"
-                              },
-                              "is_editable": {
-                                "description": "Is Editable",
-                                "type": "boolean"
                               }
                             },
                             "title": "ProductVariant",
@@ -53541,55 +54678,16 @@
                                 "description": "Cost of Goods Sold",
                                 "type": "number"
                               },
-                              "price_bt": {
-                                "description": "Price Before Tax",
+                              "cogs_bt": {
+                                "description": "Cost of Goods Sold Before Tax",
                                 "type": "number"
                               },
-                              "option1_value": {
-                                "description": "Option 1 Value",
+                              "created_at": {
+                                "format": "date-time",
                                 "type": "string"
                               },
-                              "option3_icon_url": {
-                                "description": "Icon URL for the third product option",
-                                "format": "uri",
-                                "type": "string"
-                              },
-                              "option1_icon_url": {
-                                "description": "Icon URL for the first product option",
-                                "format": "uri",
-                                "type": "string"
-                              },
-                              "reseller_price_bt": {
-                                "description": "Reseller Price Before Tax",
-                                "type": "number"
-                              },
-                              "option2_value": {
-                                "description": "Option 2 Value",
-                                "type": "string"
-                              },
-                              "reseller_price": {
-                                "description": "Reseller Price",
-                                "type": "number"
-                              },
-                              "fullname": {
-                                "description": "Variant Fullname",
-                                "type": "string"
-                              },
-                              "uuid": {
-                                "description": "Variant UUID",
-                                "type": "string"
-                              },
-                              "rich_description": {
-                                "description": "Variant Rich Description",
-                                "type": "string"
-                              },
-                              "option2_icon_url": {
-                                "description": "Icon URL for the second product option",
-                                "format": "uri",
-                                "type": "string"
-                              },
-                              "sku": {
-                                "description": "SKU",
+                              "description": {
+                                "description": "Variant Description",
                                 "type": "string"
                               },
                               "digital_product_files": {
@@ -53622,9 +54720,86 @@
                                 },
                                 "type": "array"
                               },
-                              "product_name": {
-                                "description": "Product Name",
+                              "form_displays": {
+                                "items": {
+                                  "properties": {
+                                    "id": {
+                                      "description": "Form Display ID",
+                                      "type": "integer"
+                                    },
+                                    "page_display": {
+                                      "properties": {
+                                        "id": {
+                                          "description": "Page Display ID",
+                                          "type": "integer"
+                                        },
+                                        "page": {
+                                          "properties": {
+                                            "id": {
+                                              "description": "Page ID",
+                                              "type": "integer"
+                                            },
+                                            "is_published": {
+                                              "description": "Is the page published?",
+                                              "type": "boolean"
+                                            },
+                                            "name": {
+                                              "description": "Name of the page",
+                                              "type": "string"
+                                            },
+                                            "published_at": {
+                                              "description": "Publication date of the page",
+                                              "format": "date-time",
+                                              "type": "string"
+                                            },
+                                            "slug": {
+                                              "description": "Slug for the page URL",
+                                              "type": "string"
+                                            },
+                                            "store_id": {
+                                              "description": "ID of the store the page belongs to",
+                                              "type": "integer"
+                                            },
+                                            "unique_id": {
+                                              "description": "Unique identifier for the page",
+                                              "type": "string"
+                                            }
+                                          },
+                                          "title": "PageSimple",
+                                          "type": "object"
+                                        }
+                                      },
+                                      "title": "ForProductPageDisplay",
+                                      "type": "object"
+                                    }
+                                  },
+                                  "title": "ForProductFormDisplay",
+                                  "type": "object"
+                                },
+                                "type": "array"
+                              },
+                              "fullname": {
+                                "description": "Variant Fullname",
                                 "type": "string"
+                              },
+                              "id": {
+                                "description": "Variant ID",
+                                "type": "integer"
+                              },
+                              "images": {
+                                "items": {
+                                  "format": "uri",
+                                  "type": "string"
+                                },
+                                "type": "array"
+                              },
+                              "is_checked": {
+                                "description": "Mark variant as sellable",
+                                "type": "boolean"
+                              },
+                              "is_editable": {
+                                "description": "Is Editable",
+                                "type": "boolean"
                               },
                               "item_type": {
                                 "description": "Type of the product item",
@@ -53634,6 +54809,73 @@
                                   "course"
                                 ],
                                 "title": "ItemType",
+                                "type": "string"
+                              },
+                              "last_updated_at": {
+                                "format": "date-time",
+                                "type": "string"
+                              },
+                              "metadata": {
+                                "additionalProperties": true,
+                                "type": "object"
+                              },
+                              "name": {
+                                "description": "Variant Name",
+                                "type": "string"
+                              },
+                              "option1_value": {
+                                "description": "Option 1 Value",
+                                "type": "string"
+                              },
+                              "option2_value": {
+                                "description": "Option 2 Value",
+                                "type": "string"
+                              },
+                              "option3_value": {
+                                "description": "Option 3 Value",
+                                "type": "string"
+                              },
+                              "price": {
+                                "description": "Price",
+                                "type": "number"
+                              },
+                              "price_bt": {
+                                "description": "Price Before Tax",
+                                "type": "number"
+                              },
+                              "product_id": {
+                                "description": "Product ID",
+                                "type": "integer"
+                              },
+                              "product_name": {
+                                "description": "Product Name",
+                                "type": "string"
+                              },
+                              "reseller_price": {
+                                "description": "Reseller Price",
+                                "type": "number"
+                              },
+                              "reseller_price_bt": {
+                                "description": "Reseller Price Before Tax",
+                                "type": "number"
+                              },
+                              "rich_description": {
+                                "description": "Variant Rich Description",
+                                "type": "string"
+                              },
+                              "self_file_urls": {
+                                "items": {
+                                  "format": "uri",
+                                  "type": "string"
+                                },
+                                "type": "array"
+                              },
+                              "sku": {
+                                "description": "SKU",
+                                "type": "string"
+                              },
+                              "unique_id": {
+                                "description": "Variant Unique ID",
                                 "type": "string"
                               },
                               "upsell_form_displays": {
@@ -53694,145 +54936,13 @@
                                 },
                                 "type": "array"
                               },
-                              "description": {
-                                "description": "Variant Description",
+                              "uuid": {
+                                "description": "Variant UUID",
                                 "type": "string"
-                              },
-                              "self_file_urls": {
-                                "items": {
-                                  "format": "uri",
-                                  "type": "string"
-                                },
-                                "type": "array"
-                              },
-                              "name": {
-                                "description": "Variant Name",
-                                "type": "string"
-                              },
-                              "id": {
-                                "description": "Variant ID",
-                                "type": "integer"
-                              },
-                              "option3_color": {
-                                "description": "Color associated with the third product option",
-                                "type": "string"
-                              },
-                              "unique_id": {
-                                "description": "Variant Unique ID",
-                                "type": "string"
-                              },
-                              "cogs_bt": {
-                                "description": "Cost of Goods Sold Before Tax",
-                                "type": "number"
-                              },
-                              "option2_color": {
-                                "description": "Color associated with the second product option",
-                                "type": "string"
-                              },
-                              "price": {
-                                "description": "Price",
-                                "type": "number"
-                              },
-                              "images": {
-                                "items": {
-                                  "format": "uri",
-                                  "type": "string"
-                                },
-                                "type": "array"
                               },
                               "weight": {
                                 "description": "Weight",
                                 "type": "integer"
-                              },
-                              "form_displays": {
-                                "items": {
-                                  "properties": {
-                                    "id": {
-                                      "description": "Form Display ID",
-                                      "type": "integer"
-                                    },
-                                    "page_display": {
-                                      "properties": {
-                                        "id": {
-                                          "description": "Page Display ID",
-                                          "type": "integer"
-                                        },
-                                        "page": {
-                                          "properties": {
-                                            "id": {
-                                              "description": "Page ID",
-                                              "type": "integer"
-                                            },
-                                            "is_published": {
-                                              "description": "Is the page published?",
-                                              "type": "boolean"
-                                            },
-                                            "name": {
-                                              "description": "Name of the page",
-                                              "type": "string"
-                                            },
-                                            "published_at": {
-                                              "description": "Publication date of the page",
-                                              "format": "date-time",
-                                              "type": "string"
-                                            },
-                                            "slug": {
-                                              "description": "Slug for the page URL",
-                                              "type": "string"
-                                            },
-                                            "store_id": {
-                                              "description": "ID of the store the page belongs to",
-                                              "type": "integer"
-                                            },
-                                            "unique_id": {
-                                              "description": "Unique identifier for the page",
-                                              "type": "string"
-                                            }
-                                          },
-                                          "title": "PageSimple",
-                                          "type": "object"
-                                        }
-                                      },
-                                      "title": "ForProductPageDisplay",
-                                      "type": "object"
-                                    }
-                                  },
-                                  "title": "ForProductFormDisplay",
-                                  "type": "object"
-                                },
-                                "type": "array"
-                              },
-                              "is_checked": {
-                                "description": "Mark variant as sellable",
-                                "type": "boolean"
-                              },
-                              "option1_color": {
-                                "description": "Color associated with the first product option",
-                                "type": "string"
-                              },
-                              "last_updated_at": {
-                                "format": "date-time",
-                                "type": "string"
-                              },
-                              "product_id": {
-                                "description": "Product ID",
-                                "type": "integer"
-                              },
-                              "option3_value": {
-                                "description": "Option 3 Value",
-                                "type": "string"
-                              },
-                              "metadata": {
-                                "additionalProperties": true,
-                                "type": "object"
-                              },
-                              "created_at": {
-                                "format": "date-time",
-                                "type": "string"
-                              },
-                              "is_editable": {
-                                "description": "Is Editable",
-                                "type": "boolean"
                               }
                             },
                             "title": "ProductVariant",
@@ -54574,55 +55684,16 @@
                                 "description": "Cost of Goods Sold",
                                 "type": "number"
                               },
-                              "price_bt": {
-                                "description": "Price Before Tax",
+                              "cogs_bt": {
+                                "description": "Cost of Goods Sold Before Tax",
                                 "type": "number"
                               },
-                              "option1_value": {
-                                "description": "Option 1 Value",
+                              "created_at": {
+                                "format": "date-time",
                                 "type": "string"
                               },
-                              "option3_icon_url": {
-                                "description": "Icon URL for the third product option",
-                                "format": "uri",
-                                "type": "string"
-                              },
-                              "option1_icon_url": {
-                                "description": "Icon URL for the first product option",
-                                "format": "uri",
-                                "type": "string"
-                              },
-                              "reseller_price_bt": {
-                                "description": "Reseller Price Before Tax",
-                                "type": "number"
-                              },
-                              "option2_value": {
-                                "description": "Option 2 Value",
-                                "type": "string"
-                              },
-                              "reseller_price": {
-                                "description": "Reseller Price",
-                                "type": "number"
-                              },
-                              "fullname": {
-                                "description": "Variant Fullname",
-                                "type": "string"
-                              },
-                              "uuid": {
-                                "description": "Variant UUID",
-                                "type": "string"
-                              },
-                              "rich_description": {
-                                "description": "Variant Rich Description",
-                                "type": "string"
-                              },
-                              "option2_icon_url": {
-                                "description": "Icon URL for the second product option",
-                                "format": "uri",
-                                "type": "string"
-                              },
-                              "sku": {
-                                "description": "SKU",
+                              "description": {
+                                "description": "Variant Description",
                                 "type": "string"
                               },
                               "digital_product_files": {
@@ -54655,9 +55726,86 @@
                                 },
                                 "type": "array"
                               },
-                              "product_name": {
-                                "description": "Product Name",
+                              "form_displays": {
+                                "items": {
+                                  "properties": {
+                                    "id": {
+                                      "description": "Form Display ID",
+                                      "type": "integer"
+                                    },
+                                    "page_display": {
+                                      "properties": {
+                                        "id": {
+                                          "description": "Page Display ID",
+                                          "type": "integer"
+                                        },
+                                        "page": {
+                                          "properties": {
+                                            "id": {
+                                              "description": "Page ID",
+                                              "type": "integer"
+                                            },
+                                            "is_published": {
+                                              "description": "Is the page published?",
+                                              "type": "boolean"
+                                            },
+                                            "name": {
+                                              "description": "Name of the page",
+                                              "type": "string"
+                                            },
+                                            "published_at": {
+                                              "description": "Publication date of the page",
+                                              "format": "date-time",
+                                              "type": "string"
+                                            },
+                                            "slug": {
+                                              "description": "Slug for the page URL",
+                                              "type": "string"
+                                            },
+                                            "store_id": {
+                                              "description": "ID of the store the page belongs to",
+                                              "type": "integer"
+                                            },
+                                            "unique_id": {
+                                              "description": "Unique identifier for the page",
+                                              "type": "string"
+                                            }
+                                          },
+                                          "title": "PageSimple",
+                                          "type": "object"
+                                        }
+                                      },
+                                      "title": "ForProductPageDisplay",
+                                      "type": "object"
+                                    }
+                                  },
+                                  "title": "ForProductFormDisplay",
+                                  "type": "object"
+                                },
+                                "type": "array"
+                              },
+                              "fullname": {
+                                "description": "Variant Fullname",
                                 "type": "string"
+                              },
+                              "id": {
+                                "description": "Variant ID",
+                                "type": "integer"
+                              },
+                              "images": {
+                                "items": {
+                                  "format": "uri",
+                                  "type": "string"
+                                },
+                                "type": "array"
+                              },
+                              "is_checked": {
+                                "description": "Mark variant as sellable",
+                                "type": "boolean"
+                              },
+                              "is_editable": {
+                                "description": "Is Editable",
+                                "type": "boolean"
                               },
                               "item_type": {
                                 "description": "Type of the product item",
@@ -54667,6 +55815,73 @@
                                   "course"
                                 ],
                                 "title": "ItemType",
+                                "type": "string"
+                              },
+                              "last_updated_at": {
+                                "format": "date-time",
+                                "type": "string"
+                              },
+                              "metadata": {
+                                "additionalProperties": true,
+                                "type": "object"
+                              },
+                              "name": {
+                                "description": "Variant Name",
+                                "type": "string"
+                              },
+                              "option1_value": {
+                                "description": "Option 1 Value",
+                                "type": "string"
+                              },
+                              "option2_value": {
+                                "description": "Option 2 Value",
+                                "type": "string"
+                              },
+                              "option3_value": {
+                                "description": "Option 3 Value",
+                                "type": "string"
+                              },
+                              "price": {
+                                "description": "Price",
+                                "type": "number"
+                              },
+                              "price_bt": {
+                                "description": "Price Before Tax",
+                                "type": "number"
+                              },
+                              "product_id": {
+                                "description": "Product ID",
+                                "type": "integer"
+                              },
+                              "product_name": {
+                                "description": "Product Name",
+                                "type": "string"
+                              },
+                              "reseller_price": {
+                                "description": "Reseller Price",
+                                "type": "number"
+                              },
+                              "reseller_price_bt": {
+                                "description": "Reseller Price Before Tax",
+                                "type": "number"
+                              },
+                              "rich_description": {
+                                "description": "Variant Rich Description",
+                                "type": "string"
+                              },
+                              "self_file_urls": {
+                                "items": {
+                                  "format": "uri",
+                                  "type": "string"
+                                },
+                                "type": "array"
+                              },
+                              "sku": {
+                                "description": "SKU",
+                                "type": "string"
+                              },
+                              "unique_id": {
+                                "description": "Variant Unique ID",
                                 "type": "string"
                               },
                               "upsell_form_displays": {
@@ -54727,145 +55942,13 @@
                                 },
                                 "type": "array"
                               },
-                              "description": {
-                                "description": "Variant Description",
+                              "uuid": {
+                                "description": "Variant UUID",
                                 "type": "string"
-                              },
-                              "self_file_urls": {
-                                "items": {
-                                  "format": "uri",
-                                  "type": "string"
-                                },
-                                "type": "array"
-                              },
-                              "name": {
-                                "description": "Variant Name",
-                                "type": "string"
-                              },
-                              "id": {
-                                "description": "Variant ID",
-                                "type": "integer"
-                              },
-                              "option3_color": {
-                                "description": "Color associated with the third product option",
-                                "type": "string"
-                              },
-                              "unique_id": {
-                                "description": "Variant Unique ID",
-                                "type": "string"
-                              },
-                              "cogs_bt": {
-                                "description": "Cost of Goods Sold Before Tax",
-                                "type": "number"
-                              },
-                              "option2_color": {
-                                "description": "Color associated with the second product option",
-                                "type": "string"
-                              },
-                              "price": {
-                                "description": "Price",
-                                "type": "number"
-                              },
-                              "images": {
-                                "items": {
-                                  "format": "uri",
-                                  "type": "string"
-                                },
-                                "type": "array"
                               },
                               "weight": {
                                 "description": "Weight",
                                 "type": "integer"
-                              },
-                              "form_displays": {
-                                "items": {
-                                  "properties": {
-                                    "id": {
-                                      "description": "Form Display ID",
-                                      "type": "integer"
-                                    },
-                                    "page_display": {
-                                      "properties": {
-                                        "id": {
-                                          "description": "Page Display ID",
-                                          "type": "integer"
-                                        },
-                                        "page": {
-                                          "properties": {
-                                            "id": {
-                                              "description": "Page ID",
-                                              "type": "integer"
-                                            },
-                                            "is_published": {
-                                              "description": "Is the page published?",
-                                              "type": "boolean"
-                                            },
-                                            "name": {
-                                              "description": "Name of the page",
-                                              "type": "string"
-                                            },
-                                            "published_at": {
-                                              "description": "Publication date of the page",
-                                              "format": "date-time",
-                                              "type": "string"
-                                            },
-                                            "slug": {
-                                              "description": "Slug for the page URL",
-                                              "type": "string"
-                                            },
-                                            "store_id": {
-                                              "description": "ID of the store the page belongs to",
-                                              "type": "integer"
-                                            },
-                                            "unique_id": {
-                                              "description": "Unique identifier for the page",
-                                              "type": "string"
-                                            }
-                                          },
-                                          "title": "PageSimple",
-                                          "type": "object"
-                                        }
-                                      },
-                                      "title": "ForProductPageDisplay",
-                                      "type": "object"
-                                    }
-                                  },
-                                  "title": "ForProductFormDisplay",
-                                  "type": "object"
-                                },
-                                "type": "array"
-                              },
-                              "is_checked": {
-                                "description": "Mark variant as sellable",
-                                "type": "boolean"
-                              },
-                              "option1_color": {
-                                "description": "Color associated with the first product option",
-                                "type": "string"
-                              },
-                              "last_updated_at": {
-                                "format": "date-time",
-                                "type": "string"
-                              },
-                              "product_id": {
-                                "description": "Product ID",
-                                "type": "integer"
-                              },
-                              "option3_value": {
-                                "description": "Option 3 Value",
-                                "type": "string"
-                              },
-                              "metadata": {
-                                "additionalProperties": true,
-                                "type": "object"
-                              },
-                              "created_at": {
-                                "format": "date-time",
-                                "type": "string"
-                              },
-                              "is_editable": {
-                                "description": "Is Editable",
-                                "type": "boolean"
                               }
                             },
                             "title": "ProductVariant",
@@ -58219,55 +59302,16 @@
                                 "description": "Cost of Goods Sold",
                                 "type": "number"
                               },
-                              "price_bt": {
-                                "description": "Price Before Tax",
+                              "cogs_bt": {
+                                "description": "Cost of Goods Sold Before Tax",
                                 "type": "number"
                               },
-                              "option1_value": {
-                                "description": "Option 1 Value",
+                              "created_at": {
+                                "format": "date-time",
                                 "type": "string"
                               },
-                              "option3_icon_url": {
-                                "description": "Icon URL for the third product option",
-                                "format": "uri",
-                                "type": "string"
-                              },
-                              "option1_icon_url": {
-                                "description": "Icon URL for the first product option",
-                                "format": "uri",
-                                "type": "string"
-                              },
-                              "reseller_price_bt": {
-                                "description": "Reseller Price Before Tax",
-                                "type": "number"
-                              },
-                              "option2_value": {
-                                "description": "Option 2 Value",
-                                "type": "string"
-                              },
-                              "reseller_price": {
-                                "description": "Reseller Price",
-                                "type": "number"
-                              },
-                              "fullname": {
-                                "description": "Variant Fullname",
-                                "type": "string"
-                              },
-                              "uuid": {
-                                "description": "Variant UUID",
-                                "type": "string"
-                              },
-                              "rich_description": {
-                                "description": "Variant Rich Description",
-                                "type": "string"
-                              },
-                              "option2_icon_url": {
-                                "description": "Icon URL for the second product option",
-                                "format": "uri",
-                                "type": "string"
-                              },
-                              "sku": {
-                                "description": "SKU",
+                              "description": {
+                                "description": "Variant Description",
                                 "type": "string"
                               },
                               "digital_product_files": {
@@ -58300,9 +59344,86 @@
                                 },
                                 "type": "array"
                               },
-                              "product_name": {
-                                "description": "Product Name",
+                              "form_displays": {
+                                "items": {
+                                  "properties": {
+                                    "id": {
+                                      "description": "Form Display ID",
+                                      "type": "integer"
+                                    },
+                                    "page_display": {
+                                      "properties": {
+                                        "id": {
+                                          "description": "Page Display ID",
+                                          "type": "integer"
+                                        },
+                                        "page": {
+                                          "properties": {
+                                            "id": {
+                                              "description": "Page ID",
+                                              "type": "integer"
+                                            },
+                                            "is_published": {
+                                              "description": "Is the page published?",
+                                              "type": "boolean"
+                                            },
+                                            "name": {
+                                              "description": "Name of the page",
+                                              "type": "string"
+                                            },
+                                            "published_at": {
+                                              "description": "Publication date of the page",
+                                              "format": "date-time",
+                                              "type": "string"
+                                            },
+                                            "slug": {
+                                              "description": "Slug for the page URL",
+                                              "type": "string"
+                                            },
+                                            "store_id": {
+                                              "description": "ID of the store the page belongs to",
+                                              "type": "integer"
+                                            },
+                                            "unique_id": {
+                                              "description": "Unique identifier for the page",
+                                              "type": "string"
+                                            }
+                                          },
+                                          "title": "PageSimple",
+                                          "type": "object"
+                                        }
+                                      },
+                                      "title": "ForProductPageDisplay",
+                                      "type": "object"
+                                    }
+                                  },
+                                  "title": "ForProductFormDisplay",
+                                  "type": "object"
+                                },
+                                "type": "array"
+                              },
+                              "fullname": {
+                                "description": "Variant Fullname",
                                 "type": "string"
+                              },
+                              "id": {
+                                "description": "Variant ID",
+                                "type": "integer"
+                              },
+                              "images": {
+                                "items": {
+                                  "format": "uri",
+                                  "type": "string"
+                                },
+                                "type": "array"
+                              },
+                              "is_checked": {
+                                "description": "Mark variant as sellable",
+                                "type": "boolean"
+                              },
+                              "is_editable": {
+                                "description": "Is Editable",
+                                "type": "boolean"
                               },
                               "item_type": {
                                 "description": "Type of the product item",
@@ -58312,6 +59433,73 @@
                                   "course"
                                 ],
                                 "title": "ItemType",
+                                "type": "string"
+                              },
+                              "last_updated_at": {
+                                "format": "date-time",
+                                "type": "string"
+                              },
+                              "metadata": {
+                                "additionalProperties": true,
+                                "type": "object"
+                              },
+                              "name": {
+                                "description": "Variant Name",
+                                "type": "string"
+                              },
+                              "option1_value": {
+                                "description": "Option 1 Value",
+                                "type": "string"
+                              },
+                              "option2_value": {
+                                "description": "Option 2 Value",
+                                "type": "string"
+                              },
+                              "option3_value": {
+                                "description": "Option 3 Value",
+                                "type": "string"
+                              },
+                              "price": {
+                                "description": "Price",
+                                "type": "number"
+                              },
+                              "price_bt": {
+                                "description": "Price Before Tax",
+                                "type": "number"
+                              },
+                              "product_id": {
+                                "description": "Product ID",
+                                "type": "integer"
+                              },
+                              "product_name": {
+                                "description": "Product Name",
+                                "type": "string"
+                              },
+                              "reseller_price": {
+                                "description": "Reseller Price",
+                                "type": "number"
+                              },
+                              "reseller_price_bt": {
+                                "description": "Reseller Price Before Tax",
+                                "type": "number"
+                              },
+                              "rich_description": {
+                                "description": "Variant Rich Description",
+                                "type": "string"
+                              },
+                              "self_file_urls": {
+                                "items": {
+                                  "format": "uri",
+                                  "type": "string"
+                                },
+                                "type": "array"
+                              },
+                              "sku": {
+                                "description": "SKU",
+                                "type": "string"
+                              },
+                              "unique_id": {
+                                "description": "Variant Unique ID",
                                 "type": "string"
                               },
                               "upsell_form_displays": {
@@ -58372,145 +59560,13 @@
                                 },
                                 "type": "array"
                               },
-                              "description": {
-                                "description": "Variant Description",
+                              "uuid": {
+                                "description": "Variant UUID",
                                 "type": "string"
-                              },
-                              "self_file_urls": {
-                                "items": {
-                                  "format": "uri",
-                                  "type": "string"
-                                },
-                                "type": "array"
-                              },
-                              "name": {
-                                "description": "Variant Name",
-                                "type": "string"
-                              },
-                              "id": {
-                                "description": "Variant ID",
-                                "type": "integer"
-                              },
-                              "option3_color": {
-                                "description": "Color associated with the third product option",
-                                "type": "string"
-                              },
-                              "unique_id": {
-                                "description": "Variant Unique ID",
-                                "type": "string"
-                              },
-                              "cogs_bt": {
-                                "description": "Cost of Goods Sold Before Tax",
-                                "type": "number"
-                              },
-                              "option2_color": {
-                                "description": "Color associated with the second product option",
-                                "type": "string"
-                              },
-                              "price": {
-                                "description": "Price",
-                                "type": "number"
-                              },
-                              "images": {
-                                "items": {
-                                  "format": "uri",
-                                  "type": "string"
-                                },
-                                "type": "array"
                               },
                               "weight": {
                                 "description": "Weight",
                                 "type": "integer"
-                              },
-                              "form_displays": {
-                                "items": {
-                                  "properties": {
-                                    "id": {
-                                      "description": "Form Display ID",
-                                      "type": "integer"
-                                    },
-                                    "page_display": {
-                                      "properties": {
-                                        "id": {
-                                          "description": "Page Display ID",
-                                          "type": "integer"
-                                        },
-                                        "page": {
-                                          "properties": {
-                                            "id": {
-                                              "description": "Page ID",
-                                              "type": "integer"
-                                            },
-                                            "is_published": {
-                                              "description": "Is the page published?",
-                                              "type": "boolean"
-                                            },
-                                            "name": {
-                                              "description": "Name of the page",
-                                              "type": "string"
-                                            },
-                                            "published_at": {
-                                              "description": "Publication date of the page",
-                                              "format": "date-time",
-                                              "type": "string"
-                                            },
-                                            "slug": {
-                                              "description": "Slug for the page URL",
-                                              "type": "string"
-                                            },
-                                            "store_id": {
-                                              "description": "ID of the store the page belongs to",
-                                              "type": "integer"
-                                            },
-                                            "unique_id": {
-                                              "description": "Unique identifier for the page",
-                                              "type": "string"
-                                            }
-                                          },
-                                          "title": "PageSimple",
-                                          "type": "object"
-                                        }
-                                      },
-                                      "title": "ForProductPageDisplay",
-                                      "type": "object"
-                                    }
-                                  },
-                                  "title": "ForProductFormDisplay",
-                                  "type": "object"
-                                },
-                                "type": "array"
-                              },
-                              "is_checked": {
-                                "description": "Mark variant as sellable",
-                                "type": "boolean"
-                              },
-                              "option1_color": {
-                                "description": "Color associated with the first product option",
-                                "type": "string"
-                              },
-                              "last_updated_at": {
-                                "format": "date-time",
-                                "type": "string"
-                              },
-                              "product_id": {
-                                "description": "Product ID",
-                                "type": "integer"
-                              },
-                              "option3_value": {
-                                "description": "Option 3 Value",
-                                "type": "string"
-                              },
-                              "metadata": {
-                                "additionalProperties": true,
-                                "type": "object"
-                              },
-                              "created_at": {
-                                "format": "date-time",
-                                "type": "string"
-                              },
-                              "is_editable": {
-                                "description": "Is Editable",
-                                "type": "boolean"
                               }
                             },
                             "title": "ProductVariant",
@@ -58987,7 +60043,6 @@
                   "payment_method": {
                     "description": "Order payment method",
                     "enum": [
-                      "gopay",
                       "va",
                       "qris",
                       "card",
@@ -58997,6 +60052,7 @@
                       "dana",
                       "shopeepay",
                       "linkaja",
+                      "gopay",
                       "no_payment",
                       "bank_transfer",
                       "marketplace",
@@ -60385,7 +61441,6 @@
                       "items": {
                         "description": "Order payment method",
                         "enum": [
-                          "gopay",
                           "va",
                           "qris",
                           "card",
@@ -60395,6 +61450,7 @@
                           "dana",
                           "shopeepay",
                           "linkaja",
+                          "gopay",
                           "no_payment",
                           "bank_transfer",
                           "marketplace",
@@ -60938,39 +61994,12 @@
                                   "description": "Full name of the variant",
                                   "type": "string"
                                 },
-                                "option1_color": {
-                                  "description": "Color associated with the first product option",
-                                  "type": "string"
-                                },
-                                "option1_icon_url": {
-                                  "description": "Icon URL for the first product option",
-                                  "format": "uri",
-                                  "type": "string"
-                                },
                                 "option1_value": {
                                   "description": "Value of the first product option",
                                   "type": "string"
                                 },
-                                "option2_color": {
-                                  "description": "Color associated with the second product option",
-                                  "type": "string"
-                                },
-                                "option2_icon_url": {
-                                  "description": "Icon URL for the second product option",
-                                  "format": "uri",
-                                  "type": "string"
-                                },
                                 "option2_value": {
                                   "description": "Value of the second product option",
-                                  "type": "string"
-                                },
-                                "option3_color": {
-                                  "description": "Color associated with the third product option",
-                                  "type": "string"
-                                },
-                                "option3_icon_url": {
-                                  "description": "Icon URL for the third product option",
-                                  "format": "uri",
                                   "type": "string"
                                 },
                                 "option3_value": {
@@ -61253,6 +62282,10 @@
                     "digital_only_complete_type": {
                       "description": "Digital only complete type",
                       "type": "string"
+                    },
+                    "is_order_hard_filter": {
+                      "description": "Is order hard filter enabled?",
+                      "type": "boolean"
                     },
                     "is_active": {
                       "description": "Is the store active?",
@@ -61955,7 +62988,6 @@
                                 "items": {
                                   "description": "Order payment method",
                                   "enum": [
-                                    "gopay",
                                     "va",
                                     "qris",
                                     "card",
@@ -61965,6 +62997,7 @@
                                     "dana",
                                     "shopeepay",
                                     "linkaja",
+                                    "gopay",
                                     "no_payment",
                                     "bank_transfer",
                                     "marketplace",
@@ -62835,7 +63868,6 @@
                       "items": {
                         "description": "Order payment method",
                         "enum": [
-                          "gopay",
                           "va",
                           "qris",
                           "card",
@@ -62845,6 +63877,7 @@
                           "dana",
                           "shopeepay",
                           "linkaja",
+                          "gopay",
                           "no_payment",
                           "bank_transfer",
                           "marketplace",
@@ -63388,39 +64421,12 @@
                                   "description": "Full name of the variant",
                                   "type": "string"
                                 },
-                                "option1_color": {
-                                  "description": "Color associated with the first product option",
-                                  "type": "string"
-                                },
-                                "option1_icon_url": {
-                                  "description": "Icon URL for the first product option",
-                                  "format": "uri",
-                                  "type": "string"
-                                },
                                 "option1_value": {
                                   "description": "Value of the first product option",
                                   "type": "string"
                                 },
-                                "option2_color": {
-                                  "description": "Color associated with the second product option",
-                                  "type": "string"
-                                },
-                                "option2_icon_url": {
-                                  "description": "Icon URL for the second product option",
-                                  "format": "uri",
-                                  "type": "string"
-                                },
                                 "option2_value": {
                                   "description": "Value of the second product option",
-                                  "type": "string"
-                                },
-                                "option3_color": {
-                                  "description": "Color associated with the third product option",
-                                  "type": "string"
-                                },
-                                "option3_icon_url": {
-                                  "description": "Icon URL for the third product option",
-                                  "format": "uri",
                                   "type": "string"
                                 },
                                 "option3_value": {
@@ -63703,6 +64709,10 @@
                     "digital_only_complete_type": {
                       "description": "Digital only complete type",
                       "type": "string"
+                    },
+                    "is_order_hard_filter": {
+                      "description": "Is order hard filter enabled?",
+                      "type": "boolean"
                     },
                     "is_active": {
                       "description": "Is the store active?",
@@ -64455,6 +65465,10 @@
                     ],
                     "type": "string"
                   },
+                  "is_order_hard_filter": {
+                    "description": "Is order hard filter enabled?",
+                    "type": "boolean"
+                  },
                   "dynamic_other_income_epayment_default_percentage": {
                     "description": "Default percentage for dynamic e-payment income",
                     "format": "float",
@@ -65162,7 +66176,6 @@
                       "items": {
                         "description": "Order payment method",
                         "enum": [
-                          "gopay",
                           "va",
                           "qris",
                           "card",
@@ -65172,6 +66185,7 @@
                           "dana",
                           "shopeepay",
                           "linkaja",
+                          "gopay",
                           "no_payment",
                           "bank_transfer",
                           "marketplace",
@@ -65715,39 +66729,12 @@
                                   "description": "Full name of the variant",
                                   "type": "string"
                                 },
-                                "option1_color": {
-                                  "description": "Color associated with the first product option",
-                                  "type": "string"
-                                },
-                                "option1_icon_url": {
-                                  "description": "Icon URL for the first product option",
-                                  "format": "uri",
-                                  "type": "string"
-                                },
                                 "option1_value": {
                                   "description": "Value of the first product option",
                                   "type": "string"
                                 },
-                                "option2_color": {
-                                  "description": "Color associated with the second product option",
-                                  "type": "string"
-                                },
-                                "option2_icon_url": {
-                                  "description": "Icon URL for the second product option",
-                                  "format": "uri",
-                                  "type": "string"
-                                },
                                 "option2_value": {
                                   "description": "Value of the second product option",
-                                  "type": "string"
-                                },
-                                "option3_color": {
-                                  "description": "Color associated with the third product option",
-                                  "type": "string"
-                                },
-                                "option3_icon_url": {
-                                  "description": "Icon URL for the third product option",
-                                  "format": "uri",
                                   "type": "string"
                                 },
                                 "option3_value": {
@@ -66030,6 +67017,10 @@
                     "digital_only_complete_type": {
                       "description": "Digital only complete type",
                       "type": "string"
+                    },
+                    "is_order_hard_filter": {
+                      "description": "Is order hard filter enabled?",
+                      "type": "boolean"
                     },
                     "is_active": {
                       "description": "Is the store active?",
@@ -68955,6 +69946,246 @@
         ]
       }
     },
+    "/v2/stores/{store_id}/follow-up-chats/generate": {
+      "post": {
+        "callbacks": {},
+        "description": "Generates a new follow up chat for a store.",
+        "operationId": "ScalevApiWeb.FollowUpChatController.generate_fuc",
+        "parameters": [
+          {
+            "description": "Store ID",
+            "in": "path",
+            "name": "store_id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 200,
+                      "type": "integer"
+                    },
+                    "data": {
+                      "properties": {
+                        "bundle_id": {
+                          "description": "Bundle ID associated with the follow-up chat",
+                          "type": "integer"
+                        },
+                        "change_status": {
+                          "description": "Triggered after order status change to this status",
+                          "type": "boolean"
+                        },
+                        "hours_after": {
+                          "description": "Hours after which the follow-up chat is sent",
+                          "type": "integer"
+                        },
+                        "id": {
+                          "description": "Follow-up chat ID",
+                          "type": "integer"
+                        },
+                        "image": {
+                          "description": "Image URL for the follow-up chat",
+                          "format": "uri",
+                          "type": "string"
+                        },
+                        "is_default": {
+                          "description": "Is this a default follow-up chat",
+                          "type": "boolean"
+                        },
+                        "name": {
+                          "description": "Name of the follow-up chat",
+                          "type": "string"
+                        },
+                        "product_id": {
+                          "description": "Product ID associated with the follow-up chat",
+                          "type": "integer"
+                        },
+                        "provider": {
+                          "description": "Provider of the follow-up chat",
+                          "type": "string"
+                        },
+                        "store_id": {
+                          "description": "Store ID associated with the follow-up chat",
+                          "type": "integer"
+                        },
+                        "text_for_bank_transfer": {
+                          "description": "Text for bank transfer payments",
+                          "type": "string"
+                        },
+                        "text_for_cod": {
+                          "description": "Text for cash on delivery payments",
+                          "type": "string"
+                        },
+                        "text_for_epayment": {
+                          "description": "Text for electronic payments",
+                          "type": "string"
+                        },
+                        "trigger": {
+                          "description": "Trigger for the follow-up chat",
+                          "type": "string"
+                        },
+                        "wa_gateway_assignation_type": {
+                          "description": "WhatsApp gateway assignation type",
+                          "type": "string"
+                        },
+                        "wa_integration": {
+                          "properties": {
+                            "id": {
+                              "description": "Whatsapp Integration ID",
+                              "type": "integer"
+                            },
+                            "name": {
+                              "description": "Name",
+                              "type": "string"
+                            },
+                            "phone_number": {
+                              "description": "Phone Number",
+                              "type": "string"
+                            },
+                            "provider": {
+                              "description": "Provider",
+                              "type": "string"
+                            }
+                          },
+                          "title": "WhatsappIntegration",
+                          "type": "object"
+                        }
+                      },
+                      "title": "ManagingFollowUpChat",
+                      "type": "object"
+                    },
+                    "status": {
+                      "example": "Success",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Follow up chat generated successfully"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 400,
+                      "type": "integer"
+                    },
+                    "error": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "additionalProperties": true,
+                          "description": "Validation errors from changeset",
+                          "type": "object"
+                        }
+                      ]
+                    },
+                    "status": {
+                      "example": "Bad Request",
+                      "type": "string"
+                    }
+                  },
+                  "title": "BadRequestError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 401,
+                      "type": "integer"
+                    },
+                    "status": {
+                      "example": "Unauthorized",
+                      "type": "string"
+                    }
+                  },
+                  "title": "UnauthorizedError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 403,
+                      "type": "integer"
+                    },
+                    "status": {
+                      "example": "Forbidden",
+                      "type": "string"
+                    }
+                  },
+                  "title": "ForbiddenError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "example": 404,
+                      "type": "integer"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "example": "Not Found",
+                      "type": "string"
+                    }
+                  },
+                  "title": "NotFoundError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "bearerApiKey": [],
+            "oauth2": [
+              "edit_store"
+            ]
+          }
+        ],
+        "summary": "Generate a follow up chat",
+        "tags": [
+          "Stores"
+        ]
+      }
+    },
     "/v2/stores/{store_id}/follow-up-chats/{id}": {
       "get": {
         "callbacks": {},
@@ -70259,7 +71490,6 @@
                     "items": {
                       "description": "Order payment method",
                       "enum": [
-                        "gopay",
                         "va",
                         "qris",
                         "card",
@@ -70269,6 +71499,7 @@
                         "dana",
                         "shopeepay",
                         "linkaja",
+                        "gopay",
                         "no_payment",
                         "bank_transfer",
                         "marketplace",
@@ -70485,7 +71716,6 @@
                       "items": {
                         "description": "Order payment method",
                         "enum": [
-                          "gopay",
                           "va",
                           "qris",
                           "card",
@@ -70495,6 +71725,7 @@
                           "dana",
                           "shopeepay",
                           "linkaja",
+                          "gopay",
                           "no_payment",
                           "bank_transfer",
                           "marketplace",
@@ -70656,7 +71887,6 @@
                   "payment_method": {
                     "description": "Order payment method",
                     "enum": [
-                      "gopay",
                       "va",
                       "qris",
                       "card",
@@ -70666,6 +71896,7 @@
                       "dana",
                       "shopeepay",
                       "linkaja",
+                      "gopay",
                       "no_payment",
                       "bank_transfer",
                       "marketplace",
@@ -71299,39 +72530,12 @@
                                       "description": "Full name of the variant",
                                       "type": "string"
                                     },
-                                    "option1_color": {
-                                      "description": "Color associated with the first product option",
-                                      "type": "string"
-                                    },
-                                    "option1_icon_url": {
-                                      "description": "Icon URL for the first product option",
-                                      "format": "uri",
-                                      "type": "string"
-                                    },
                                     "option1_value": {
                                       "description": "Value of the first product option",
                                       "type": "string"
                                     },
-                                    "option2_color": {
-                                      "description": "Color associated with the second product option",
-                                      "type": "string"
-                                    },
-                                    "option2_icon_url": {
-                                      "description": "Icon URL for the second product option",
-                                      "format": "uri",
-                                      "type": "string"
-                                    },
                                     "option2_value": {
                                       "description": "Value of the second product option",
-                                      "type": "string"
-                                    },
-                                    "option3_color": {
-                                      "description": "Color associated with the third product option",
-                                      "type": "string"
-                                    },
-                                    "option3_icon_url": {
-                                      "description": "Icon URL for the third product option",
-                                      "format": "uri",
                                       "type": "string"
                                     },
                                     "option3_value": {
@@ -73735,6 +74939,11 @@
                           "description": "Variant primary key",
                           "type": "integer"
                         },
+                        "image_configs": {
+                          "additionalProperties": true,
+                          "description": "Objects of config for each image in the same variant",
+                          "type": "object"
+                        },
                         "images": {
                           "description": "List of image URLs associated with the variant",
                           "items": {
@@ -74060,199 +75269,6 @@
       }
     },
     "/v2/variants/{variant_id}/digital-product-files": {
-      "post": {
-        "callbacks": {},
-        "description": "Creates a new digital product file.",
-        "operationId": "ScalevApiWeb.ProductController.create_digital_product_file",
-        "parameters": [
-          {
-            "description": "Variant ID",
-            "in": "path",
-            "name": "variant_id",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "properties": {
-                  "file": {
-                    "format": "binary",
-                    "type": "string"
-                  }
-                },
-                "type": "object"
-              }
-            }
-          },
-          "description": "File upload",
-          "required": false
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "code": {
-                      "example": 200,
-                      "type": "integer"
-                    },
-                    "data": {
-                      "properties": {
-                        "content_type": {
-                          "description": "MIME type of the digital product file",
-                          "type": "string"
-                        },
-                        "id": {
-                          "description": "Digital product file primary key",
-                          "type": "integer"
-                        },
-                        "name": {
-                          "description": "File name of the digital product file",
-                          "type": "string"
-                        },
-                        "size_in_bytes": {
-                          "description": "Size of the digital product file in bytes",
-                          "type": "integer"
-                        },
-                        "url": {
-                          "description": "URL to access the digital product file",
-                          "format": "uri",
-                          "type": "string"
-                        }
-                      },
-                      "title": "DigitalProductFile",
-                      "type": "object"
-                    },
-                    "status": {
-                      "example": "Success",
-                      "type": "string"
-                    }
-                  },
-                  "type": "object"
-                }
-              }
-            },
-            "description": "Digital product file created successfully"
-          },
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "code": {
-                      "example": 400,
-                      "type": "integer"
-                    },
-                    "error": {
-                      "oneOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "additionalProperties": true,
-                          "description": "Validation errors from changeset",
-                          "type": "object"
-                        }
-                      ]
-                    },
-                    "status": {
-                      "example": "Bad Request",
-                      "type": "string"
-                    }
-                  },
-                  "title": "BadRequestError",
-                  "type": "object"
-                }
-              }
-            },
-            "description": "Bad Request"
-          },
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "code": {
-                      "example": 401,
-                      "type": "integer"
-                    },
-                    "status": {
-                      "example": "Unauthorized",
-                      "type": "string"
-                    }
-                  },
-                  "title": "UnauthorizedError",
-                  "type": "object"
-                }
-              }
-            },
-            "description": "Unauthorized"
-          },
-          "403": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "code": {
-                      "example": 403,
-                      "type": "integer"
-                    },
-                    "status": {
-                      "example": "Forbidden",
-                      "type": "string"
-                    }
-                  },
-                  "title": "ForbiddenError",
-                  "type": "object"
-                }
-              }
-            },
-            "description": "Forbidden"
-          },
-          "404": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "code": {
-                      "example": 404,
-                      "type": "integer"
-                    },
-                    "error": {
-                      "type": "string"
-                    },
-                    "status": {
-                      "example": "Not Found",
-                      "type": "string"
-                    }
-                  },
-                  "title": "NotFoundError",
-                  "type": "object"
-                }
-              }
-            },
-            "description": "Not Found"
-          }
-        },
-        "security": [
-          {
-            "bearerApiKey": [],
-            "oauth2": [
-              "edit_product"
-            ]
-          }
-        ],
-        "summary": "Create a digital product file",
-        "tags": [
-          "Products"
-        ]
-      },
       "get": {
         "callbacks": {},
         "description": "Retrieves a paginated list of digital product files for a variant.",
