@@ -189,12 +189,24 @@ If successful, you'll receive a JSON response containing:
 
 ## Step 7: Using the Access Token
 
-Use the access token to authenticate requests to Scalev API by including it in the Authorization header:
+Use the access token to authenticate requests to Scalev API by including it in the Authorization header. We highly recommend that you make your first request to this endpoint:
 
 ```
-GET https://api.scalev.id/v2/some-endpoint
+GET https://api.scalev.id/v2/businesses/me
+Content-Type: application/json
 Authorization: Bearer ACCESS_TOKEN
+
+{
+  "id": 1,
+  "is_banned": false,
+  "unique_id": "B8AMYAFNUXHZYEFY",
+  "account_holder": "A Business Name",
+  "logo": "https://cdn.scalev.id/some-url",
+  "username": "a-business-username"
+}
 ```
+
+By making request to this endpoint, you will get the information about the business account doing the authorization. You can save this information in your database to have a mapping between your users and Scalev business accounts.
 
 ## Step 8: Refreshing Access Tokens
 
