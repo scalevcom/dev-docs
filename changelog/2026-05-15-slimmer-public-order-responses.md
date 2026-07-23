@@ -7,8 +7,6 @@ privacy:
   view: public
 ---
 
-**API · Docs**
-
 Storefront API and HTML Mode public order responses now return a smaller
 buyer-facing shape. The response still includes `secret_slug`,
 `public_order_url`, `payment_url`, status, totals, line items, shipping

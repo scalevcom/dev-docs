@@ -7,8 +7,6 @@ privacy:
   view: public
 ---
 
-**API**
-
 Storefront API requests using `X-Scalev-Storefront-Api-Key` or
 `X-Scalev-Guest-Token` are rate-limited as direct client/browser requests.
 Machine-authenticated business requests continue to be rate-limited per

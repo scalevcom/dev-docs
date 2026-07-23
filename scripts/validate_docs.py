@@ -12,6 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
 CHANGELOG = ROOT / "changelog"
+CUSTOM_PAGES = ROOT / "custom_pages"
 OPENAPI = ROOT / "reference" / "apiscalevid-v2openapi.json"
 API_REFERENCE = ROOT / "reference" / "Scalev API"
 MINTLIFY_TAGS = re.compile(r"</?(?:Columns|Card|Warning|Update)\b")
@@ -100,6 +101,26 @@ def main() -> int:
     if len(changelog_slugs) != len(set(changelog_slugs)):
         fail(errors, "Changelog contains duplicate slugs")
 
+    link_pages = sorted(CUSTOM_PAGES.glob("*.md"))
+    for path in link_pages:
+        text = path.read_text(encoding="utf-8")
+        relative = path.relative_to(ROOT)
+        match = re.match(r"\A---\n(.*?)\n---\n?\Z", text, re.DOTALL)
+        if not match:
+            fail(errors, f"{relative}: invalid link-page frontmatter")
+            continue
+        frontmatter = match.group(1)
+        if not re.search(r"^title:\s*.+$", frontmatter, re.MULTILINE):
+            fail(errors, f"{relative}: missing title")
+        if not re.search(r"^icon:\s*.+$", frontmatter, re.MULTILINE):
+            fail(errors, f"{relative}: missing icon")
+        if not re.search(r"^link:\s*$", frontmatter, re.MULTILINE):
+            fail(errors, f"{relative}: missing link configuration")
+        if not re.search(r"^  url:\s*https://\S+$", frontmatter, re.MULTILINE):
+            fail(errors, f"{relative}: link page must use an HTTPS URL")
+        if not re.search(r"^  new_tab:\s*true$", frontmatter, re.MULTILINE):
+            fail(errors, f"{relative}: external navigation links must open in a new tab")
+
     try:
         spec = json.loads(OPENAPI.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
@@ -149,7 +170,7 @@ def main() -> int:
 
     print(
         f"Validated {len(pages)} guide pages, {len(categories)} categories, "
-        f"{len(changelog_pages)} changelog posts, "
+        f"{len(changelog_pages)} changelog posts, {len(link_pages)} custom link page, "
         f"{len(spec.get('paths', {}))} OpenAPI paths, and {len(generated_ids)} reference operations."
     )
     return 0

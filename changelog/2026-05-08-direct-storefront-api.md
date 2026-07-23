@@ -7,8 +7,6 @@ privacy:
   view: public
 ---
 
-**API · Dashboard · Docs**
-
 Storefront API setup is now documented as separate from hosted Storefront
 configuration. Storefront frontends can use direct CORS-enabled Storefront API
 calls, `X-Scalev-Guest-Token` cart identity, public

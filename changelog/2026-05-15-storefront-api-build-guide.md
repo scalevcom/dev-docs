@@ -7,8 +7,6 @@ privacy:
   view: public
 ---
 
-**Docs · API**
-
 Added an end-to-end Storefront API guide for agents and frontend developers
 building a custom storefront. The guide covers the direct frontend
 architecture, setup checklist, fetch helpers, catalog flow, guest and customer

@@ -7,8 +7,6 @@ privacy:
   view: public
 ---
 
-**API · Docs**
-
 Order and Storefront APIs now use one canonical `payment_method`. Virtual
 accounts use flat values such as `va_bca`; there is no secondary payment
 method field in the documented request or response contract. Stores can

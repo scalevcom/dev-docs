@@ -7,6 +7,4 @@ privacy:
   view: public
 ---
 
-**Docs**
-
 Published the first Scalev developer documentation pages for API authentication, OAuth authorization, webhooks, and order creation.

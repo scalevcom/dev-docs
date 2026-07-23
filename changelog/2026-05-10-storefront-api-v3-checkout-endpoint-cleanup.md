@@ -7,8 +7,6 @@ privacy:
   view: public
 ---
 
-**API · Docs**
-
 Storefront API v3 checkout order creation now uses one endpoint per
 auth mode: `POST /v3/stores/{store_id}/public/checkout` for public checkout
 and `POST /v3/stores/{store_id}/customers/me/checkout` for authenticated

@@ -7,8 +7,6 @@ privacy:
   view: public
 ---
 
-**API · Docs**
-
 Storefront API now documents browser-safe guest checkout preparation for
 shipping options and checkout summary. Public guest checkout can use a guest
 cart token or direct variant items, returns the same shipping option fields as

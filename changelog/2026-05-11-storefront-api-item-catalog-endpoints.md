@@ -7,8 +7,6 @@ privacy:
   view: public
 ---
 
-**API · Docs**
-
 Storefront API v3 now uses `GET /v3/stores/{store_id}/public/items` and
 `GET /v3/stores/{store_id}/public/items/count` for the public catalog feed
 because the feed returns both products and bundle price options. Product detail remains

@@ -7,8 +7,6 @@ privacy:
   view: public
 ---
 
-**API**
-
 Order payment responses now document `pg_payment_info` per provider type:
 manual methods such as `bank_transfer` and `cod` return an empty object;
 virtual account methods expose provider reference and account details;

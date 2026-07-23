@@ -7,7 +7,5 @@ privacy:
   view: public
 ---
 
-**API**
-
 Order list search now accepts `search_field` so clients choose one searchable
 order column per request. When omitted, `search_field` defaults to `order_id`.
