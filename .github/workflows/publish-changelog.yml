@@ -1,0 +1,22 @@
+name: Publish changelog
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - v3
+    paths:
+      - "changelog/**"
+      - ".github/workflows/publish-changelog.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: readmeio/rdme@v10
+        with:
+          rdme: changelog upload changelog --key=${{ secrets.README_API_KEY }}

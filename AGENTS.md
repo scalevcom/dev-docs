@@ -5,6 +5,7 @@
 - This is the English Scalev developer documentation published with ReadMe.
 - Pages are Markdown files with YAML frontmatter under `docs/`.
 - Navigation order lives in `_order.yaml` files.
+- Native Changelog posts live under `changelog/` and publish with `rdme changelog upload` in GitHub Actions.
 - The API definition is `reference/apiscalevid-v2openapi.json`; its filename is historical, but its contents are the current API v3 contract.
 - Generate endpoint pages with `python3 scripts/sync_openapi_reference.py` after changing OpenAPI.
 - Run `python3 scripts/sync_openapi_reference.py --check` and `python3 scripts/validate_docs.py` before committing.
@@ -22,3 +23,4 @@
 - Document public developer workflows and public API behavior.
 - Do not document internal administration or implementation details.
 - Do not manually edit generated API reference pages under `reference/Scalev API/`.
+- Give each changelog post a stable `slug`, its original `created_at` timestamp, and public privacy frontmatter.
