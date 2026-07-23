@@ -11,6 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
+CHANGELOG = ROOT / "changelog"
 OPENAPI = ROOT / "reference" / "apiscalevid-v2openapi.json"
 API_REFERENCE = ROOT / "reference" / "Scalev API"
 MINTLIFY_TAGS = re.compile(r"</?(?:Columns|Card|Warning|Update)\b")
@@ -33,8 +34,8 @@ def main() -> int:
     errors: list[str] = []
     operation_ids: list[str] = []
     pages = sorted(DOCS.glob("*/*.md"))
-    link_pages = sorted(DOCS.glob("*.md"))
-    slugs = [path.stem for path in pages + link_pages]
+    root_pages = sorted(DOCS.glob("*.md"))
+    slugs = [path.stem for path in pages]
     known_slugs = set(slugs)
 
     if len(slugs) != len(known_slugs):
@@ -61,28 +62,15 @@ def main() -> int:
             if slug not in known_slugs:
                 fail(errors, f"{relative}: unresolved internal link /docs/{slug}")
 
-    for path in link_pages:
-        text = path.read_text(encoding="utf-8")
-        relative = path.relative_to(ROOT)
-        match = re.match(r"\A---\n(.*?)\n---\n?\Z", text, re.DOTALL)
-        if not match:
-            fail(errors, f"{relative}: invalid link-page frontmatter")
-            continue
-        frontmatter = match.group(1)
-        if not re.search(r"^title:\s*.+$", frontmatter, re.MULTILINE):
-            fail(errors, f"{relative}: missing title")
-        if not re.search(r"^link:\s*$", frontmatter, re.MULTILINE):
-            fail(errors, f"{relative}: missing link configuration")
-        if not re.search(r"^  url:\s*https://\S+$", frontmatter, re.MULTILINE):
-            fail(errors, f"{relative}: link page must use an HTTPS URL")
-        if not re.search(r"^  new_tab:\s*(?:true|false)$", frontmatter, re.MULTILINE):
-            fail(errors, f"{relative}: link page must declare new_tab")
+    if root_pages:
+        fail(errors, "docs/ must contain categories only; use ReadMe site navigation for top-level links")
 
     root_order = ordered_values(DOCS / "_order.yaml")
-    categories = sorted(path.name for path in DOCS.iterdir() if path.is_dir())
-    root_entries = categories + [path.stem for path in link_pages]
-    if sorted(root_order) != sorted(root_entries):
-        fail(errors, "docs/_order.yaml does not list every category and link page exactly once")
+    categories = sorted(
+        path.name for path in DOCS.iterdir() if path.is_dir() and (path / "_order.yaml").is_file()
+    )
+    if sorted(root_order) != categories:
+        fail(errors, "docs/_order.yaml does not list every category exactly once")
 
     for category in categories:
         directory = DOCS / category
@@ -90,6 +78,27 @@ def main() -> int:
         category_slugs = sorted(path.stem for path in directory.glob("*.md"))
         if sorted(order) != category_slugs:
             fail(errors, f"docs/{category}/_order.yaml does not list every page exactly once")
+
+    changelog_pages = sorted(CHANGELOG.glob("*.md"))
+    changelog_slugs: list[str] = []
+    for path in changelog_pages:
+        text = path.read_text(encoding="utf-8")
+        relative = path.relative_to(ROOT)
+        match = re.match(r"\A---\n(.*?)\n---\n(.+)", text, re.DOTALL)
+        if not match:
+            fail(errors, f"{relative}: missing frontmatter or body")
+            continue
+        frontmatter = match.group(1)
+        for field in ("title", "slug", "type", "created_at"):
+            field_match = re.search(rf"^{field}:\s*(.+)$", frontmatter, re.MULTILINE)
+            if not field_match:
+                fail(errors, f"{relative}: missing {field}")
+            elif field == "slug":
+                changelog_slugs.append(field_match.group(1).strip())
+        if not re.search(r"^privacy:\s*\n  view:\s*public$", frontmatter, re.MULTILINE):
+            fail(errors, f"{relative}: changelog post must be public")
+    if len(changelog_slugs) != len(set(changelog_slugs)):
+        fail(errors, "Changelog contains duplicate slugs")
 
     try:
         spec = json.loads(OPENAPI.read_text(encoding="utf-8"))
@@ -140,7 +149,7 @@ def main() -> int:
 
     print(
         f"Validated {len(pages)} guide pages, {len(categories)} categories, "
-        f"{len(link_pages)} link page{'s' if len(link_pages) != 1 else ''}, "
+        f"{len(changelog_pages)} changelog posts, "
         f"{len(spec.get('paths', {}))} OpenAPI paths, and {len(generated_ids)} reference operations."
     )
     return 0

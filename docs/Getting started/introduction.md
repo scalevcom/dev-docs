@@ -21,7 +21,7 @@ This introduction covers the base URL, authentication families, response format,
 - **[Create orders](/docs/creating-orders)** — Build digital or physical product orders and redirect customers to the payment page.
 - **[Receive webhooks](/docs/webhooks-overview)** — Subscribe to events and verify webhook requests before you process them.
 - **[Browse the API reference](/reference)** — Inspect endpoints, parameters, request bodies, and response schemas from the interactive API reference.
-- **[Read the changelog](/docs/changelog)** — Follow product updates and documentation changes as the API evolves.
+- **[Read the changelog](/changelog)** — Follow product updates and documentation changes as the API evolves.
 
 ## Base URL
 
