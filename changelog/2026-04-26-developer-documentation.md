@@ -7,4 +7,6 @@ privacy:
   view: public
 ---
 
+**Scalev's first developer documentation now covers authentication, OAuth, webhooks, and order creation.**
+
 Published the first Scalev developer documentation pages for API authentication, OAuth authorization, webhooks, and order creation.

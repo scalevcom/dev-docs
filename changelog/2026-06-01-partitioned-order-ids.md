@@ -7,6 +7,8 @@ privacy:
   view: public
 ---
 
+**Business order IDs now use UUIDv7 while legacy numeric IDs remain accepted for compatibility.**
+
 Business order responses now return the canonical order primary key as a
 UUIDv7 string after the partitioned orders-table migration. Use the response
 `id` for follow-up business API calls such as `GET /v3/orders/{id}` and

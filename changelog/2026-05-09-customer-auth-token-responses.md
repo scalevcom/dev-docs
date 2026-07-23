@@ -7,6 +7,8 @@ privacy:
   view: public
 ---
 
+**Customer authentication now returns typed JWT responses with rotating refresh tokens.**
+
 Storefront customer auth endpoints now return typed JWT token responses.
 `POST /public/auth/login` returns customer access and refresh tokens when
 the store can complete login directly, or `{ "message": "..." }` when an OTP

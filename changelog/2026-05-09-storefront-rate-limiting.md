@@ -7,6 +7,8 @@ privacy:
   view: public
 ---
 
+**Direct Storefront API requests now have client-aware rate limits and response headers.**
+
 Storefront API requests using `X-Scalev-Storefront-Api-Key` or
 `X-Scalev-Guest-Token` are rate-limited as direct client/browser requests.
 Machine-authenticated business requests continue to be rate-limited per

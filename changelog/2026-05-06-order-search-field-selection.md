@@ -7,5 +7,7 @@ privacy:
   view: public
 ---
 
+**Order list searches can now target one explicit searchable field per request.**
+
 Order list search now accepts `search_field` so clients choose one searchable
 order column per request. When omitted, `search_field` defaults to `order_id`.

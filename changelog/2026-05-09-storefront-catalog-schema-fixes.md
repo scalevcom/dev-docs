@@ -7,6 +7,8 @@ privacy:
   view: public
 ---
 
+**The catalog count and product detail schemas now match their real response shapes.**
+
 The public OpenAPI schema for the catalog count route now documents
 `{ "total": number }`, and `GET /public/products/{slug}` now documents a
 storefront product detail response instead of the public order schema.

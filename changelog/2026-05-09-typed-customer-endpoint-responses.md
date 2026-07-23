@@ -7,6 +7,8 @@ privacy:
   view: public
 ---
 
+**Authenticated customer endpoints now return typed profile, cart, order, and course responses.**
+
 Authenticated customer storefront endpoints now return typed responses
 instead of generic success envelopes. `GET`, `PATCH`, and `PATCH /password`
 on `/customers/me/profile` return `customer`, `store`, and

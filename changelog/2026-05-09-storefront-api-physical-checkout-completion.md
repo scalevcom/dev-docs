@@ -7,6 +7,8 @@ privacy:
   view: public
 ---
 
+**Physical checkout now recomputes shipping server-side and returns consistent buyer-safe order responses.**
+
 Storefront API physical checkout now completes after the documented shipping
 option and checkout summary steps. Guest checkout, guest cart checkout, and
 authenticated customer checkout summary and confirm recompute the selected
