@@ -1,4 +1,0 @@
----
-title: Stores
-hidden: false
----

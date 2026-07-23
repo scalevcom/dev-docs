@@ -1,0 +1,8 @@
+- getcustomerme
+- updatecustomerme
+- setcustomerpassword
+- listcustomermeaddresses
+- createcustomermeaddress
+- getcustomermeaddress
+- updatecustomermeaddress
+- deletecustomermeaddress

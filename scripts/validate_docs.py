@@ -12,6 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
 OPENAPI = ROOT / "reference" / "apiscalevid-v2openapi.json"
+API_REFERENCE = ROOT / "reference" / "Scalev API"
 MINTLIFY_TAGS = re.compile(r"</?(?:Columns|Card|Warning|Update)\b")
 INTERNAL_LINK = re.compile(r"\]\(/docs/([^#?)\s]+)")
 
@@ -93,6 +94,25 @@ def main() -> int:
         if duplicate_ids:
             fail(errors, f"Duplicate OpenAPI operationIds: {', '.join(duplicate_ids)}")
 
+    reference_pages = sorted(
+        path for path in API_REFERENCE.glob("*/*.md") if path.name != "index.md"
+    )
+    generated_ids: list[str] = []
+    for path in reference_pages:
+        match = re.search(r"^  operationId:\s*(\S+)\s*$", path.read_text(encoding="utf-8"), re.MULTILINE)
+        if not match:
+            fail(errors, f"{path.relative_to(ROOT)}: missing API operationId")
+            continue
+        generated_ids.append(match.group(1))
+    missing_ids = sorted(set(operation_ids) - set(generated_ids))
+    stale_ids = sorted(set(generated_ids) - set(operation_ids))
+    if missing_ids:
+        fail(errors, f"API reference is missing {len(missing_ids)} OpenAPI operations")
+    if stale_ids:
+        fail(errors, f"API reference contains {len(stale_ids)} stale operations")
+    if len(generated_ids) != len(set(generated_ids)):
+        fail(errors, "API reference contains duplicate operationId pages")
+
     if errors:
         print("Documentation validation failed:")
         for error in errors:
@@ -101,7 +121,7 @@ def main() -> int:
 
     print(
         f"Validated {len(pages)} guide pages, {len(categories)} categories, "
-        f"{len(spec.get('paths', {}))} OpenAPI paths, and {len(operation_ids)} operations."
+        f"{len(spec.get('paths', {}))} OpenAPI paths, and {len(generated_ids)} reference operations."
     )
     return 0
 

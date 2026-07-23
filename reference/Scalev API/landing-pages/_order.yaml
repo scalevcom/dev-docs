@@ -1,0 +1,14 @@
+- listlandingpages
+- createlandingpage
+- listlandingpagessimplified
+- listlandingpagetags
+- getlandingpage
+- updatelandingpage
+- deletelandingpage
+- getlandingpagepublicview
+- updatelandingpagetags
+- listlandingpagedisplays
+- createlandingpagedisplay
+- validatelandingpagedisplay
+- getlandingpagedisplay
+- deletelandingpagedisplay

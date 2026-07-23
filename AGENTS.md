@@ -6,8 +6,8 @@
 - Pages are Markdown files with YAML frontmatter under `docs/`.
 - Navigation order lives in `_order.yaml` files.
 - The API definition is `reference/apiscalevid-v2openapi.json`; its filename is historical, but its contents are the current API v3 contract.
-- ReadMe manages generated files under `reference/Scalev API/` and `reference/ReadMeConfig/`.
-- Run `python3 scripts/validate_docs.py` before committing.
+- Generate endpoint pages with `python3 scripts/sync_openapi_reference.py` after changing OpenAPI.
+- Run `python3 scripts/sync_openapi_reference.py --check` and `python3 scripts/validate_docs.py` before committing.
 
 ## Style
 
@@ -21,4 +21,4 @@
 
 - Document public developer workflows and public API behavior.
 - Do not document internal administration or implementation details.
-- Do not manually edit ReadMe-generated API reference pages.
+- Do not manually edit generated API reference pages under `reference/Scalev API/`.

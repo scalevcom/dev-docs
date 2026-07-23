@@ -1,0 +1,13 @@
+- listbusinesscustomers
+- createbusinesscustomer
+- countbusinesscustomers
+- uploadbusinesscustomers
+- listbusinesscustomertags
+- getbusinesscustomer
+- updatebusinesscustomer
+- updatebusinesscustomertags
+- listbusinesscustomeraddresses
+- createbusinesscustomeraddress
+- getbusinesscustomeraddress
+- updatebusinesscustomeraddress
+- deletebusinesscustomeraddress

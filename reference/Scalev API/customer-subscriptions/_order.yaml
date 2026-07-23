@@ -1,0 +1,8 @@
+- listcustomersubscriptions
+- getcustomersubscription
+- cancelcustomersubscription
+- resumecustomersubscription
+- listsubscriptionupgradeoptions
+- upgradesubscriptionitem
+- listsubscriptiondowngradeoptions
+- downgradesubscriptionitem

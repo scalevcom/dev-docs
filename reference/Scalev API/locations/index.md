@@ -1,4 +1,4 @@
 ---
-title: Locations
+title: "Locations"
 hidden: false
 ---

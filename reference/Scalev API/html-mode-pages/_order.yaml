@@ -1,0 +1,12 @@
+- searchpagepubliclocations
+- listpagepubliclocationprovinces
+- listpagepubliclocationcities
+- listpagepubliclocationsubdistricts
+- listpagepubliclocationpostalcodes
+- checkpagepublicdiscountcode
+- listpagepubliccheckoutshippingoptions
+- getpagepubliccheckoutsummary
+- createpagepublicorder
+- sendpagepublicmetaconversionevent
+- sendpagepublictiktokconversionevent
+- sendpagepublicsnackvideoconversionevent
