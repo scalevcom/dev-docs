@@ -33,7 +33,8 @@ def main() -> int:
     errors: list[str] = []
     operation_ids: list[str] = []
     pages = sorted(DOCS.glob("*/*.md"))
-    slugs = [path.stem for path in pages]
+    link_pages = sorted(DOCS.glob("*.md"))
+    slugs = [path.stem for path in pages + link_pages]
     known_slugs = set(slugs)
 
     if len(slugs) != len(known_slugs):
@@ -60,10 +61,28 @@ def main() -> int:
             if slug not in known_slugs:
                 fail(errors, f"{relative}: unresolved internal link /docs/{slug}")
 
+    for path in link_pages:
+        text = path.read_text(encoding="utf-8")
+        relative = path.relative_to(ROOT)
+        match = re.match(r"\A---\n(.*?)\n---\n?\Z", text, re.DOTALL)
+        if not match:
+            fail(errors, f"{relative}: invalid link-page frontmatter")
+            continue
+        frontmatter = match.group(1)
+        if not re.search(r"^title:\s*.+$", frontmatter, re.MULTILINE):
+            fail(errors, f"{relative}: missing title")
+        if not re.search(r"^link:\s*$", frontmatter, re.MULTILINE):
+            fail(errors, f"{relative}: missing link configuration")
+        if not re.search(r"^  url:\s*https://\S+$", frontmatter, re.MULTILINE):
+            fail(errors, f"{relative}: link page must use an HTTPS URL")
+        if not re.search(r"^  new_tab:\s*(?:true|false)$", frontmatter, re.MULTILINE):
+            fail(errors, f"{relative}: link page must declare new_tab")
+
     root_order = ordered_values(DOCS / "_order.yaml")
     categories = sorted(path.name for path in DOCS.iterdir() if path.is_dir())
-    if sorted(root_order) != categories:
-        fail(errors, "docs/_order.yaml does not list every category exactly once")
+    root_entries = categories + [path.stem for path in link_pages]
+    if sorted(root_order) != sorted(root_entries):
+        fail(errors, "docs/_order.yaml does not list every category and link page exactly once")
 
     for category in categories:
         directory = DOCS / category
@@ -121,6 +140,7 @@ def main() -> int:
 
     print(
         f"Validated {len(pages)} guide pages, {len(categories)} categories, "
+        f"{len(link_pages)} link page{'s' if len(link_pages) != 1 else ''}, "
         f"{len(spec.get('paths', {}))} OpenAPI paths, and {len(generated_ids)} reference operations."
     )
     return 0
