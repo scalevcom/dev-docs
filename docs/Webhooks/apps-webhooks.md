@@ -1,6 +1,6 @@
 ---
-title: Apps Webhooks
-excerpt: This document explains how webhooks feature behave for apps.
+title: "Apps Webhooks"
+excerpt: "Receive webhooks on behalf of businesses that authorize your Scalev app."
 deprecated: false
 hidden: false
 metadata:

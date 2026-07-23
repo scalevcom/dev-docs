@@ -1,0 +1,17 @@
+# Scalev developer documentation
+
+This repository is the Git source for [docs.scalev.dev](https://docs.scalev.dev), published through ReadMe Bi-Directional Sync.
+
+## Structure
+
+- `docs/` contains English guide pages and navigation order files.
+- `reference/apiscalevid-v2openapi.json` contains the Scalev API v3 OpenAPI source. The historical filename is retained so ReadMe updates the connected API definition in place.
+- `reference/Scalev API/` and `reference/ReadMeConfig/` are managed by ReadMe when the OpenAPI definition is synchronized.
+
+## Validate changes
+
+```sh
+python3 scripts/validate_docs.py
+```
+
+Push documentation changes to the ReadMe-connected `v3` branch. ReadMe then publishes the branch and may commit generated API reference updates back to it.

@@ -1,6 +1,6 @@
 ---
-title: Webhooks Events
-excerpt: This document explains webhooks events in Scalev and the structure.
+title: "Webhook Events"
+excerpt: "Review the webhook event types currently sent by Scalev."
 deprecated: false
 hidden: false
 metadata:
@@ -15,6 +15,11 @@ Scalev currently supports the following webhook events:
 * `order.status_changed`: Triggered when the status of an order changes.
 * `order.payment_status_changed`: Triggered when the payment status of an order changes.
 * `order.spam_created`: Triggered when a spam order is created.
+
+Order webhook payloads use one canonical `payment_method`; virtual accounts use
+flat values such as `va_bca`. `payment_link_id` and `is_from_payment_link`
+preserve E-Payment Link origin after a paid order reports the concrete method
+that the buyer used.
 
 <br />
 
@@ -37,6 +42,9 @@ For example:
   "unique_id": "event_I7fkiBF4YksYDsKbVe5ZOEyZ",
   "timestamp": "2025-01-29T20:28:25.046183Z",
   "data": {
+    "id": "01948092-9b80-7f91-b23d-1a8686278331",
+    "payment_link_id": null,
+    "is_from_payment_link": false,
     "order_id": "250130JQHFZG",
     "secret_slug": "WjCc_Jk-EK2F8xLCseNKfjFIaESbm9-W2RZvRaas",
     "status": "pending",
@@ -66,7 +74,6 @@ For example:
     },
     "epayment_provider": null,
     "payment_method": "bank_transfer",
-    "sub_payment_method": null,
     "financial_entity": {
       "code": "bni",
       "name": "Bank Negara Indonesia"
@@ -87,6 +94,7 @@ For example:
     "product_discount": "0.00",
     "other_income_name": "Biaya Lainnya",
     "other_income": "0.00",
+    "payment_link_income": "0.00",
     "discount_rate": "0.00",
     "cogs": "45095.00",
     "shipping_cost": "19000.00",

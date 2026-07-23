@@ -1,6 +1,6 @@
 ---
-title: Verifying a Webhook Request
-excerpt: This document outlines how to verify a webhook request from Scalev.
+title: "Verifying a Webhook Request"
+excerpt: "Verify Scalev webhook requests with the X-Scalev-Hmac-Sha256 signature."
 deprecated: false
 hidden: false
 metadata:
@@ -21,7 +21,7 @@ Here are code examples to help you validate the webhook:
 ```javascript
 // Using crypto-js dependency
 const HMACSHA256 = require("crypto-js/hmac-sha256");
-const BASE64 = require("crypto-js/enc-base64");
+const BASE64 = require("crypto-js/docs/introductionc-base64");
 const calculatedHmac = BASE64.stringify(
   HMACSHA256("JSON-BODY-HERE", "YOUR-SIGNING-SECRET-HERE"),
 );

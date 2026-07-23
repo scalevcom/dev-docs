@@ -1,6 +1,6 @@
-- overview
-- enabling-webhooks-feature
+- webhooks-overview
+- enabling-webhooks
 - verifying-a-webhook-request
 - apps-webhooks
-- available-events
+- webhook-events
 - payload-example
