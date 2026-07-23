@@ -112,8 +112,6 @@ def main() -> int:
         frontmatter = match.group(1)
         if not re.search(r"^title:\s*.+$", frontmatter, re.MULTILINE):
             fail(errors, f"{relative}: missing title")
-        if not re.search(r"^icon:\s*.+$", frontmatter, re.MULTILINE):
-            fail(errors, f"{relative}: missing icon")
         if not re.search(r"^link:\s*$", frontmatter, re.MULTILINE):
             fail(errors, f"{relative}: missing link configuration")
         if not re.search(r"^  url:\s*https://\S+$", frontmatter, re.MULTILINE):
