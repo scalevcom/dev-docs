@@ -1,0 +1,5 @@
+- listcheckoutaddresses
+- listcheckoutpaymentmethods
+- listcheckoutshippingoptions
+- getcheckoutsummary
+- createcustomercheckout

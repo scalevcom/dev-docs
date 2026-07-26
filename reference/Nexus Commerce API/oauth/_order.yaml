@@ -1,0 +1,10 @@
+- getoauthauthorizationservermetadata
+- getoauthapplicationpublic
+- listoauthscopes
+- getcurrentoauthapplication
+- registeroauthclient
+- exchangeoauthtoken
+- revokeoauthtoken
+- introspectoauthtoken
+- getoauthinstallationstatus
+- exchangeoauthinstallationlaunchtoken
