@@ -1,4 +1,0 @@
----
-title: "Locations"
-hidden: false
----
