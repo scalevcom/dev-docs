@@ -6,37 +6,79 @@ hidden: false
 metadata:
   robots: index
 ---
-To authenticate webhook requests from Scalev, verify the signature included in the `X-Scalev-Hmac-Sha256` header. This signature is created using your Signing Secret as the key in an HMAC-SHA256 algorithm. To validate each request:
+To authenticate webhook requests from Scalev, verify the signature included in the `X-Scalev-Hmac-Sha256` header. Scalev creates this Base64 signature with your Signing Secret and HMAC-SHA256.
 
-1. Extract the signature from the `X-Scalev-Hmac-Sha256` header
-2. Calculate your own HMAC-SHA256 digest using your Signing Secret
-3. Compare your calculated digest with the received signature
+1. Read the request body as raw bytes. Do not parse and serialize the JSON first.
+2. Read the signature from `X-Scalev-Hmac-Sha256`.
+3. Calculate HMAC-SHA256 over the exact raw body bytes.
+4. Decode the received Base64 signature and compare the two byte sequences in constant time.
 
-If the signatures match, you can trust that the webhook came from Scalev and wasn't tampered with.
+Reject the request before processing it if the signatures do not match.
 
-Here are code examples to help you validate the webhook:
+## Node.js
 
-### Node.js
+Register the raw-body route before `express.json()`:
 
 ```javascript
-// Using crypto-js dependency
-const HMACSHA256 = require("crypto-js/hmac-sha256");
-const BASE64 = require("crypto-js/docs/introductionc-base64");
-const calculatedHmac = BASE64.stringify(
-  HMACSHA256("JSON-BODY-HERE", "YOUR-SIGNING-SECRET-HERE"),
+import crypto from "node:crypto";
+import express from "express";
+
+const app = express();
+const signingSecret = process.env.SCALEV_WEBHOOK_SIGNING_SECRET;
+
+function validScalevSignature(rawBody, signature) {
+  if (!signingSecret || !signature) return false;
+
+  const expected = crypto
+    .createHmac("sha256", signingSecret)
+    .update(rawBody)
+    .digest();
+
+  let received;
+  try {
+    received = Buffer.from(signature, "base64");
+  } catch {
+    return false;
+  }
+
+  return (
+    received.length === expected.length &&
+    crypto.timingSafeEqual(received, expected)
+  );
+}
+
+app.post(
+  "/webhooks/scalev",
+  express.raw({ type: "application/json" }),
+  (req, res) => {
+    const signature = req.get("X-Scalev-Hmac-Sha256");
+
+    if (!Buffer.isBuffer(req.body) || !validScalevSignature(req.body, signature)) {
+      return res.sendStatus(401);
+    }
+
+    const event = JSON.parse(req.body.toString("utf8"));
+    // Store the event durably before acknowledging it.
+    return res.sendStatus(204);
+  }
 );
-console.log(calculatedHmac);
+
+app.use(express.json());
 ```
 
-### Python
+## Python
 
 ```python
 import hmac
 import base64
-json_body = 'JSON-BODY-HERE'.encode('utf-8')
-signing_secret = 'YOUR-SIGNING-SECRET-HERE'.encode('utf-8')
-calculated_hmac = base64.b64encode(
-   hmac.new(signing_secret, json_body, 'sha256').digest()
-).decode('utf-8')
-print(calculated_hmac)
+
+raw_body = b"JSON-BODY-HERE"
+signing_secret = b"YOUR-SIGNING-SECRET-HERE"
+received_signature = "BASE64-SIGNATURE-HERE"
+
+expected = hmac.new(signing_secret, raw_body, "sha256").digest()
+received = base64.b64decode(received_signature, validate=True)
+
+if not hmac.compare_digest(expected, received):
+    raise ValueError("Invalid Scalev webhook signature")
 ```

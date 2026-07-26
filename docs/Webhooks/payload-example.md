@@ -201,6 +201,19 @@ The following is the examples of the content of `data` field in a webhook event.
 }
 ```
 
+## `payment.received`, `payment.failed`
+
+These stable payment events use the same `data` shape as
+`order.payment_status_changed` above.
+
+- `payment.received` has `payment_status` set to `paid` or `settled`.
+- `payment.failed` has `payment_status` set to `conflict`.
+- The payload includes `id` for correlation and a `customer` object, but it does
+  not include `orderlines`.
+
+Subscribe to `order.created` and persist its `orderlines` when you need to map a
+successful payment to purchased `variant_unique_id` values.
+
 ## `order.status_changed`
 
 ```json

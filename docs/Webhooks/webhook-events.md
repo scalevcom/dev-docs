@@ -15,6 +15,18 @@ Scalev currently supports the following webhook events:
 * `order.status_changed`: Triggered when the status of an order changes.
 * `order.payment_status_changed`: Triggered when the payment status of an order changes.
 * `order.spam_created`: Triggered when a spam order is created.
+* `payment.received`: Triggered when an order's payment status becomes `paid` or `settled`. Use this stable event for payment-driven fulfillment.
+* `payment.failed`: Triggered when an order's payment status becomes `conflict`.
+
+`payment.received` and `payment.failed` use the same `data` shape as
+`order.payment_status_changed`. The payment payload identifies the order and
+customer but does not include `orderlines`. Subscribe to `order.created` as well
+when fulfillment depends on purchased variants.
+
+Webhook delivery is at least once. Store `unique_id` with a unique constraint and
+make event processing idempotent. A payment can produce separate
+`payment.received` events at `paid` and `settled`; use your fulfillment key to
+prevent duplicate delivery.
 
 Order webhook payloads use one canonical `payment_method`; virtual accounts use
 flat values such as `va_bca`. `payment_link_id` and `is_from_payment_link`
@@ -23,7 +35,7 @@ that the buyer used.
 
 <br />
 
-## Payload Structure
+## Payload structure
 
 All events in Scalev will have the following structure:
 

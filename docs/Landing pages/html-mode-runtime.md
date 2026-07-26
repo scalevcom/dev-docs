@@ -400,6 +400,9 @@ Supported payload fields:
 - Payment field: `paymentMethod`
 - Items list: `items[]` with `{ type: "product", variantUniqueId, quantity }` or `{ type: "bundle", bundlePriceOptionUniqueId, quantity }`
 - Discount field: `discountCode`
+- Optional post-payment override: `isPostPaymentRedirectEnabled` and `postPaymentRedirectUrl`
+
+The post-payment fields are creation-only API inputs; Scalev does not add them as controls to your public form. Omit both fields to inherit the Checkout Page setting. Send `isPostPaymentRedirectEnabled: false` to force Scalev's hosted success flow for that order. Send `isPostPaymentRedirectEnabled: true` with an absolute HTTPS `postPaymentRedirectUrl` to replace the page setting for that order. Scalev snapshots the result, so an order update cannot change it later.
 
 Do not submit top-level product or shipping discount fields. Product price and item-level adjustments belong on `items[]` when needed. Use `validateDiscount` to preview eligible discount code amounts, then pass the selected code as `discountCode` to `createOrder`.
 

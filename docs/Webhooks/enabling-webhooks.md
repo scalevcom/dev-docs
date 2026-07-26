@@ -22,10 +22,11 @@ To use webhooks feature in Scalev, you must enable it in your account and regist
          ```json
          {
            "event": "business.test_event",
+           "unique_id": "event_EXAMPLE_UNIQUE_ID",
            "timestamp": "<ISO_8601_TIMESTAMP>",
            "data": {}
          }
          ```
 
-         You must return a response with status code 200, otherwise it will fail and the settings won't be saved. Also, you need to verify the request using the mechanism explained in [the webhook verification guide](/docs/verifying-a-webhook-request).
+         You must return any `2xx` response, otherwise the test fails and the settings won't be saved. Store `unique_id` to deduplicate deliveries. You also need to verify the request using the mechanism explained in [the webhook verification guide](/docs/verifying-a-webhook-request).
 6. Click save.

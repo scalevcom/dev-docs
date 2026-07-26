@@ -8,6 +8,29 @@ metadata:
 ---
 When you build a checkout form manually in HTML Mode, `Scalev.checkout.createOrder(payload)` creates the order. Your page handles the redirect after the order is created.
 
+There are two separate success moments in a checkout:
+
+1. **Order created:** Your HTML Mode page receives the result from `createOrder` and sends the buyer to the returned Scalev payment or order URL.
+2. **Payment received:** A hosted Scalev payment, success, or order page observes the paid state and can redirect the buyer to the merchant-configured post-payment URL.
+
+The editor uses an explicit **Redirect to a custom URL after payment** toggle and a **Post-payment redirect URL**. When the toggle is off, Scalev uses its default success flow; a saved but disabled URL has no effect. When the toggle is on, a valid URL is required.
+
+This configuration is private editor state. It is not included in `window.Scalev` or `Scalev.data.get()`, so HTML code cannot read the page default. Scalev snapshots the resolved URL onto the new public order. Hosted Scalev pages apply that snapshot only after the order reports a `paid` or `settled` payment.
+
+An API caller can override the private default for one order through `Scalev.checkout.createOrder(payload)`. This does not add a control to the dashboard or public form. Omit both override fields to inherit the page setting:
+
+```js
+const order = await Scalev.checkout.createOrder({
+  ...payload,
+  isPostPaymentRedirectEnabled: true,
+  postPaymentRedirectUrl: "https://app.example.com/order-specific-success"
+});
+```
+
+Send `isPostPaymentRedirectEnabled: false` to keep Scalev's hosted success flow for that order. When you send `true`, `postPaymentRedirectUrl` is required and must be an absolute HTTPS URL. The override is creation-only and cannot be changed through an order update.
+
+Neither redirect proves payment. Provision external access from a verified `payment.received` webhook, not from browser navigation.
+
 HTML Checkout Pages expose the selected after-checkout configuration in `Scalev.data.get().afterCheckout`. Use that config to choose one of these six types after `createOrder` returns successfully.
 
 ```js
