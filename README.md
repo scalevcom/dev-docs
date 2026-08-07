@@ -6,7 +6,7 @@ This repository is the Git source for [docs.scalev.dev](https://docs.scalev.dev)
 
 - `docs/` contains English guide pages and navigation order files.
 - `changelog/` contains the source for ReadMe's unversioned native Changelog posts.
-- `reference/apiscalevid-v2openapi.json` contains the Scalev API v3 OpenAPI source. The historical filename is retained so ReadMe updates the connected API definition in place.
+- `reference/openapi.json` contains the Scalev API v3 OpenAPI source.
 - `reference/Scalev API/` contains generated ReadMe endpoint pages.
 - `reference/ReadMeConfig/` contains ReadMe's hidden API reference configuration pages.
 

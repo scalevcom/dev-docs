@@ -13,7 +13,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SPEC_PATH = ROOT / "reference" / "apiscalevid-v2openapi.json"
+SPEC_PATH = ROOT / "reference" / "openapi.json"
 REFERENCE_ROOT = ROOT / "reference"
 API_DIRECTORY = REFERENCE_ROOT / "Scalev API"
 HTTP_METHODS = {"get", "put", "post", "delete", "options", "head", "patch", "trace"}
@@ -104,6 +104,49 @@ def build_files(spec: dict) -> dict[Path, str]:
     return files
 
 
+FRONTMATTER = re.compile(r"\A---\n(.*?)\n---\s*\Z", re.DOTALL)
+ENTRY = re.compile(r"^(\s*)([A-Za-z_][A-Za-z0-9_-]*):\s*(.*)$")
+COMPARED_KEYS = ("title", "hidden", "api.file", "api.operationId")
+
+
+def frontmatter_values(text: str) -> dict[str, str] | None:
+    """Read the frontmatter keys this generator owns.
+
+    ReadMe rewrites these files when it syncs: it reorders keys, drops the quotes
+    around a title, adds its own `excerpt`, and leaves off the trailing newline.
+    None of that changes what the page points at, so the check compares the values
+    rather than the bytes; otherwise every ReadMe sync would fail CI.
+    """
+    match = FRONTMATTER.match(text)
+    if not match:
+        return None
+
+    values: dict[str, str] = {}
+    parent: str | None = None
+    for line in match.group(1).splitlines():
+        entry = ENTRY.match(line)
+        if not entry:
+            continue
+        indent, key, value = entry.group(1), entry.group(2), entry.group(3).strip()
+        if indent:
+            if parent:
+                values[f"{parent}.{key}"] = value.strip("\"'")
+            continue
+        parent = key if not value else None
+        if value:
+            values[key] = value.strip("\"'")
+    return values
+
+
+def comparable(relative_path: Path, text: str) -> object:
+    if relative_path.suffix == ".yaml":
+        return [line.strip() for line in text.splitlines() if line.strip()]
+    values = frontmatter_values(text)
+    if values is None:
+        return None
+    return {key: values.get(key) for key in COMPARED_KEYS}
+
+
 def check_files(expected: dict[Path, str]) -> int:
     actual_paths = {
         path.relative_to(API_DIRECTORY)
@@ -117,7 +160,11 @@ def check_files(expected: dict[Path, str]) -> int:
     for path in sorted(actual_paths - expected_paths):
         errors.append(f"unexpected reference file: {path}")
     for path in sorted(expected_paths & actual_paths):
-        if (API_DIRECTORY / path).read_text(encoding="utf-8") != expected[path]:
+        actual_text = (API_DIRECTORY / path).read_text(encoding="utf-8")
+        actual = comparable(path, actual_text)
+        if actual is None:
+            errors.append(f"unreadable reference frontmatter: {path}")
+        elif actual != comparable(path, expected[path]):
             errors.append(f"stale reference file: {path}")
     if errors:
         print("OpenAPI reference generation check failed:")
