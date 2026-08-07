@@ -10,7 +10,7 @@ Storefront API checkout uses the same buyer-facing checkout concepts as the Scal
 
 The Storefront API is designed so your storefront can render its own payment page. Use the public order and payment responses to show buyer-facing instructions directly in your UI. `payment_url` is still returned as a hosted fallback for storefronts that have not implemented a method-specific renderer or for provider flows that must open a hosted payment page.
 
-Use only payment methods returned by `GET /v3/stores/{store_id}/public/payment-methods`. Storefront checkout does not return `no_payment`, and checkout endpoints reject it if submitted directly.
+Use only payment methods returned by `GET /v3/stores/{store_id}/public/payment-methods`. Storefront checkout does not return `no_payment`, and checkout endpoints reject it if submitted directly. When a store passes provider transaction fees to the customer, Scalev also omits configured e-payment methods that do not have an executable provider and verified fee schedule. This filtering does not disable or delete the store's saved method configuration.
 
 ## Guest checkout flow
 
@@ -115,13 +115,22 @@ Response fields match the existing checkout summary:
 {
   "product_price": "125000.00",
   "shipping_cost": "12000",
-  "other_income": "0",
-  "other_income_name": "Biaya Lainnya",
-  "gross_revenue": "137000.00"
+  "other_income": "6500",
+  "other_income_name": "Biaya Penanganan",
+  "service_fee": "3500",
+  "gross_revenue": "147000.00"
 }
 ```
 
-Digital-only carts return `shipping_cost: "0"`.
+`other_income` remains the store's existing Other Charges amount and uses `other_income_name` as its buyer-facing label. `service_fee` is the single combined customer-facing fee for direct e-payment. The two charges are independent and can both be non-zero. Scalev calculates Other Charges first, then uses the canonical checkout amount plus `other_income` as the Service Fee base. `gross_revenue` is the displayed and charged total. Do not derive or submit separate provider or Scalev fee components.
+
+Scalev calculates both charges from the store's saved Service Fee and Other Charges settings. Your storefront does not send a fee policy, a fee amount, or a fee quote in either request, and there is no fee field to carry from the summary into checkout. Checkout recalculates both from the same settings, so treat summary values as a buyer-facing preview.
+
+Dynamic E-Payment Other Charges and per-payment-method overrides remain active for direct checkout and can coexist with Service Fee. `service_fee` is zero when the store charges no customer fee for the selected method, while the saved Other Charges rules still apply. COD and other non-e-payment methods continue using Other Charges and return no service fee. Digital-only carts return `shipping_cost: "0"`.
+
+A `payment_link` order is always created with `other_income` of zero, whatever the request contains. The Payment Link snapshots the store's Other Charges configuration and quotes both charges on the Scalev-hosted payment page after the buyer picks a concrete method.
+
+Refresh the summary whenever the cart items, destination, shipping selection, discount, or payment method changes.
 
 ## Discount code check
 
@@ -185,17 +194,20 @@ Use the same selected checkout fields:
   "courier_service_id": 123,
   "warehouse_unique_id": "warehouse_...",
   "courier_aggregator_code": null,
-  "payment_method": "bank_transfer"
+  "payment_method": "va_bca"
 }
 ```
 
-The checkout endpoint uses the selected courier service, warehouse, destination, payment method, and checkout items to recompute the shipping cost internally. Do not treat a client-supplied `shipping_cost` as the source of truth.
+The checkout endpoint uses the selected courier service, warehouse, destination, payment method, and checkout items to recompute shipping, Other Charges, and the service fee internally. Do not submit a fee policy or a fee amount, and do not treat a client-supplied `shipping_cost` as the source of truth.
+
+The created order carries the fees Scalev calculated at checkout time, which can differ from an older summary if the store settings or checkout inputs changed in between. Read the totals from the checkout response before showing the buyer a confirmation.
 
 On success, the response includes the created slim public order data, including `secret_slug`, `public_order_url`, `payment_url`, status, totals, the existing `variants` and `bundle_price_options` object maps, line items, shipping details, and payment fields. Internal order IDs, dashboard-only revenue fields, platform fees, payment-status history, and affiliate attribution are not returned. Use `secret_slug` to read or update the order. Use `payment_url` only as a hosted fallback if your storefront does not render the payment instructions itself.
 
-When the buyer pays an E-Payment Link surcharge, the response exposes that
-customer-paid amount as `payment_link_income`. It is separate from
-`other_income` and is included in `gross_revenue`.
+New orders expose one unified customer-facing `service_fee`, including orders
+created through E-Payment Link. `other_income` remains independent. Legacy
+orders can still expose historical compatibility fee fields, including
+`payment_link_income`; do not combine those fields again for new orders.
 
 `payment_method` normally uses one canonical method returned by the store's
 payment-method endpoint. Virtual accounts use flat values such as `va_bca` and
@@ -349,3 +361,5 @@ Customer checkout endpoints stay under:
 They use `Authorization: Bearer <customer_access_token>`, not the Storefront API key. Addresses, payment methods, shipping options, and summary use the same checkout preparation fields as public checkout. Create the order with `POST /v3/stores/{store_id}/customers/me/checkout`; the request accepts direct typed `items`, `cart_id`, or both. The response uses the same public order shape returned by public checkout and public order reads, so every checkout completion response has the same order fields.
 
 Customer checkout summary uses the selected courier service, warehouse, destination, payment method, and either direct `items` or the referenced customer cart to recompute shipping cost server-side. A client-supplied `shipping_cost` is only a compatibility value and is not the authoritative amount.
+
+Authenticated customer checkout handles fees the same way as guest checkout: Scalev calculates Other Charges and Service Fee from the store's settings, the request carries no fee fields, and the storefront refreshes the summary when checkout inputs change and renders `other_income` and `service_fee` as separate rows.

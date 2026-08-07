@@ -246,7 +246,7 @@ redirectAfterOrder({
 });
 ```
 
-If the checkout includes store-configured extra fees, Scalev calculates them in `estimateSummary` and applies and validates them again during `createOrder`. Use `Scalev.checkout.estimateSummary()` only when the page needs to show an estimated fee and total before submit; pass the payload you will send to `createOrder`. The redirect logic after order creation does not change.
+If the checkout includes Other Charges or a customer-facing Service Fee, Scalev calculates both from the store's saved settings in `estimateSummary` and recalculates them during `createOrder`. The Service Fee base includes Other Charges. The page never sends a fee policy, a fee amount, or a fee quote. Use `Scalev.checkout.estimateSummary()` only when the page needs to show an estimated fee and total before submit; pass the payload you will send to `createOrder`. The redirect logic after order creation does not change.
 
 ## The six types
 

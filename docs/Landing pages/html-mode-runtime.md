@@ -108,7 +108,7 @@ Response example:
 }
 ```
 
-Use `store.paymentMethodOptions` to render payment choices. Render `display`, show `logoUrl`, and submit the selected `value` as `paymentMethod`.
+Use `store.paymentMethodOptions` to render payment choices. Render `display`, show `logoUrl`, and submit the selected `value` as `paymentMethod`. Scalev omits e-payment methods that cannot be executed with a verified fee schedule when the store passes provider transaction fees to the customer; do not recreate hidden options from saved store configuration.
 
 Payment option values are already flattened:
 
@@ -337,13 +337,20 @@ Response example:
 {
   "productPrice": 268000,
   "shippingCost": 15300,
-  "otherIncome": 0,
-  "otherIncomeName": "Biaya Lainnya",
-  "grossRevenue": 273300
+  "otherIncome": 6500,
+  "otherIncomeName": "Biaya Penanganan",
+  "serviceFee": 2500,
+  "grossRevenue": 292300
 }
 ```
 
-Use `estimateSummary` only when the checkout UI displays totals before submit. Do not calculate or submit `otherIncome` or `otherIncomeName`; Scalev calculates store-configured extra fees in `estimateSummary` and applies them again during `createOrder`.
+Use `estimateSummary` when the checkout UI displays totals before submit. Refresh it whenever the selected items, quantities, destination, shipping option, discount, or payment method changes. Render `otherIncome` with `otherIncomeName` when it is non-zero, and render one `Biaya layanan` or `Service fee` row from `serviceFee` when it is non-zero.
+
+`otherIncome` remains the store's existing Other Charges concept. `serviceFee` is one combined customer-facing fee for direct e-payment. Both can be non-zero in the same checkout. Scalev calculates Other Charges first, then uses the checkout amount plus `otherIncome` as the base for the Service Fee, and `grossRevenue` is the displayed and charged total.
+
+Both fees are calculated by Scalev from the store's saved Service Fee and Other Charges settings. The page does not send a fee policy, a fee amount, or a fee quote, and there is no fee field to echo back into `createOrder`. Order creation recalculates both fees from the same store settings, so treat every summary value as a preview for the buyer. `serviceFee` is zero when the store charges no customer fee for the selected method, and it is always zero for `cod`, other non-e-payment methods, and `payment_link`, while saved Other Charges rules still apply.
+
+A `payment_link` order is always created with `otherIncome` of zero, whatever the request contains. The Payment Link snapshots the store's Other Charges configuration and quotes both fees on the Scalev-hosted payment page once the buyer picks a concrete method.
 
 ## `Scalev.checkout.createOrder(payload)`
 
@@ -463,6 +470,7 @@ Response example:
   "discountCodeDiscount": "10000.00",
   "otherIncome": "0.00",
   "otherIncomeName": "Biaya Lainnya",
+  "serviceFee": "0.00",
   "grossRevenue": "95300.00",
   "paymentMethod": "bank_transfer",
   "paymentAccount": {
