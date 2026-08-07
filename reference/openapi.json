@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "Nexus Commerce API",
+    "title": "Scalev API",
     "version": "3.0.0",
     "description": "Public v3 commerce contract for storefront, customer, and authenticated business\ncommerce flows.\n\nThis specification intentionally documents only the `/v3` namespace.\nStore-derived public storefront routes under `/v3/stores/{store_id}/public/*` require `X-Scalev-Storefront-Api-Key`.\nHTML Mode public page runtime routes under `/v3/pages/{page_unique_id}/*` require `X-Scalev-Page-Api-Key` and do not accept storefront public API keys.\nStorefront API requests made with `X-Scalev-Storefront-Api-Key`, page runtime requests made with `X-Scalev-Page-Api-Key`, and guest-cart requests made with `X-Scalev-Guest-Token` are browser client requests and use the direct client/IP rate limiter. Machine-authenticated business requests are rate-limited per API key or OAuth installation. Rate-limit metadata is returned in `X-Ratelimit-*` headers, and `429` responses may be plain text.\n",
     "license": {
@@ -1175,7 +1175,7 @@
         ],
         "operationId": "createPublicCheckout",
         "summary": "Create a public checkout order",
-        "description": "Public storefront endpoint. Create an order from direct `items`, from the guest cart referenced by `X-Scalev-Guest-Token`, or from direct `items` while clearing the referenced guest cart after successful order creation. Direct checkout items are store-scoped and not blocked by storefront listing visibility.\n",
+        "description": "Public storefront endpoint. Create an order from direct `items`, from the guest cart referenced by `X-Scalev-Guest-Token`, or from direct `items` while clearing the referenced guest cart after successful order creation. Direct checkout items are store-scoped and not blocked by storefront listing visibility. Product prices, discounts, shipping, Other Income, the Store customer-fee policy, and service fees are recalculated from current backend data during creation. Preview values are not confirmation inputs and do not produce a quote-conflict response.\n",
         "requestBody": {
           "$ref": "#/components/requestBodies/PublicCheckoutRequestBody"
         },
@@ -1579,7 +1579,7 @@
         ],
         "operationId": "getPagePublicCheckoutSummary",
         "summary": "Compute an HTML Mode checkout summary",
-        "description": "Page-scoped public endpoint used by `Scalev.checkout.estimateSummary(payload)`. It accepts HTML Mode `items`, `destination`, `payment_method`, and `shipping_option`, recomputes shipping, and applies store-configured extra fees for display.\n",
+        "description": "Page-scoped public endpoint used by `Scalev.checkout.estimateSummary(payload)`. It accepts HTML Mode `items`, `destination`, `payment_method`, `shipping_option`, and an optional `discount_code_code`. It recomputes shipping and applies backend-owned Other Income and service fees for display. The current Store settings are the authoritative customer-fee policy; clients do not submit that policy or a fee confirmation ID.\n",
         "requestBody": {
           "$ref": "#/components/requestBodies/PagePublicCheckoutSummaryRequestBody"
         },
@@ -1618,7 +1618,7 @@
         ],
         "operationId": "createPagePublicOrder",
         "summary": "Create an HTML Mode public order",
-        "description": "Page-scoped public endpoint for HTML Mode `Scalev.checkout.createOrder`. This route accepts HTML Mode order payloads with `customer`, `destination`, `items`, and `shipping_option`, requires `X-Scalev-Page-Api-Key`, and does not accept storefront public API keys. The page and store are resolved from the path and page API key; any `page_unique_id` or `store_unique_id` values supplied in the JSON body are ignored.\n",
+        "description": "Page-scoped public endpoint for HTML Mode `Scalev.checkout.createOrder`. This route accepts HTML Mode order payloads with `customer`, `destination`, `items`, and `shipping_option`, requires `X-Scalev-Page-Api-Key`, and does not accept storefront public API keys. The page and store are resolved from the path and page API key; any `page_unique_id` or `store_unique_id` values supplied in the JSON body are ignored. Product prices, discounts, shipping, Other Income, the Store customer-fee policy, and service fees are recalculated from current backend data during creation; an earlier summary is not a confirmation input.\n",
         "requestBody": {
           "$ref": "#/components/requestBodies/PagePublicOrderCreateRequestBody"
         },
@@ -1798,7 +1798,7 @@
         ],
         "operationId": "getPublicCheckoutSummary",
         "summary": "Compute guest checkout summary",
-        "description": "Public storefront endpoint. Recomputes the selected shipping cost from destination, courier service, warehouse, payment method, and either direct `items` or the guest cart referenced by `X-Scalev-Guest-Token`. Client-supplied `shipping_cost` is ignored. Digital-only carts return `shipping_cost: \"0\"`.\n",
+        "description": "Public storefront endpoint. Recomputes the selected shipping cost from destination, courier service, warehouse, payment method, and either direct `items` or the guest cart referenced by `X-Scalev-Guest-Token`. Client-supplied `shipping_cost` is ignored. Digital-only carts return `shipping_cost: \"0\"`. An optional `discount_code_code` is revalidated. Service fees use the current Store customer-fee policy and are returned for display without a confirmation ID.\n",
         "requestBody": {
           "$ref": "#/components/requestBodies/StorefrontCheckoutSummaryRequestBody"
         },
@@ -5520,7 +5520,7 @@
         ],
         "operationId": "getCheckoutSummary",
         "summary": "Compute checkout summary",
-        "description": "Customer-authenticated storefront endpoint. Recomputes the selected shipping cost from destination, courier service, warehouse, payment method, and either direct `items` or the cart referenced by `cart_id`.\n",
+        "description": "Customer-authenticated storefront endpoint. Recomputes the selected shipping cost from destination, courier service, warehouse, payment method, and either direct `items` or the cart referenced by `cart_id`. An optional `discount_code_code` is revalidated. Service fees use the current Store customer-fee policy and are returned for display without a confirmation ID.\n",
         "security": [
           {
             "bearerAuth": []
@@ -5564,7 +5564,7 @@
         ],
         "operationId": "createCustomerCheckout",
         "summary": "Create an authenticated customer checkout order",
-        "description": "Customer-authenticated storefront endpoint. Create an order from direct `items`, from a customer cart referenced by `cart_id`, or from direct `items` while clearing the referenced cart after successful order creation. Carts must belong to the authenticated customer and current store.\n",
+        "description": "Customer-authenticated storefront endpoint. Create an order from direct `items`, from a customer cart referenced by `cart_id`, or from direct `items` while clearing the referenced cart after successful order creation. Carts must belong to the authenticated customer and current store. Product prices, discounts, shipping, Other Income, the Store customer-fee policy, and service fees are recalculated from current backend data during creation. Preview values are not confirmation inputs and do not produce a quote-conflict response.\n",
         "security": [
           {
             "bearerAuth": []
@@ -15857,7 +15857,7 @@
             "mock"
           ]
         },
-        "description": "Local/dev simulation override for WABA sends. When set to `mock` outside production, Nexus records a submitted outbound message without sending to Meta Graph. Ignored in production."
+        "description": "Local/dev simulation override for WABA sends. When set to `mock` outside production, Scalev records a submitted outbound message without sending to Meta Graph. Ignored in production."
       },
       "ProductSlug": {
         "name": "slug",
@@ -19233,7 +19233,7 @@
           "unique_id": {
             "type": "string",
             "nullable": true,
-            "description": "Business unique id to pass as `business_unique_id` in MCP tools, or as `b_uid` to Nexus HTTP business-scoped routes when selection is required."
+            "description": "Business unique id to pass as `business_unique_id` in MCP tools, or as `b_uid` to Scalev HTTP business-scoped routes when selection is required."
           },
           "username": {
             "type": "string",
@@ -23816,6 +23816,11 @@
             "type": "string",
             "description": "Storefront payment method code selected by the buyer. Virtual Accounts use flat method codes such as `va_bca`.\n",
             "example": "va_bca"
+          },
+          "discount_code_code": {
+            "type": "string",
+            "nullable": true,
+            "description": "Optional discount code to revalidate and apply to this preview. Ineligible codes contribute zero discount.\n"
           }
         },
         "additionalProperties": true
@@ -23871,7 +23876,7 @@
           },
           "payment_method": {
             "type": "string",
-            "description": "Customer checkout payment method code selected by the buyer. Required for normal checkout. May be omitted when the store uses strict two-step Payment Link checkout; Nexus resolves it to `payment_link`. Virtual Accounts use flat method codes such as `va_bca`.\n",
+            "description": "Customer checkout payment method code selected by the buyer. Required for normal checkout. May be omitted when the store uses strict two-step Payment Link checkout; Scalev resolves it to `payment_link`. Virtual Accounts use flat method codes such as `va_bca`.\n",
             "example": "va_bca"
           },
           "courier_service_id": {
@@ -25293,7 +25298,7 @@
           },
           "payment_method": {
             "type": "string",
-            "description": "Storefront payment method code selected by the buyer. Required for normal checkout. May be omitted when the store uses strict two-step Payment Link checkout; Nexus resolves it to `payment_link`. Virtual Accounts use flat method codes such as `va_bca`.\n",
+            "description": "Storefront payment method code selected by the buyer. Required for normal checkout. May be omitted when the store uses strict two-step Payment Link checkout; Scalev resolves it to `payment_link`. Virtual Accounts use flat method codes such as `va_bca`.\n",
             "example": "va_bca"
           },
           "courier_service_id": {
@@ -25476,7 +25481,7 @@
           },
           "payment_method": {
             "type": "string",
-            "description": "Public order payment method code. Required for normal checkout. May be omitted when the store uses strict two-step Payment Link checkout; Nexus resolves it to `payment_link`. Virtual Accounts use flat method codes such as `va_bca`.\n",
+            "description": "Public order payment method code. Required for normal checkout. May be omitted when the store uses strict two-step Payment Link checkout; Scalev resolves it to `payment_link`. Virtual Accounts use flat method codes such as `va_bca`.\n",
             "example": "va_bca"
           },
           "payment_account_unique_id": {
@@ -25492,9 +25497,32 @@
           "shipping_discount": {
             "$ref": "#/components/schemas/StorefrontMoneyValue"
           },
+          "other_income": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StorefrontMoneyValue"
+              }
+            ],
+            "description": "Optional compatibility value for direct checkout. When the order is resolved to `payment_link`, the API ignores this value and creates the order with zero Other Income. The hosted Payment Link quotes the frozen Store charge after a concrete method is chosen.\n"
+          },
+          "other_income_name": {
+            "type": "string",
+            "nullable": true,
+            "description": "Optional compatibility label for direct checkout. It is ignored during `payment_link` order creation; the hosted link supplies the frozen Store label with the concrete-method quote.\n"
+          },
           "discount_code_code": {
             "type": "string",
             "nullable": true
+          },
+          "is_post_payment_redirect_enabled": {
+            "type": "boolean",
+            "description": "Optional creation-only override for the page post-payment redirect. This field accepts only the native JSON booleans `true` and `false`; `null`, strings, numbers, arrays, and objects are rejected. Omit it to inherit the page setting. Set it to `false` to force Scalev's hosted success flow for this order and clear the redirect snapshot. Set it to `true` together with `post_payment_redirect_url` to replace the page setting for this order.\n"
+          },
+          "post_payment_redirect_url": {
+            "type": "string",
+            "format": "uri",
+            "maxLength": 200,
+            "description": "Absolute HTTPS destination required when `is_post_payment_redirect_enabled` is `true`. HTTP is accepted only for loopback development hosts outside production. Supplying this field without `is_post_payment_redirect_enabled` does not enable an order override; the page setting is inherited. The canonical value is snapshotted at creation and cannot be changed by order updates.\n"
           },
           "notes": {
             "type": "string",
@@ -25616,6 +25644,11 @@
             "properties": {
               "shipping_option": {
                 "$ref": "#/components/schemas/StorefrontShippingOption"
+              },
+              "discount_code_code": {
+                "type": "string",
+                "nullable": true,
+                "description": "Optional discount code to revalidate and apply to this preview. Ineligible codes contribute zero discount.\n"
               }
             },
             "additionalProperties": true
@@ -25837,6 +25870,11 @@
                   }
                 ],
                 "description": "Ignored by the API. Shipping cost is recomputed from the selected courier service and destination."
+              },
+              "discount_code_code": {
+                "type": "string",
+                "nullable": true,
+                "description": "Optional discount code to revalidate and apply to this preview. Ineligible codes contribute zero discount.\n"
               }
             },
             "additionalProperties": true
@@ -25850,6 +25888,7 @@
           "shipping_cost",
           "other_income",
           "other_income_name",
+          "service_fee",
           "gross_revenue"
         ],
         "properties": {
@@ -25860,11 +25899,24 @@
             "$ref": "#/components/schemas/StorefrontMoneyValue"
           },
           "other_income": {
-            "$ref": "#/components/schemas/StorefrontMoneyValue"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StorefrontMoneyValue"
+              }
+            ],
+            "description": "Store-calculated Other Income for direct checkout. A `payment_link` creation summary returns zero because the hosted Payment Link quotes this charge after the buyer chooses a concrete payment method.\n"
           },
           "other_income_name": {
             "type": "string",
             "nullable": true
+          },
+          "service_fee": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StorefrontMoneyValue"
+              }
+            ],
+            "description": "Backend-calculated customer service fee using the current Store customer-fee policy. Manual methods and `payment_link` order creation return zero. This preview value has no confirmation ID.\n"
           },
           "gross_revenue": {
             "$ref": "#/components/schemas/StorefrontMoneyValue"
@@ -25948,7 +26000,14 @@
           },
           "payment_status": {
             "type": "string",
-            "nullable": true
+            "nullable": true,
+            "description": "Buyer-facing payment status. A settled payment is exposed as `paid`; this field never returns `settled`."
+          },
+          "post_payment_redirect_url": {
+            "type": "string",
+            "format": "uri",
+            "maxLength": 200,
+            "description": "Canonical post-payment destination exposed only after a buyer-paid outcome (internal payment status `paid` or `settled`) when a valid redirect snapshot exists. Omitted before payment and when Scalev's hosted success flow applies."
           },
           "is_probably_spam": {
             "type": "boolean",
@@ -26016,7 +26075,12 @@
             "$ref": "#/components/schemas/StorefrontMoneyValue"
           },
           "other_income": {
-            "$ref": "#/components/schemas/StorefrontMoneyValue"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StorefrontMoneyValue"
+              }
+            ],
+            "description": "Other Income stored on the order. New `payment_link` orders return zero until a concrete Payment Request wins; after payment, the winning request's frozen charge is reconciled onto the order.\n"
           },
           "payment_link_income": {
             "$ref": "#/components/schemas/StorefrontMoneyValue",
@@ -26024,7 +26088,8 @@
           },
           "other_income_name": {
             "type": "string",
-            "nullable": true
+            "nullable": true,
+            "description": "Other Income label. For `payment_link`, the winning concrete Payment Request's frozen Store label is reconciled after payment.\n"
           },
           "unique_code_discount": {
             "$ref": "#/components/schemas/StorefrontMoneyValue"
@@ -26431,7 +26496,8 @@
           },
           "payment_status": {
             "type": "string",
-            "nullable": true
+            "nullable": true,
+            "description": "Buyer-facing payment status. A settled payment is exposed as `paid`; this field never returns `settled`."
           },
           "payment_method": {
             "type": "string",
