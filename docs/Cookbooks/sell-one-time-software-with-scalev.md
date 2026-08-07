@@ -58,6 +58,60 @@ Record the variant's `variant_unique_id`. Your app will map this stable value to
 
 The **Permanent** setting describes the Scalev product. Your app must still create and enforce its own permanent entitlement.
 
+### Find the variant unique ID in the dashboard
+
+Open the product in Scalev. Where the id sits depends on how many variants the product has:
+
+- **Satu Varian**: the **Informasi Detil** header shows `Unique ID: variant_...` with a **Salin** button beside it.
+- Several variants: open the row menu in **Daftar Varian** and choose **Copy Unique ID**. The same id also appears under the title in **Edit Varian**.
+
+A variant only has an id once it is saved, so save a new variant before you look for it.
+
+### Find the variant unique ID through the API
+
+List the products attached to the store and read `unique_id` from each variant. Get `{store_id}` from `GET /v3/stores/simplified`.
+
+```bash
+curl "https://api.scalev.com/v3/stores/{store_id}/products" \
+  -H "Authorization: Bearer $SCALEV_API_KEY"
+```
+
+Each product carries its variants inline:
+
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "Software access",
+      "is_visible": true,
+      "variants": [
+        {
+          "id": 456,
+          "unique_id": "variant_qnUEhjhOSjcUda8xpktbiH1F",
+          "fullname": "Permanent",
+          "sku": null,
+          "price": 200000
+        }
+      ]
+    }
+  ],
+  "is_paginated": true,
+  "has_next": false
+}
+```
+
+When you already know the numeric variant `id`, read the full record instead:
+
+```bash
+curl "https://api.scalev.com/v3/stores/{store_id}/variants/{variant_id}" \
+  -H "Authorization: Bearer $SCALEV_API_KEY"
+```
+
+Both are authenticated business endpoints. They accept a business API key or an OAuth access token, and the OAuth scopes are `product:list` for the product list and `product:read` for the single variant. Do not call them from browser JavaScript.
+
+`unique_id` is the same value that arrives as `variant_unique_id` in `order.created` order lines, so store it as the join key between a Scalev variant and your internal plan.
+
 ## 2. Configure the store and E-Payment Link
 
 Open the intended store and confirm that the new product is included.
