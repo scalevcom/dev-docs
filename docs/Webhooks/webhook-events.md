@@ -30,7 +30,7 @@ prevent duplicate delivery.
 
 Order webhook payloads use one canonical `payment_method`; virtual accounts use
 flat values such as `va_bca`. `payment_link_id` and `is_from_payment_link`
-preserve E-Payment Link origin after a paid order reports the concrete method
+preserve PayLink origin after a paid order reports the concrete method
 that the buyer used.
 
 <br />

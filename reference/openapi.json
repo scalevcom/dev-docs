@@ -26084,7 +26084,7 @@
           },
           "payment_link_income": {
             "$ref": "#/components/schemas/StorefrontMoneyValue",
-            "description": "Additional E-Payment Link amount paid by the customer."
+            "description": "Additional PayLink amount paid by the customer."
           },
           "other_income_name": {
             "type": "string",
@@ -26552,7 +26552,7 @@
           },
           "payment_link_income": {
             "$ref": "#/components/schemas/StorefrontMoneyValue",
-            "description": "Additional E-Payment Link amount paid by the customer."
+            "description": "Additional PayLink amount paid by the customer."
           },
           "gross_revenue": {
             "$ref": "#/components/schemas/StorefrontMoneyValue"
@@ -30050,7 +30050,7 @@
             "type": "number"
           },
           "payment_link_income": {
-            "description": "Additional E-Payment Link amount paid by the customer",
+            "description": "Additional PayLink amount paid by the customer",
             "type": "number"
           },
           "total_weight": {
@@ -31720,7 +31720,7 @@
             "type": "string"
           },
           "payment_link_income": {
-            "description": "Additional E-Payment Link amount paid by the customer",
+            "description": "Additional PayLink amount paid by the customer",
             "format": "decimal",
             "type": "string"
           },
@@ -32099,7 +32099,7 @@
             "type": "string"
           },
           "payment_link_income_bt": {
-            "description": "Additional E-Payment Link amount before tax",
+            "description": "Additional PayLink amount before tax",
             "format": "decimal",
             "type": "string"
           },

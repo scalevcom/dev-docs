@@ -205,7 +205,7 @@ The created order carries the fees Scalev calculated at checkout time, which can
 On success, the response includes the created slim public order data, including `secret_slug`, `public_order_url`, `payment_url`, status, totals, the existing `variants` and `bundle_price_options` object maps, line items, shipping details, and payment fields. Internal order IDs, dashboard-only revenue fields, platform fees, payment-status history, and affiliate attribution are not returned. Use `secret_slug` to read or update the order. Use `payment_url` only as a hosted fallback if your storefront does not render the payment instructions itself.
 
 New orders expose one unified customer-facing `service_fee`, including orders
-created through E-Payment Link. `other_income` remains independent. Legacy
+created through PayLink. `other_income` remains independent. Legacy
 orders can still expose historical compatibility fee fields, including
 `payment_link_income`; do not combine those fields again for new orders.
 
@@ -213,16 +213,16 @@ orders can still expose historical compatibility fee fields, including
 payment-method endpoint. Virtual accounts use flat values such as `va_bca` and
 `va_bri`.
 
-### Strict two-step E-Payment Link checkout
+### Strict two-step PayLink checkout
 
 When the store enables strict two-step checkout and offers `payment_link`, you
 may omit `payment_method`. Scalev resolves the order to `payment_link` and
-returns a `payment_url` for the Scalev E-Payment Link page, where the buyer
+returns a `payment_url` for the Scalev PayLink page, where the buyer
 selects the concrete method.
 
 Do not render `payment_link` as a virtual account or wallet. Redirect the buyer
 to `payment_url`. After payment, the order's `payment_method` becomes the
-canonical method actually used, while Scalev keeps the E-Payment Link origin
+canonical method actually used, while Scalev keeps the PayLink origin
 separately.
 
 ## Payment instructions
