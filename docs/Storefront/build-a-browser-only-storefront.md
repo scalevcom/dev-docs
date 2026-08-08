@@ -345,7 +345,7 @@ Use these order fields to render the payment page:
 specific order-level account has been selected. Use `transferproof_url` and
 `transfer_time` to show whether the buyer has already submitted payment proof.
 Hosted or provider-backed methods may use `payment_url` or `pg_payment_info`.
-`payment_link_income` is any E-Payment Link surcharge paid by the buyer, and
+`payment_link_income` is any PayLink surcharge paid by the buyer, and
 `gross_revenue` is the total amount the buyer pays.
 
 See [Checkout and Payments](/docs/storefront-api-checkout-payments) for method-specific rendering rules.

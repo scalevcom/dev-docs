@@ -16,7 +16,7 @@ The buyer journey is:
 
 1. An ad or campaign sends the buyer to a Scalev Sales Page.
 2. The Sales Page sends the buyer to a Scalev Checkout Page.
-3. The buyer submits the checkout form and opens the E-Payment Link page.
+3. The buyer submits the checkout form and opens the PayLink page.
 4. The buyer chooses an available payment method and pays.
 5. Scalev sends signed webhook events to your app.
 6. Your app provisions permanent access and sends a one-time set-password email.
@@ -112,18 +112,18 @@ Both are authenticated business endpoints. They accept a business API key or an 
 
 `unique_id` is the same value that arrives as `variant_unique_id` in `order.created` order lines, so store it as the join key between a Scalev variant and your internal plan.
 
-## 2. Configure the store and E-Payment Link
+## 2. Configure the store and PayLink
 
 Open the intended store and confirm that the new product is included.
 
-In the store's payment settings:
+In the store's **Payment Methods** settings:
 
-1. Add **E-Payment Link** (`payment_link`).
-2. Select the payment methods that buyers may use in Payment Link Studio.
-3. Enable **Wajib 2 Langkah** when you want the checkout form to lead into the dedicated E-Payment Link experience.
+1. Add **PayLink** (`payment_link`) to the selected payment methods.
+2. Select the concrete methods buyers may use, such as QRIS, virtual accounts, and e-wallets. PayLink offers the store methods that the business has also enabled and that a PayLink-capable gateway supports, so a method missing on either side never reaches the buyer. When the store selects no PayLink-capable method at all, PayLink falls back to every eligible business method.
+3. Open **Pengaturan PayLink** to launch **PayLink Studio** when you want to change how the page looks: default language, the buyer-facing language switcher, primary color, favicon, and the metadata shown when the link is shared. PayLink Studio controls appearance and metadata only. It does not select payment methods.
 4. Save, then open a real checkout preview and confirm the final methods shown.
 
-Use **E-Payment Link**, not the deprecated all-in-one E-Payment option, for this flow. E-Payment Link lets the buyer choose from the store's currently eligible gateway methods on a dedicated payment page.
+Use **PayLink**, not the deprecated all-in-one **ALL E-Payment** (`invoice`) option, for this flow. PayLink lets the buyer choose from the store's currently eligible gateway methods on a dedicated payment page.
 
 ## 3. Build the Sales Page
 
@@ -142,6 +142,9 @@ Configure the form as follows:
 - Explain that Scalev sends the purchase to the email entered here and that the buyer must be able to open it.
 - Keep the product quantity at `1` for a single-license purchase.
 - Confirm that the form uses the intended store and variant.
+- Turn on **Aktifkan PayLink** so the buyer lands on the PayLink page after submitting the form.
+
+**Aktifkan PayLink** replaces the form's own payment selector: every order the form creates uses `payment_link`, and the buyer picks the concrete method on the PayLink page instead. Scalev rejects the toggle when the store and business leave no executable PayLink method, so finish step 2 first.
 
 Enable **Redirect to a custom URL after payment**, then set **Post-payment redirect URL** to your app's HTTPS success page, such as:
 
@@ -155,7 +158,7 @@ For an API-created order, you can override this page default without exposing an
 
 This setting applies to every payment method on the checkout page. It controls where Scalev sends the buyer after it has observed a `paid` or `settled` payment. It is separate from **After Submit**, which controls the first redirect immediately after the checkout form creates an order.
 
-For an E-Payment Link order, the normal initial destination is still Scalev's hosted payment page. After payment, that page waits briefly and then uses the configured post-payment URL. Other hosted order and payment-success pages apply the same order-level redirect after they observe payment. If the toggle is off, the snapshot is absent, or the URL is rejected, Scalev keeps its hosted success flow.
+For a PayLink order, the normal initial destination is still Scalev's hosted payment page. After payment, that page waits briefly and then uses the configured post-payment URL. Other hosted order and payment-success pages apply the same order-level redirect after they observe payment. If the toggle is off, the snapshot is absent, or the URL is rejected, Scalev keeps its hosted success flow.
 
 Do not put secrets, raw order identifiers, access tokens, or credentials in the success URL. Scalev preserves the URL's configured query string and fragment but does not append buyer or order data.
 
@@ -312,7 +315,7 @@ Verify all of the following:
 
 - The Sales Page CTA opens the intended Checkout Page.
 - The checkout requires an email and creates an order for the expected variant.
-- E-Payment Link shows only eligible store payment methods.
+- PayLink shows only eligible store payment methods.
 - A successful payment creates both `order.created` and `payment.received` inbox records.
 - Replaying either event does not create another user, entitlement, or email.
 - A `paid` event followed by a `settled` event still creates one entitlement.
@@ -330,7 +333,7 @@ Verify all of the following:
 | --- | --- |
 | Sales Page and Checkout Page | User accounts and authentication |
 | Store and product selection | Variant-to-plan mapping |
-| E-Payment Link and gateway payment | Permanent entitlements and authorization |
+| PayLink and gateway payment | Permanent entitlements and authorization |
 | Signed order and payment webhooks | Idempotent webhook inbox and worker |
 | Paid-order browser redirect | Set-password tokens and email delivery |
 

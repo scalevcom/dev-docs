@@ -92,7 +92,7 @@ Use `id` for later business API calls such as `GET /v3/orders/{id}` or `PATCH /v
 Use `payment_url` for the customer redirect.
 
 When `payment_method` is `payment_link`, the customer selects the final payment
-method on Scalev's E-Payment Link page. The order keeps its E-Payment Link
+method on Scalev's PayLink page. The order keeps its PayLink
 origin while the paid order exposes the canonical method that was actually
 used.
 
