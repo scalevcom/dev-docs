@@ -1657,13 +1657,13 @@
         ],
         "operationId": "sendPagePublicMetaConversionEvent",
         "summary": "Send an HTML Mode Meta Conversion API event",
-        "description": "Page-scoped public endpoint used by `Scalev.analytics.track(\"meta\", payload)` and `Scalev.analytics.track(\"facebook\", payload)`. The page path and API key select the page analytics configuration.\n",
+        "description": "Page-scoped public endpoint used by `Scalev.analytics.track(\"meta\", payload)` and `Scalev.analytics.track(\"facebook\", payload)`. The page path and API key select the page analytics configuration. A `202` means the payload was accepted for asynchronous delivery.\n",
         "requestBody": {
           "$ref": "#/components/requestBodies/StorefrontMetaConversionEventRequestBody"
         },
         "responses": {
-          "204": {
-            "$ref": "#/components/responses/NoContentResponse"
+          "202": {
+            "$ref": "#/components/responses/AcceptedResponse"
           },
           "400": {
             "$ref": "#/components/responses/BadRequestResponse"
@@ -1689,13 +1689,13 @@
         ],
         "operationId": "sendPagePublicTiktokConversionEvent",
         "summary": "Send an HTML Mode TikTok Events API event",
-        "description": "Page-scoped public endpoint used by `Scalev.analytics.track(\"tiktok\", payload)`. The page path and API key select the page analytics configuration.\n",
+        "description": "Page-scoped public endpoint used by `Scalev.analytics.track(\"tiktok\", payload)`. The page path and API key select the page analytics configuration. A `202` means the payload was accepted for asynchronous delivery.\n",
         "requestBody": {
           "$ref": "#/components/requestBodies/StorefrontTiktokConversionEventRequestBody"
         },
         "responses": {
-          "204": {
-            "$ref": "#/components/responses/NoContentResponse"
+          "202": {
+            "$ref": "#/components/responses/AcceptedResponse"
           },
           "400": {
             "$ref": "#/components/responses/BadRequestResponse"
@@ -1721,13 +1721,13 @@
         ],
         "operationId": "sendPagePublicSnackVideoConversionEvent",
         "summary": "Send an HTML Mode SnackVideo event",
-        "description": "Page-scoped public endpoint used by `Scalev.analytics.track(\"snackvideo\", payload)` and `Scalev.analytics.track(\"kwai\", payload)`. The page path and API key select the page analytics configuration.\n",
+        "description": "Page-scoped public endpoint used by `Scalev.analytics.track(\"snackvideo\", payload)` and `Scalev.analytics.track(\"kwai\", payload)`. The page path and API key select the page analytics configuration. A `202` means the payload was accepted for asynchronous delivery.\n",
         "requestBody": {
           "$ref": "#/components/requestBodies/StorefrontSnackVideoConversionEventRequestBody"
         },
         "responses": {
-          "204": {
-            "$ref": "#/components/responses/NoContentResponse"
+          "202": {
+            "$ref": "#/components/responses/AcceptedResponse"
           },
           "400": {
             "$ref": "#/components/responses/BadRequestResponse"
@@ -2022,13 +2022,13 @@
         ],
         "operationId": "sendStorefrontMetaConversionEvent",
         "summary": "Send a Meta Conversion API event",
-        "description": "Public storefront endpoint. Sends browser-collected conversion events through Scalev using the Meta pixels configured on the store's hosted storefront analytics setup. The store path selects the storefront; do not send a custom domain to identify the store. A `204` means the payload was accepted for asynchronous delivery.\n",
+        "description": "Public storefront endpoint. Sends browser-collected conversion events through Scalev using the Meta pixels configured on the store's hosted storefront analytics setup. The store path selects the storefront; do not send a custom domain to identify the store. A `202` means the payload was accepted for asynchronous delivery.\n",
         "requestBody": {
           "$ref": "#/components/requestBodies/StorefrontMetaConversionEventRequestBody"
         },
         "responses": {
-          "204": {
-            "$ref": "#/components/responses/NoContentResponse"
+          "202": {
+            "$ref": "#/components/responses/AcceptedResponse"
           },
           "400": {
             "$ref": "#/components/responses/BadRequestResponse"
@@ -2054,13 +2054,13 @@
         ],
         "operationId": "sendStorefrontTiktokConversionEvent",
         "summary": "Send a TikTok Events API event",
-        "description": "Public storefront endpoint. Sends browser-collected conversion events through Scalev using the TikTok pixels configured on the store's hosted storefront analytics setup. The store path selects the storefront; do not send a custom domain to identify the store. A `204` means the payload was accepted for asynchronous delivery.\n",
+        "description": "Public storefront endpoint. Sends browser-collected conversion events through Scalev using the TikTok pixels configured on the store's hosted storefront analytics setup. The store path selects the storefront; do not send a custom domain to identify the store. A `202` means the payload was accepted for asynchronous delivery.\n",
         "requestBody": {
           "$ref": "#/components/requestBodies/StorefrontTiktokConversionEventRequestBody"
         },
         "responses": {
-          "204": {
-            "$ref": "#/components/responses/NoContentResponse"
+          "202": {
+            "$ref": "#/components/responses/AcceptedResponse"
           },
           "400": {
             "$ref": "#/components/responses/BadRequestResponse"
@@ -2086,13 +2086,13 @@
         ],
         "operationId": "sendStorefrontSnackVideoConversionEvent",
         "summary": "Send a SnackVideo Events API event",
-        "description": "Public storefront endpoint. Sends browser-collected conversion events through Scalev using the SnackVideo server pixels configured on the store's hosted storefront analytics setup. The store path selects the storefront; do not send a custom domain to identify the store. A `204` means the payload was accepted for asynchronous delivery.\n",
+        "description": "Public storefront endpoint. Sends browser-collected conversion events through Scalev using the SnackVideo server pixels configured on the store's hosted storefront analytics setup. The store path selects the storefront; do not send a custom domain to identify the store. A `202` means the payload was accepted for asynchronous delivery.\n",
         "requestBody": {
           "$ref": "#/components/requestBodies/StorefrontSnackVideoConversionEventRequestBody"
         },
         "responses": {
-          "204": {
-            "$ref": "#/components/responses/NoContentResponse"
+          "202": {
+            "$ref": "#/components/responses/AcceptedResponse"
           },
           "400": {
             "$ref": "#/components/responses/BadRequestResponse"
@@ -17729,6 +17729,9 @@
             }
           }
         }
+      },
+      "AcceptedResponse": {
+        "description": "Accepted for asynchronous delivery with no response body"
       },
       "NoContentResponse": {
         "description": "Success with no response body"

@@ -541,6 +541,9 @@ Response example:
 null
 ```
 
+A successful call returns `202 Accepted`. This confirms that Scalev accepted
+the payload for asynchronous delivery; it does not confirm provider delivery.
+
 If no provider is passed, the runtime skips the call without contacting Scalev:
 
 ```json
