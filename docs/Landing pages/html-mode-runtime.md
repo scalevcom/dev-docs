@@ -513,7 +513,7 @@ try {
 
 ## `Scalev.analytics.track(provider, payload)`
 
-Forwards configured analytics events through Scalev. Server delivery blocks only an explicit visitor refusal recorded during the visit; an unanswered prompt or absent grant does not block these server events. Browser pixels still require their current marketing permission. The runtime automatically attaches the visit privacy evidence, including a refusal whose acknowledgement is pending. Do not construct or override this evidence. Later business settings do not replace the original page policy, while a newly confirmed visitor choice can supersede an earlier refusal before the request. Server page events use this context transiently. Only order creation persists the consent and policy snapshot for that order; later choices do not update existing orders. First-party beacons keep their existing behavior.
+Forwards configured analytics events through Scalev. If the visitor country requires marketing consent, direct server events and browser pixels require the saved local category or partner grant. Outside those configured countries they may run regardless of an older refusal. Policy revisions, receipt delivery and publication status do not gate this permission. The runtime attaches the current local choice automatically; do not construct or override it. Server page events use this context transiently. Only order creation persists the consent and policy snapshot for later order events; later choices do not update existing orders.
 
 ```js
 await Scalev.analytics.track("facebook", {
