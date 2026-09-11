@@ -513,7 +513,7 @@ try {
 
 ## `Scalev.analytics.track(provider, payload)`
 
-Forwards configured analytics events through Scalev.
+Forwards configured analytics events through Scalev. If the visitor country requires marketing consent, direct server events and browser pixels require the saved local category or partner grant. Outside those configured countries they may run regardless of an older refusal. Policy revisions, receipt delivery and publication status do not gate this permission. The runtime attaches the current local choice automatically; do not construct or override it. Server page events use this context transiently. Only order creation persists the consent and policy snapshot for later order events; later choices do not update existing orders.
 
 ```js
 await Scalev.analytics.track("facebook", {
