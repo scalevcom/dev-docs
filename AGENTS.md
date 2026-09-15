@@ -22,6 +22,7 @@
 ## Content boundaries
 
 - Document public developer workflows and public API behavior.
+- Refer to the public service as the Scalev API; keep internal service and repository names out of published content.
 - Do not document internal administration or implementation details.
 - Do not manually edit generated API reference pages under `reference/Scalev API/`.
 - Give each changelog post a stable `slug`, its original `created_at` timestamp, and public privacy frontmatter.

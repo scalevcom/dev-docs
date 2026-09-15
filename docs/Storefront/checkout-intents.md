@@ -19,7 +19,7 @@ Checkout intent requires an active business subscription that includes the featu
 
 Use the store or page `unique_id` in the path. A page capture requires the ID of a `MainForm` widget in the current published page. Published HTML Mode pages with checkout form context use `form_widget_id: "html-mode-main-form"`. For your Storefront API checkout, choose one stable form identifier such as `storefront-checkout`.
 
-Call Nexus directly from the browser with `credentials: "omit"`. Use the matching API key and an allowed browser origin. A guest-cart token identifies a cart; it does not identify or authorize a checkout intent. Do not start capture in a page editor or preview.
+Call the Scalev API directly from the browser with `credentials: "omit"`. Use the matching API key and an allowed browser origin. A guest-cart token identifies a cart; it does not identify or authorize a checkout intent. Do not start capture in a page editor or preview.
 
 ## Start or resume
 
@@ -102,9 +102,9 @@ Omitted sections and omitted fields remain unchanged. Set a field to `null` to c
 
 A custom-field entry has `key`, `label`, and a scalar `value`: string, number, boolean, or null. Up to 50 custom fields and 100 items are accepted. Do not capture passwords, OTPs, card details, CAPTCHA tokens, account credentials, or arbitrary objects inside `fields`.
 
-Items use `{ "type": "variant", "variant_id": 101, "quantity": 2 }` or `{ "type": "bundle_price_option", "bundle_price_option_id": 55, "quantity": 1 }`. Nexus resolves eligible item names and prices. Client totals are not authoritative.
+Items use `{ "type": "variant", "variant_id": 101, "quantity": 2 }` or `{ "type": "bundle_price_option", "bundle_price_option_id": 55, "quantity": 1 }`. The Scalev API resolves eligible item names and prices. Client totals are not authoritative.
 
-Optional `attribution` accepts the documented campaign and advertising attribution fields. Optional `source_url` identifies the checkout page; Nexus strips URL fragments and sensitive query parameters. Set it to the actual checkout URL on the configured page/store domain or allowed storefront origin so a recovery link can be issued.
+Optional `attribution` accepts the documented campaign and advertising attribution fields. Optional `source_url` identifies the checkout page; the Scalev API strips URL fragments and sensitive query parameters. Set it to the actual checkout URL on the configured page/store domain or allowed storefront origin so a recovery link can be issued.
 
 ## Complete with an order
 
