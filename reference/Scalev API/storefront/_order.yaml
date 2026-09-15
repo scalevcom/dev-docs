@@ -26,3 +26,5 @@
 - sendstorefrontmetaconversionevent
 - sendstorefronttiktokconversionevent
 - sendstorefrontsnackvideoconversionevent
+- createstorefrontcheckoutintent
+- updatestorefrontcheckoutintent

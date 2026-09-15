@@ -12,6 +12,10 @@ The Storefront API is designed so your storefront can render its own payment pag
 
 Use only payment methods returned by `GET /v3/stores/{store_id}/public/payment-methods`. Storefront checkout does not return `no_payment`, and checkout endpoints reject it if submitted directly. When a store passes provider transaction fees to the customer, Scalev also omits configured e-payment methods that do not have an executable provider and verified fee schedule. This filtering does not disable or delete the store's saved method configuration.
 
+## Capture unfinished checkouts
+
+Use [checkout intents](/docs/checkout-intents) to save safe form snapshots before an order exists, resume returning buyers, and make contactable abandoned checkouts available to your merchant integration. Pass the returned optional `checkout_intent_token` when creating a guest or authenticated customer order so the intent completes with that order. Capture failures must not block checkout.
+
 ## Guest checkout flow
 
 1. Read or create the guest cart and store `X-Scalev-Guest-Token`.
