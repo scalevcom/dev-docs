@@ -17,6 +17,8 @@ Scalev currently supports the following webhook events:
 * `order.spam_created`: Triggered when a spam order is created.
 * `payment.received`: Triggered when an order's payment status becomes `paid` or `settled`. Use this stable event for payment-driven fulfillment.
 * `payment.failed`: Triggered when an order's payment status becomes `conflict`.
+* `checkout_intent.abandoned`: An unfinished contactable checkout intent has been idle for at least 15 minutes.
+* `checkout_intent.completed`: A contactable checkout intent is linked to a successfully created order.
 
 `payment.received` and `payment.failed` use the same `data` shape as
 `order.payment_status_changed`. The payment payload identifies the order and
@@ -32,6 +34,57 @@ Order webhook payloads use one canonical `payment_method`; virtual accounts use
 flat values such as `va_bca`. `payment_link_id` and `is_from_payment_link`
 preserve PayLink origin after a paid order reports the concrete method
 that the buyer used.
+
+## Checkout intent events
+
+Checkout capture requires an eligible active business subscription. Events are emitted only for intents with a valid normalized email or phone. See [checkout intents](/docs/checkout-intents) for browser capture, merchant reads, and recovery links.
+
+`checkout_intent.abandoned` is emitted at most once per intent when it first qualifies for abandonment. Delivery may occur after the 15-minute threshold. Resuming makes the current intent active again; another idle period does not emit a second abandoned event. An intent completed before abandonment is processed does not emit an abandoned event.
+
+`checkout_intent.completed` is emitted when successful order creation completes the intent, including contact details captured from that order. It does not indicate successful payment. An intent can complete without a prior abandoned event.
+
+Both events use the merchant checkout-intent detail data shape plus `last_sequence` and `occurred_at`. These fields identify the captured snapshot version and event occurrence time. Contact fields are under `customer`; safe form fields, item snapshots, and campaign attribution are included. Storefront intents have `page: null`. The completed event has the linked `order`. The abandoned event can include `recovery_url` and `recovery_url_expires_at`; both are null for completed intents or a missing or untrusted source URL. A recovery URL contains a private `cip_` prefill capability valid for 30 days from issuance. The `cit_` write capability is never included.
+
+For example, an abandoned intent can have this payload:
+
+```json
+{
+  "event": "checkout_intent.abandoned",
+  "unique_id": "event_EXAMPLE_UNIQUE_ID",
+  "timestamp": "2026-09-16T01:15:00Z",
+  "data": {
+    "id": "019c9db5-0fcb-7df3-8c6b-1827b568a61c",
+    "form_widget_id": "storefront-checkout",
+    "status": "abandoned",
+    "last_sequence": 1,
+    "occurred_at": "2026-09-16T01:15:00Z",
+    "contactable": true,
+    "is_email_follow_up_already_sended": false,
+    "customer": { "name": "Budi Santoso", "email": "budi@example.com", "phone": null },
+    "store": { "id": "store_example", "unique_id": "store_example", "name": "Example store" },
+    "page": null,
+    "cart_summary": { "item_quantity": 2, "estimated_total": "200000", "currency": "IDR" },
+    "handler": null,
+    "source_url": "https://shop.example/checkout",
+    "started_at": "2026-09-16T01:00:00Z",
+    "last_activity_at": "2026-09-16T01:00:00Z",
+    "follow_up_eligible_at": "2026-09-16T01:15:00Z",
+    "completed_at": null,
+    "order": null,
+    "fields": { "shipping_address": "Jl. Merdeka No. 1" },
+    "items": [{ "type": "variant", "variant_id": 101, "quantity": 2, "name": "Example item", "unit_price": "100000", "line_total": "200000", "currency": "IDR" }],
+    "attribution": { "utm_source": "newsletter" },
+    "recovery_url": "https://shop.example/checkout?checkout_intent_prefill_token=cip_...",
+    "recovery_url_expires_at": "2026-10-16T01:15:00Z"
+  }
+}
+```
+
+### Delivery and current state
+
+Checkout lifecycle events are saved with the state change and delivered through Scalev's durable webhook delivery flow. Eligible business endpoints and authorized app recipients receive the captured lifecycle data. Business delivery and each app's delivery can have distinct event IDs. A retry of the same event preserves its `unique_id` and snapshot rather than rebuilding it from the buyer's newer input.
+
+Delivery is at least once and order is not guaranteed. A delayed abandoned event may arrive after the buyer resumes or completes checkout. Deduplicate by `unique_id`, then use the merchant detail endpoint before taking an action that depends on current status. Verify the signature over raw bytes and durably accept the event before returning a `2xx` response. See [webhook verification](/docs/verifying-a-webhook-request).
 
 <br />
 

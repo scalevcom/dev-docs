@@ -1,0 +1,6 @@
+- createpagecheckoutintent
+- updatepagecheckoutintent
+- getcheckoutintentprefill
+- listcheckoutintents
+- getcheckoutintent
+- sendcheckoutintentfollowupemail

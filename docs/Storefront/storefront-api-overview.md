@@ -161,3 +161,7 @@ GET    /v3/stores/{store_id}/storefront/allowed-origins
 POST   /v3/stores/{store_id}/storefront/allowed-origins
 DELETE /v3/stores/{store_id}/storefront/allowed-origins/{id}
 ```
+
+## Recover unfinished checkouts
+
+[Checkout intents](/docs/checkout-intents) support browser form capture, recovery prefill, merchant list/detail access, and follow-up email. Subscribe to lifecycle webhooks when your integration needs to react to a contactable abandoned checkout or successful order creation.
