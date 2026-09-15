@@ -37,7 +37,7 @@ that the buyer used.
 
 ## Checkout intent events
 
-Checkout intent events are sent only for intents with a valid normalized email or phone and an eligible active business subscription. See [checkout intents](/docs/checkout-intents) for browser capture, merchant reads, and recovery links.
+Checkout capture requires an eligible active business subscription. Events are emitted only for intents with a valid normalized email or phone. See [checkout intents](/docs/checkout-intents) for browser capture, merchant reads, and recovery links.
 
 `checkout_intent.abandoned` is emitted at most once per intent when it first qualifies for abandonment. Delivery may occur after the 15-minute threshold. Resuming makes the current intent active again; another idle period does not emit a second abandoned event. An intent completed before abandonment is processed does not emit an abandoned event.
 
