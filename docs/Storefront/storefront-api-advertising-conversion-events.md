@@ -65,7 +65,7 @@ async function postScalevAnalytics(provider, payload) {
 }
 ```
 
-The analytics endpoints return `204 No Content` after accepting the event for asynchronous delivery.
+The analytics endpoints return `202 Accepted` after accepting the event for asynchronous delivery. This does not confirm provider delivery.
 
 ## Configure browser pixels
 
