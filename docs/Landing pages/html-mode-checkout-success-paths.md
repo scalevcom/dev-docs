@@ -1,23 +1,60 @@
 ---
 title: "HTML Mode checkout success types"
-excerpt: "Choose what happens after a manual HTML Mode checkout creates an order."
+excerpt: "Where a buyer goes after a manual HTML Mode checkout creates an order."
 deprecated: false
 hidden: false
 metadata:
   robots: index
 ---
-When you build a checkout form manually in HTML Mode, `Scalev.checkout.createOrder(payload)` creates the order. Your page handles the redirect after the order is created.
+When you build a checkout form manually in HTML Mode, `Scalev.checkout.createOrder(payload)` creates the order and resolves where the buyer goes next. Your page performs the navigation; it does not decide the destination.
 
 There are two separate success moments in a checkout:
 
-1. **Order created:** Your HTML Mode page receives the result from `createOrder` and sends the buyer to the returned Scalev payment or order URL.
-2. **Payment received:** A hosted Scalev payment, success, or order page observes the paid state and can redirect the buyer to the merchant-configured post-payment URL.
+1. **Order created:** `createOrder` returns `order.redirectUrl`. Send the buyer there.
+2. **Payment received:** a hosted Scalev payment, success, or order page observes the paid state and can redirect the buyer to the merchant-configured post-payment URL.
 
-The editor uses an explicit **Redirect to a custom URL after payment** toggle and a **Post-payment redirect URL**. When the toggle is off, Scalev uses its default success flow; a saved but disabled URL has no effect. When the toggle is on, a valid URL is required.
+## Redirect after the order is created
 
-This configuration is private editor state. It is not included in `window.Scalev` or `Scalev.data.get()`, so HTML code cannot read the page default. Scalev snapshots the resolved URL onto the new public order. Hosted Scalev pages apply that snapshot only after the order reports a `paid` or `settled` payment.
+```js
+const order = await Scalev.checkout.createOrder(payload);
 
-An API caller can override the private default for one order through `Scalev.checkout.createOrder(payload)`. This does not add a control to the dashboard or public form. Omit both override fields to inherit the page setting:
+if (order.redirectUrl) {
+  if (window.self !== window.top) {
+    window.parent.postMessage(order.redirectUrl, "*");
+  } else {
+    window.location.assign(order.redirectUrl);
+  }
+}
+```
+
+That is the whole redirect. `order.redirectUrl` already accounts for:
+
+- **The payment-method override.** An electronic method — `va`, `qris`, `card`, `invoice`, `payment_link`, `alfamart`, `indomaret`, `ovo`, `dana`, `shopeepay`, `linkaja`, `gopay` — goes to its payment page regardless of the configured after-checkout type. PayLink resolves to the Scalev-hosted PayLink page.
+- **Per-bank virtual account values.** A flattened value such as `va_bca` follows the configured after-checkout type rather than the payment page, matching how Scalev's own Builder checkout behaves.
+- **Draft orders.** A draft has no payment instructions yet, so it resolves to its own order page instead of the instruction page.
+- **Every configured destination:** the payment instruction page, the order/invoice page, both WhatsApp destinations, another landing page, and a custom URL.
+- **The host.** Scalev-hosted destinations are built on the host the order was created on, falling back to the business's `*.myscalev.com` domain.
+- **Attribution.** Retained UTM, click-ID, and affiliate parameters are forwarded onto another landing page or a custom URL, but only while the destination stays on the buyer's own host or a Scalev-owned one. An external host never receives them.
+
+`order.redirectUrl` is `null` only when the merchant's configured destination is incomplete — for example a custom URL that was never filled in. Treat that as "stay on this page" and show your own confirmation; do not guess a destination.
+
+`order.paymentUrl` still exists and still points at the payment step only. Use `redirectUrl` for navigation after checkout.
+
+Both fields are also available in snake_case (`order.redirect_url`, `order.payment_url`) if you prefer that shape.
+
+### Do not rebuild the routing
+
+Earlier versions of this page documented a client-side helper that inspected the payment method, the order status and `Scalev.data.get().afterCheckout` to pick a destination. That logic now lives in Scalev and is shared with the Builder checkout, so the two can no longer disagree. Delete any copy of it from your page and read `order.redirectUrl`.
+
+`Scalev.data.get().afterCheckout` remains available, and it is still the right source if you want to *show* the buyer what happens next before they submit. It is no longer needed to route them.
+
+## Redirect after payment is received
+
+The editor has a **Redirect to a custom URL after payment** toggle and a **Post-payment redirect URL**. When the toggle is off, Scalev uses its default success flow; a saved but disabled URL has no effect. When the toggle is on, a valid URL is required.
+
+This configuration is private editor state. It is not included in `window.Scalev` or `Scalev.data.get()`, so HTML code cannot read the page default. Scalev snapshots the resolved URL onto the new public order, and hosted Scalev pages apply that snapshot only after the order reports a `paid` or `settled` payment.
+
+An API caller can override the private default for one order:
 
 ```js
 const order = await Scalev.checkout.createOrder({
@@ -31,181 +68,25 @@ Send `isPostPaymentRedirectEnabled: false` to keep Scalev's hosted success flow 
 
 Neither redirect proves payment. Provision external access from a verified `payment.received` webhook, not from browser navigation.
 
-HTML Checkout Pages expose the selected after-checkout configuration in `Scalev.data.get().afterCheckout`. Use that config to choose one of these six types after `createOrder` returns successfully.
+## What each configured type means
+
+The merchant picks one of these in the editor. You do not implement them; this table explains what the buyer will experience.
+
+| Editor label                        | Value                       | Where the buyer lands                                                                                      |
+| ----------------------------------- | --------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Halaman Instruksi Pembayaran        | `success_page`              | The Scalev payment instruction page for the order.                                                          |
+| Langsung ke WhatsApp                | `direct_to_whatsapp`        | WhatsApp, using the handler Scalev assigns from the store or page assignment, with the order's chat message. |
+| Langsung ke Nomor WhatsApp tertentu | `direct_to_custom_whatsapp` | WhatsApp, using the fixed number configured on the page.                                                    |
+| Landing Page Lainnya                | `other_page`                | Another Scalev landing page, with retained attribution parameters forwarded.                                |
+| Self Hosted Orderan / Invoice       | `order_page`                | The public order/invoice page.                                                                              |
+| Custom URL                          | `custom_url`                | The configured URL. Attribution is forwarded only when it stays on the buyer's host or a Scalev host.        |
+
+An electronic payment method overrides whichever of these is configured, except for per-bank virtual account values as described above.
+
+## Example
 
 ```js
-const afterCheckout = Scalev.data.get().afterCheckout || {
-  type: "success_page"
-};
-```
-
-`afterCheckout` is editor config state from the Scalev editor.
-
-## Redirect rules
-
-Use these rules when deciding where to send the buyer after `createOrder` succeeds:
-
-- For new HTML Mode checkout pages, render payment labels from `Scalev.data.get().store.paymentMethodOptions[].display` and submit the selected option `value` as `paymentMethod`.
-- E-payment methods always go to the payment instruction page. This includes `va`, flattened VA values such as `va:BRI`, `qris`, `card`, `invoice`, `alfamart`, `ovo`, `dana`, `shopeepay`, `linkaja`, and `gopay`.
-- Manual bank-transfer values such as `bt:BCA:paymentAccountUid` are treated as `bank_transfer`.
-- If the order status is `draft`, the payment instruction path falls back to **Self Hosted Orderan / Invoice** (`order_page`).
-- If the page is rendered inside an iframe, post the target URL to the parent window instead of navigating the iframe directly.
-
-Use the order data returned by `createOrder` and the public URLs in that response.
-
-`createOrder` returns the order object directly:
-
-```json
-{
-  "secretSlug": "orderSecret",
-  "publicOrderUrl": "https://example.com/o/orderSecret",
-  "paymentUrl": "https://example.com/o/orderSecret/success",
-  "handlerPhone": "6281200000000",
-  "chatMessage": "..."
-}
-```
-
-```js
-const order = await Scalev.checkout.createOrder(payload);
-```
-
-## Reference implementation
-
-Use this helper after `createOrder` succeeds.
-
-```js
-const PAYMENT_INSTRUCTION_METHODS = new Set([
-  "va",
-  "qris",
-  "card",
-  "invoice",
-  "alfamart",
-  "ovo",
-  "dana",
-  "shopeepay",
-  "linkaja",
-  "gopay"
-]);
-
-const SCALEV_QUERY_FORWARD_HOSTS = new Set([
-  "scalev.com",
-  "scalev.id",
-  "app.scalev.id",
-  "app.scalev.com"
-]);
-
-function paymentMethodForRedirect(paymentMethod) {
-  if (typeof paymentMethod !== "string") return paymentMethod;
-
-  if (paymentMethod.toLowerCase().startsWith("va:")) return "va";
-  if (paymentMethod.toLowerCase().startsWith("bt:")) return "bank_transfer";
-
-  return paymentMethod;
-}
-
-function publicOrderUrl(order) {
-  if (order.publicOrderUrl) return order.publicOrderUrl;
-  return new URL(`/o/${order.secretSlug}`, window.location.origin).toString();
-}
-
-function paymentInstructionUrl(order) {
-  if (order.status === "draft") return publicOrderUrl(order);
-  if (order.paymentUrl) return order.paymentUrl;
-
-  const url = new URL(publicOrderUrl(order));
-  url.pathname = `${url.pathname.replace(/\/$/, "")}/success`;
-  return url.toString();
-}
-
-function whatsappUrl(phone, order, fallbackMessage = "") {
-  const cleanPhone = String(phone || "").replace(/[^\d]/g, "");
-  const message = order.chatMessage || encodeURIComponent(fallbackMessage);
-  return `https://api.whatsapp.com/send/?phone=${cleanPhone}&text=${message}`;
-}
-
-function withCurrentQuery(url) {
-  const nextUrl = new URL(url, window.location.href);
-  const currentParams = new URLSearchParams(window.location.search);
-
-  currentParams.forEach((value, key) => {
-    nextUrl.searchParams.set(key, value);
-  });
-
-  return nextUrl.toString();
-}
-
-function maybeForwardCurrentQuery(url) {
-  const nextUrl = new URL(url, window.location.href);
-  const shouldForward =
-    nextUrl.host === window.location.host ||
-    SCALEV_QUERY_FORWARD_HOSTS.has(nextUrl.host);
-
-  return shouldForward
-    ? withCurrentQuery(nextUrl.toString())
-    : nextUrl.toString();
-}
-
-function navigateAfterOrder(url) {
-  if (window.self !== window.top) {
-    window.parent.postMessage(url, "*");
-    return;
-  }
-
-  window.location.assign(url);
-}
-
-function redirectAfterOrder({
-  type,
-  order,
-  paymentMethod,
-  customWhatsappPhone,
-  otherPagePath,
-  customUrl
-}) {
-  const redirectPaymentMethod = paymentMethodForRedirect(
-    paymentMethod || order.paymentMethod
-  );
-  const finalType = PAYMENT_INSTRUCTION_METHODS.has(redirectPaymentMethod)
-    ? "success_page"
-    : type;
-
-  if (finalType === "success_page") {
-    return navigateAfterOrder(paymentInstructionUrl(order));
-  }
-
-  if (finalType === "direct_to_whatsapp") {
-    const phone = order.handlerPhone;
-    return navigateAfterOrder(
-      phone ? whatsappUrl(phone, order) : publicOrderUrl(order)
-    );
-  }
-
-  if (finalType === "direct_to_custom_whatsapp") {
-    return navigateAfterOrder(whatsappUrl(customWhatsappPhone, order));
-  }
-
-  if (finalType === "other_page") {
-    return navigateAfterOrder(withCurrentQuery(otherPagePath));
-  }
-
-  if (finalType === "order_page") {
-    return navigateAfterOrder(publicOrderUrl(order));
-  }
-
-  if (finalType === "custom_url") {
-    return navigateAfterOrder(maybeForwardCurrentQuery(customUrl));
-  }
-
-  return navigateAfterOrder(paymentInstructionUrl(order));
-}
-```
-
-Example usage:
-
-```js
-const data = Scalev.data.get();
-const store = data.store;
-const afterCheckout = data.afterCheckout || { type: "success_page" };
+const store = Scalev.data.get().store;
 const selectedPaymentOption = store.paymentMethodOptions[0];
 const selectedVariant = store.products[0].variants[0];
 const destination = {
@@ -221,9 +102,8 @@ const shippingOptions = await Scalev.checkout.shippingOptions({
   destination,
   paymentMethod: selectedPaymentOption.value
 });
-const shipping = shippingOptions[0];
 
-const payload = {
+const order = await Scalev.checkout.createOrder({
   customer: {
     name: form.customerName.value,
     phone: form.customerPhone.value
@@ -231,52 +111,16 @@ const payload = {
   destination,
   items,
   paymentMethod: selectedPaymentOption.value,
-  shipping
-};
-
-const order = await Scalev.checkout.createOrder(payload);
-
-redirectAfterOrder({
-  type: afterCheckout.type,
-  order,
-  paymentMethod: payload.paymentMethod,
-  customWhatsappPhone: afterCheckout.customWhatsappPhone,
-  otherPagePath: afterCheckout.otherPagePath,
-  customUrl: afterCheckout.customUrl
+  shipping: shippingOptions[0]
 });
+
+if (order.redirectUrl) window.location.assign(order.redirectUrl);
 ```
 
-If the checkout includes Other Charges or a customer-facing Service Fee, Scalev calculates both from the store's saved settings in `estimateSummary` and recalculates them during `createOrder`. The Service Fee base includes Other Charges. The page never sends a fee policy, a fee amount, or a fee quote. Use `Scalev.checkout.estimateSummary()` only when the page needs to show an estimated fee and total before submit; pass the payload you will send to `createOrder`. The redirect logic after order creation does not change.
-
-## The six types
-
-| Editor label                        | Value                       | HTML Mode behavior                                                                                                                                                                                                 |
-| ----------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Halaman Instruksi Pembayaran        | `success_page`              | Redirect to the Scalev payment instruction page. Prefer `order.paymentUrl`; otherwise use `/o/{secretSlug}/success`. If `order.status` is `draft`, use **Self Hosted Orderan / Invoice** (`order_page`) instead. |
-| Langsung ke WhatsApp                | `direct_to_whatsapp`        | Open WhatsApp using `order.handlerPhone` and `order.chatMessage`. Scalev chooses the handler from the store or page assignment. If `handlerPhone` is missing, fall back to **Self Hosted Orderan / Invoice** (`order_page`). |
-| Langsung ke Nomor WhatsApp tertentu | `direct_to_custom_whatsapp` | Open WhatsApp using your own configured phone number and `order.chatMessage`. Use this when every order should go to a fixed sales or admin number.                                                               |
-| Landing Page Lainnya                | `other_page`                | Redirect to another landing page path on the current host and preserve the current query string. Use `afterCheckout.otherPagePath` from the runtime config when a page is selected.                              |
-| Self Hosted Orderan / Invoice       | `order_page`                | Redirect to the public order or invoice page. Prefer `order.publicOrderUrl`; otherwise use `/o/{secretSlug}` on the current origin.                                                                               |
-| Custom URL                          | `custom_url`                | Redirect to a URL you provide. For the current host or known Scalev app hosts, you can forward the current query string to preserve attribution. For external hosts, forward only the parameters you intentionally want to share. |
-
-## Choosing a type
-
-Use `success_page` when the buyer needs payment instructions or the most complete Scalev-hosted payment state.
-
-Use `direct_to_whatsapp` when the next step is handled by the store's assigned sales person. The selected config state only exposes `afterCheckout.handlerAssignment`; Scalev resolves the actual handler during order creation, so redirect with `order.handlerPhone` from the created order response.
-
-Use `direct_to_custom_whatsapp` when the next step always goes to a fixed number. Read the number from `afterCheckout.customWhatsappPhone`.
-
-Use `other_page` when the destination is another Scalev landing page on the same host, such as a thank-you page or upsell page. Read the path from `afterCheckout.otherPagePath`.
-
-Use `order_page` when the buyer should see the generated public invoice or order detail page.
-
-Use `custom_url` for destinations outside the current page flow, such as a CRM handoff, external thank-you page, or custom hosted experience. Read the URL from `afterCheckout.customUrl`.
+If the checkout includes Other Charges or a customer-facing Service Fee, Scalev calculates both from the store's saved settings in `estimateSummary` and recalculates them during `createOrder`. The Service Fee base includes Other Charges. The page never sends a fee policy, a fee amount, or a fee quote. Use `Scalev.checkout.estimateSummary()` only when the page needs to show an estimated fee and total before submit; pass the payload you will send to `createOrder`.
 
 ## Notes for analytics and attribution
 
-Preserve query parameters for `other_page`. For `custom_url`, forward query parameters only when the target host is the current host or one of the known Scalev app hosts.
+After `Scalev.checkout.createOrder(payload)` succeeds, HTML Checkout Pages automatically fire the configured form-submit analytics events for the pixels configured on the page. Keep the redirect after `createOrder` resolves, and add custom analytics only for intentionally separate events.
 
-After `Scalev.checkout.createOrder(payload)` succeeds, HTML Checkout Pages automatically fire the configured form-submit analytics events for analytics pixels configured on the page. Redirect handling is still manual, so keep the redirect after `createOrder` resolves and add custom analytics only for intentionally separate events.
-
-If the page has buttons or links that redirect to another URL, preserve the current query parameters that are commonly important for analytics, such as UTM, click, and affiliate parameters.
+Scalev forwards retained attribution parameters onto the destinations described above. For your page's own buttons and links, preserve the query parameters that matter for analytics — UTM, click, and affiliate parameters — yourself.

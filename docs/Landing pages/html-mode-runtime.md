@@ -453,6 +453,8 @@ Recommended method payload:
 
 For payment selection, render `store.paymentMethodOptions[].display`, render payment images from `store.paymentMethodOptions[].logoUrl`, and submit only the selected option `value` as `paymentMethod`.
 
+`redirectUrl` is where the buyer goes after the order is created. Scalev resolves it from the payment method and the page's After Checkout setting, so the page navigates there instead of choosing a destination itself; `paymentUrl` stays scoped to the payment step. See [HTML Mode checkout success types](/docs/html-mode-checkout-success-paths).
+
 Response example:
 
 ```json
@@ -463,6 +465,7 @@ Response example:
   "secretSlug": "orderSecretSlug",
   "publicOrderUrl": "https://brand.myscalev.com/order/orderSecretSlug",
   "paymentUrl": null,
+  "redirectUrl": "https://brand.myscalev.com/o/orderSecretSlug/success",
   "productPrice": "90000.00",
   "productDiscount": "0.00",
   "shippingCost": "15300.00",

@@ -90,7 +90,7 @@ For Scalev features, use these window.Scalev methods from JavaScript:
 - `Scalev.checkout.validateDiscount(payload)` validates a discount code. Pass the code as `discountCode`.
 - `Scalev.checkout.shippingOptions(payload)` returns shipping options for selected `items`, `destination`, and `paymentMethod`. Render the returned options, use `logoUrl` as the courier image source, and submit the chosen option as `shipping`.
 - `Scalev.checkout.estimateSummary(payload)` is an optional helper for buyer-facing checkout summaries. Pass the same `items`, `destination`, `paymentMethod`, and `shipping` that will be sent to `createOrder`.
-- `Scalev.checkout.createOrder(payload)` creates a public order, already validates the payload, and returns the order object directly. For a `payment_link` order, `order.paymentUrl` is the Scalev-hosted PayLink page the buyer must open to pay.
+- `Scalev.checkout.createOrder(payload)` creates a public order, already validates the payload, and returns the order object directly. `order.redirectUrl` is the destination the buyer must open after checkout, already resolved from the payment method and the After Checkout setting.
 - `Scalev.analytics.track(provider, payload)` tracks configured analytics events; always pass provider as `facebook`, `tiktok`, or `kwai`.
 - `Scalev.prefill.get()` reads safe form prefill data from the local encrypted cookie. It returns clean nested objects such as `customer: { name, phone, email }` and `destination: { address, subdistrictId, postalCode }`. `Scalev.prefill.save(form, metadata)` persists the same clean shape locally in that cookie.
 
@@ -185,11 +185,11 @@ Scalev excludes `payment_link` from `store.paymentMethodOptions` on purpose, so 
 
 When `store.isPaymentLinkEnabled` is `true`, PayLink is forced for this page: `store.paymentMethodOptions` is empty, every order is created as `payment_link`, and the page must not render a payment selector at all.
 
-After a `payment_link` order is created, send the buyer to `order.paymentUrl` instead of the configured after-checkout action, the same way the other e-payment methods go to their payment page. Follow the same navigation rule as the other after-checkout paths: post the URL to the parent window when the page runs inside an iframe.
+A `payment_link` order resolves `order.redirectUrl` to the PayLink page instead of the configured after-checkout action, the same way the other e-payment methods resolve to their payment page. Navigate there exactly as you do for every other order, and follow the same rule: post the URL to the parent window when the page runs inside an iframe.
 
 ```js
 const order = await Scalev.checkout.createOrder({ ...orderPayload, paymentMethod: "payment_link" });
-if (order.paymentUrl) window.location.assign(order.paymentUrl);
+if (order.redirectUrl) window.location.assign(order.redirectUrl);
 ```
 
 A `payment_link` order is created without extra fees on the order itself. Store-configured extra fees and any customer-borne payment fee are quoted on the PayLink page after the buyer picks a concrete method, so an `estimateSummary` total covers the order amount only and can differ from the final amount shown on the PayLink page. `createOrder` fails with a payment-method error when the business has no PayLink method enabled; show `error.message` and keep the other payment choices usable.
@@ -221,7 +221,7 @@ If you use external domains for assets, scripts, iframes, fonts, images, or API 
 - Treat `va_*` option values as virtual-account choices and `bt:` option values as manual bank-transfer choices. Submit exactly one payment field: `paymentMethod` from the selected payment option `value`.
 - Offer PayLink by submitting `payment_link` as `paymentMethod`. It is never part of `store.paymentMethodOptions`, so add it as your own choice when the page should let the visitor pay later and pick QRIS, virtual account, or an e-wallet on the Scalev PayLink page.
 - When `store.isPaymentLinkEnabled` is `true`, drop the payment selector entirely and create every order with `payment_link` as `paymentMethod`.
-- After a `payment_link` order succeeds, navigate the buyer to `order.paymentUrl` (the Scalev PayLink page) instead of the configured after-checkout action.
+- Navigate the buyer to `order.redirectUrl` after `Scalev.checkout.createOrder()` succeeds. Scalev resolves it from the payment method and the After Checkout setting in this prompt, including the PayLink page and the WhatsApp, landing page, and custom URL destinations.
 - Validate required fields client-side before calling `Scalev.checkout.createOrder()`.
 - Call `Scalev.checkout.createOrder()` directly in the form submit flow because it validates the payload before creating the order.
 - Use `Scalev.checkout.estimateSummary()` only when the page needs to display totals before submit. Pass the current checkout payload with `items`, `destination`, `paymentMethod`, and the selected `shipping`. Do not call it for validation.
@@ -233,7 +233,7 @@ If you use external domains for assets, scripts, iframes, fonts, images, or API 
 - Read the selected after-checkout config state from `Scalev.data.get().afterCheckout`.
 - For `direct_to_whatsapp`, use `order.handlerPhone` returned by `Scalev.checkout.createOrder()`.
 - Rely on `Scalev.checkout.createOrder()` to fire the configured form-submit analytics events after the order succeeds.
-- For the next action after `Scalev.checkout.createOrder()` succeeds, implement the selected after-checkout type from this prompt and follow this guide: https://dev.scalev.com/docs/html-mode-checkout-success-paths.
+- Do not build the after-checkout destination yourself; only fall back to the selected after-checkout type when `order.redirectUrl` is null. Reference: https://dev.scalev.com/docs/html-mode-checkout-success-paths.
 - After order creation, use only data returned by the window.Scalev method for buyer-facing navigation.
 
 ## Quality Bar

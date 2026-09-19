@@ -26897,6 +26897,12 @@
             "format": "uri",
             "nullable": true
           },
+          "redirect_url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "description": "Canonical destination the buyer opens after checkout, resolved from the order's payment method and the page's After Checkout setting. An electronic payment method overrides the configured action and resolves to the payment page; everything else follows the configured destination (hosted instruction page, order page, WhatsApp, another page, or a custom URL). Retained attribution parameters are forwarded onto a configured page or custom URL only while it stays on the buyer's own host or a Scalev-owned one. Null when that destination is incomplete. Prefer this over `payment_url`, which stays scoped to the payment step.\n"
+          },
           "order_id": {
             "type": "string"
           },
@@ -34840,6 +34846,12 @@
             "format": "uri",
             "nullable": true,
             "description": "Buyer-facing payment or instruction URL. Redirect or open this URL for hosted payment methods."
+          },
+          "redirect_url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "description": "Canonical destination the buyer opens after checkout, resolved from the order's payment method and the page's After Checkout setting. See `StorefrontPublicOrder.redirect_url`.\n"
           },
           "payment_method": {
             "type": "string",
