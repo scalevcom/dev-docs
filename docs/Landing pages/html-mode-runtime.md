@@ -513,7 +513,7 @@ try {
 
 ## `Scalev.analytics.track(provider, payload)`
 
-Forwards configured analytics events through Scalev.
+Forwards configured advertising-provider events through Scalev. These events are separate from [Web Analytics reports](/docs/web-analytics); this method does not create a first-party page view. Use the Web Analytics reporting API from your backend to read hosted-page traffic.
 
 ```js
 await Scalev.analytics.track("facebook", {

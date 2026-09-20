@@ -297,6 +297,12 @@ The first connection may request the Scalev API v3 permissions supported by MCP 
 
 Scalev enforces permissions on every API request. If the assistant tries to perform an action outside the approved scopes, Scalev rejects the request.
 
+## Web Analytics
+
+Use `search` to find the [Web Analytics reports](/docs/web-analytics), then `get` to read traffic, audience, engagement, journeys, funnels, and source revenue. Filter selectors are available through the same tools and require only `web_analytics:read`. Ask `get_docs` for the reporting guide before comparing metrics with different date or attribution rules.
+
+[Customer privacy settings](/docs/customer-privacy-settings) are a separate business resource: `get` requires `business:read`; changing the complete country lists through `execute_safe` requires `business:update` and the current revision. These operations change the business settings, not an individual visitor's choice.
+
 ## Write actions
 
 The `execute_safe` and `execute_destructive` tools can call non-GET Scalev API v3 endpoints when the connected OAuth token has the required scope. Some of those endpoints create, update, delete, validate, or run business actions. Review write actions in your AI assistant before you confirm them.
