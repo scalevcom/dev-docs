@@ -19,6 +19,8 @@ This introduction covers the base URL, authentication families, response format,
 ## Build your integration
 
 - **[Create orders](/docs/creating-orders)** — Build digital or physical product orders and redirect customers to the payment page.
+- **[Read Web Analytics](/docs/web-analytics)** — Report traffic, engagement, journeys, orders, and source revenue for your business.
+- **[Configure customer privacy](/docs/customer-privacy-settings)** — Choose the countries where analytics and marketing require visitor consent.
 - **[Receive webhooks](/docs/webhooks-overview)** — Subscribe to events and verify webhook requests before you process them.
 - **[Browse the API reference](/reference)** — Inspect endpoints, parameters, request bodies, and response schemas from the interactive API reference.
 - **[Read the changelog](/changelog)** — Follow product updates and documentation changes as the API evolves.

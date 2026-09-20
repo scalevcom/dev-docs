@@ -10,6 +10,8 @@ Storefront API gives you server-side conversion endpoints for Meta, TikTok, and 
 
 Use this page when your custom storefront is used for ads.
 
+For business traffic, engagement, navigation, and source-revenue reporting, use the separate [Web Analytics API](/docs/web-analytics). The provider-forwarding endpoints in this guide do not create Web Analytics page views.
+
 ## How the flow works
 
 For each conversion you want to track:

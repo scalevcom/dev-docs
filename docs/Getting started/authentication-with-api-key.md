@@ -210,6 +210,8 @@ Permission behavior depends on key type:
 
 If a restricted key does not include the required scope, the request is rejected with `403 Forbidden`.
 
+For [Web Analytics](/docs/web-analytics), grant `web_analytics:read` for reports and analytics filter choices. [Customer privacy settings](/docs/customer-privacy-settings) require `business:read` to inspect and `business:update` to change. A reporting-only integration does not need those write permissions.
+
 ## Rate Limiting
 
 Each API key has credential-scoped rate limits.

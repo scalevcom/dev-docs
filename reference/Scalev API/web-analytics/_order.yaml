@@ -1,0 +1,15 @@
+- getwebanalyticstraffic
+- getwebanalyticspages
+- getwebanalyticssources
+- getwebanalyticsaudience
+- getwebanalyticsconversion
+- getwebanalyticsjourney
+- getwebanalyticsentityjourney
+- getwebanalyticsentityfunnel
+- getwebanalyticssourcerevenue
+- getwebanalyticsadclicks
+- getwebanalyticsorderfunnel
+- getwebanalyticsengagement
+- listwebanalyticsentities
+- listwebanalyticsstores
+- listwebanalyticspaymentlinks
