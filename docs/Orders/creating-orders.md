@@ -161,3 +161,11 @@ Call `POST /v3/orders` with the payload above.
 Use `id` for later business API calls such as `GET /v3/orders/{id}` or `PATCH /v3/orders/{id}`. Legacy numeric order IDs for migrated orders are still accepted on ID routes, but new order responses return UUIDs.
 
 Use `payment_url` from the order-create response.
+
+## Create or reuse payment instructions
+
+`POST /v3/orders/{id}/payment` returns the gateway payload itself: the same object exposed as `pg_payment_info` on an order response. It does not wrap that payload in `pg_payment_info` or include order-level URLs. Manual methods such as `bank_transfer` and `cod` return an empty object. Gateway-specific fields vary by provider and method.
+
+Read order-level URLs from the order response. A gateway payload can also contain a provider's own `payment_url` or `redirect_url`; these fields describe the provider payment flow.
+
+The [Storefront API payment endpoint](/docs/storefront-api-checkout-payments), `POST /v3/stores/{store_id}/public/orders/{secret_slug}/payment`, returns a full public order instead. Keep these two response shapes separate in your client.

@@ -32,7 +32,7 @@ String enum values and provider-owned blobs keep their original values. For exam
 
 When Store Context is selected, `Scalev.data.get().store` includes only the selected store summary, products, and bundle price options. Treat it as the page-specific checkout catalog.
 
-When HTML Checkout Page is selected, `Scalev.data.get().afterCheckout` includes the selected after-checkout success type and its public destination config.
+When HTML Checkout Page is selected, `Scalev.data.get().afterCheckout` describes the selected after-checkout type and its public destination configuration. It is editor state, not the resolved destination for an order. After checkout, use `order.redirectUrl` from `Scalev.checkout.createOrder()` instead of rebuilding a URL from this configuration.
 
 When Store Context is unselected, treat `store` as unavailable. Build a regular landing page and rely only on page-safe methods such as `Scalev.data.get()`, `Scalev.analytics.track()`, and `Scalev.prefill.get()`.
 
@@ -461,7 +461,8 @@ Response example:
   "status": "pending",
   "paymentStatus": "unpaid",
   "secretSlug": "orderSecretSlug",
-  "publicOrderUrl": "https://brand.myscalev.com/order/orderSecretSlug",
+  "redirectUrl": "https://brand.myscalev.com/o/orderSecretSlug/success",
+  "publicOrderUrl": "https://brand.myscalev.com/o/orderSecretSlug",
   "paymentUrl": null,
   "productPrice": "90000.00",
   "productDiscount": "0.00",
@@ -497,6 +498,36 @@ Response example:
   "chatMessage": null
 }
 ```
+
+### After order creation
+
+`createOrder` returns the order directly and does not navigate. The Scalev API resolves the immediate destination as `redirect_url`; the runtime exposes it as `order.redirectUrl`. This covers the configured After Checkout destination and payment-specific behavior, including PayLink and WhatsApp.
+
+```js
+const order = await Scalev.checkout.createOrder(payload);
+const target = typeof order.redirectUrl === "string"
+  ? order.redirectUrl.trim()
+  : "";
+
+if (target) {
+  if (window.self !== window.top) {
+    // Use the embedding parent's exact origin when you control it.
+    window.parent.postMessage(target, "*");
+  } else {
+    window.location.assign(target);
+  }
+} else {
+  // Implement a confirmation in your page. Optionally offer the returned
+  // order.publicOrderUrl as a link; do not submit the order again.
+  showOrderCreated(order);
+}
+```
+
+Open the returned URL unchanged. Do not derive the destination from `afterCheckout`, infer it from a payment-method list, re-encode a WhatsApp message, or append the current query string. `paymentUrl` describes the payment step and does not replace the canonical destination. If `redirectUrl` is missing or empty, the order can still have been created successfully; keep the buyer on the page and show a confirmation.
+
+This immediate redirect is separate from the post-payment destination snapshot. The page's post-payment setting stays private; hosted Scalev pages use the order's snapshot only after its payment status becomes `paid` or `settled`. Neither redirect proves payment. Provision external access from a verified `payment.received` webhook.
+
+See [HTML Mode checkout success types](/docs/html-mode-checkout-success-paths) for the destination types, embedding behavior, and a reusable navigation helper.
 
 ### Error handling
 
