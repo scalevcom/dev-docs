@@ -112,6 +112,20 @@ Send a complete document with its head, body, styles, and scripts. A non-whitesp
 
 Older pages can have null, empty, or whitespace-only `html_document`. Those pages still render `additional_head_code`, `html_code`, `css_code`, and `js_code`. Reading or validating them does not migrate storage. A content save using a legacy display snapshot assembles a new unified document; historical versions keep their own source. New integrations should write `html_document` directly.
 
+Existing apps and AI agents can keep sending `html_code`, `css_code`, and `js_code`, including when the preceding version uses `html_document`. These request fields remain supported. Send all three for a complete legacy snapshot, using an empty string for a blank section, and include `additional_head_code` when you need head content. Omitted code sections in a new display snapshot are empty. Do not include a nonempty `html_document` with a legacy edit: the unified document takes precedence. Reading a page does not backfill legacy fields from its unified source.
+
+For example, send this content alongside the existing display settings when creating a version:
+
+```json
+{
+  "render_mode": "html_mode",
+  "html_code": "<main>Updated by an existing integration</main>",
+  "css_code": "main { padding: 24px; }",
+  "js_code": "console.log(Scalev.data.get());",
+  "additional_head_code": "<meta name=\"theme-color\" content=\"#09AFED\">"
+}
+```
+
 Settings-only writes preserve the document. Clearing an already migrated document returns `422`. To save a deliberately blank page, send `<!doctype html><html><head></head><body></body></html>`.
 
 External script URLs, stylesheet links, script attributes, import maps, and JSON data blocks are preserved. Permissions remain explicit and directive-specific in `csp_policy`. CSP meta tags in authored source are retained but excluded from execution with a validation warning. Reserved runtime IDs, such as `scalev-runtime` and `scalev-data`, cannot be authored.

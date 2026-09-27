@@ -69,6 +69,8 @@ curl -X POST https://api.scalev.com/v3/pages \
 
 `html_document` is the complete authored document. Add `page_display.form_display` with `store_id` and the selected items when the page must create orders. This example leaves out the analytics fields; send them as shown in [Landing Pages API](/docs/landing-pages-api), including when they are empty. That guide also covers the full payload and how to publish a new display.
 
+Existing integrations can continue sending complete `html_code`, `css_code`, and `js_code` payloads, with optional `additional_head_code`. You do not need to change an existing writer immediately. These fields remain accepted after a page has a unified version; the API assembles the legacy snapshot when saving. See [legacy request compatibility](/docs/landing-pages-api) before sending only some code sections.
+
 ## Write the page code
 
 Keep these rules so the document imports cleanly and runs on the hosted page:
