@@ -10,6 +10,8 @@ Storefront API checkout uses the same buyer-facing checkout concepts as the Scal
 
 The Storefront API is designed so your storefront can render its own payment page. Use the public order and payment responses to show buyer-facing instructions directly in your UI. `payment_url` is still returned as a hosted fallback for storefronts that have not implemented a method-specific renderer or for provider flows that must open a hosted payment page.
 
+To follow the merchant's configured After Checkout flow instead, navigate to the created order's `redirect_url` when it is present. This is the server-selected next destination; it can be a payment page, order page, WhatsApp conversation, another landing page, or a custom URL. Do not reconstruct that destination from the payment method or append the browser's query string. When `redirect_url` is absent, keep your order confirmation or payment UI available rather than navigating to an empty URL.
+
 Use only payment methods returned by `GET /v3/stores/{store_id}/public/payment-methods`. Storefront checkout does not return `no_payment`, and checkout endpoints reject it if submitted directly. When a store passes provider transaction fees to the customer, Scalev also omits configured e-payment methods that do not have an executable provider and verified fee schedule. This filtering does not disable or delete the store's saved method configuration.
 
 ## Capture unfinished checkouts
@@ -206,7 +208,15 @@ The checkout endpoint uses the selected courier service, warehouse, destination,
 
 The created order carries the fees Scalev calculated at checkout time, which can differ from an older summary if the store settings or checkout inputs changed in between. Read the totals from the checkout response before showing the buyer a confirmation.
 
-On success, the response includes the created slim public order data, including `secret_slug`, `public_order_url`, `payment_url`, status, totals, the existing `variants` and `bundle_price_options` object maps, line items, shipping details, and payment fields. Internal order IDs, dashboard-only revenue fields, platform fees, payment-status history, and affiliate attribution are not returned. Use `secret_slug` to read or update the order. Use `payment_url` only as a hosted fallback if your storefront does not render the payment instructions itself.
+On success, the response includes the created slim public order data, including `secret_slug`, `public_order_url`, `redirect_url`, `payment_url`, status, totals, the existing `variants` and `bundle_price_options` object maps, line items, shipping details, and payment fields. Internal order IDs, dashboard-only revenue fields, platform fees, payment-status history, and affiliate attribution are not returned. Use `secret_slug` to read or update the order.
+
+| Field | Purpose |
+| --- | --- |
+| `redirect_url` | The immediate After Checkout destination, including applicable payment-method overrides and merchant settings. It is nullable when the destination is incomplete. |
+| `payment_url` | A payment-specific hosted URL, useful when your storefront cannot render the payment instructions itself. |
+| `public_order_url` | The buyer's order-details page. |
+
+For WhatsApp destinations, `redirect_url` already includes the visitor-to-store message. Use it as returned; do not encode the message again. These navigation URLs do not prove that an order has been paid.
 
 New orders expose one unified customer-facing `service_fee`, including orders
 created through PayLink. `other_income` remains independent. Legacy
@@ -238,6 +248,8 @@ POST /v3/stores/{store_id}/public/orders/{secret_slug}/payment
 ```
 
 The endpoint is idempotent. If payment instructions already exist, the response returns the order again with the existing buyer-facing payment data and URLs.
+
+This store-scoped endpoint returns a public order, including `pg_payment_info` and `redirect_url`. The business-authenticated `POST /v3/orders/{id}/payment` endpoint has a different response: it returns only the raw gateway payload, without an order wrapper. Do not use the same response parser for both endpoints.
 
 Use this order of preference in a browser storefront:
 

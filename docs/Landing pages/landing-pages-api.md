@@ -324,12 +324,15 @@ For checkout behavior after order creation, use these `after_submit_event` value
 | Value | Required fields |
 | --- | --- |
 | `success_page` | None |
-| `direct_to_whatsapp` | `handler_assignment`; if `handler_assignment` is `fixed`, also send `store_sales_person_id` |
+| `direct_to_whatsapp` | None for rotator; when `handler_assignment` is `fixed`, send `store_sales_person_id` |
 | `direct_to_custom_whatsapp` | `custom_phone` |
 | `other_page` | `other_page_id` |
 | `custom_url` | `custom_url` |
-| `is_sending_email_invoice` | None |
 | `order_page` | None |
+
+For a new checkout form, omitting `after_submit_event` selects `success_page` (payment instructions), and omitting `handler_assignment` selects `rotator`. When you create a new form display for an existing page, omitted destination, WhatsApp recipient, assignment, and chat-template settings retain the latest saved display's values. Explicit values take precedence.
+
+The separate page-level `is_sending_email_invoice` boolean is deprecated and ignored. It remains accepted and is echoed as stored for compatibility, but it no longer suppresses invoice email. Store notification settings still control email delivery. The legacy `is_sending_email_invoice` value in the `after_submit_event` enum is also retained for compatibility; use one of the destinations above for new forms.
 
 Read [HTML Mode checkout success paths](/docs/html-mode-checkout-success-paths) for the runtime behavior of each path.
 

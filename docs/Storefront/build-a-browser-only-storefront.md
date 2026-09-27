@@ -320,6 +320,10 @@ Do not show a manual reset token input. The frontend should never ask the user t
 
 ## Payment rendering
 
+After order creation, use the returned `redirect_url` to follow the merchant's After Checkout flow. The server resolves payment routing and configured destinations, including WhatsApp. Use the URL as returned; do not rebuild it or append the current query string. If it is absent, keep the order confirmation visible and offer the returned `public_order_url` when available.
+
+If your storefront renders its own payment page, use `payment_url` as a hosted payment fallback. It serves a different purpose from `redirect_url`, which can lead to a non-payment destination.
+
 Use these order fields to render the payment page:
 
 - `product_price`
