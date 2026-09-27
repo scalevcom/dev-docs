@@ -77,7 +77,7 @@ Or if you want to use bundles instead of products:
 
 Call `POST /v3/orders` with the payload above.
 
-### 5. Redirect the customer to the payment page
+### 5. Open the checkout destination
 
 The response includes:
 
@@ -85,11 +85,13 @@ The response includes:
 - `order_id` - the business-facing order number
 - `secret_slug`
 - `public_order_url`
-- `payment_url`
+- `payment_url` - deprecated for checkout navigation; returned for backward compatibility
 
 Use `id` for later business API calls such as `GET /v3/orders/{id}` or `PATCH /v3/orders/{id}`. Legacy numeric order IDs for migrated orders are still accepted on ID routes, but new order responses return UUIDs.
 
-Use `payment_url` for the customer redirect.
+The business-authenticated `POST /v3/orders` response does not include `redirect_url`. To obtain the server-selected checkout destination, read the public order with `GET /v3/stores/{store_id}/public/orders/{secret_slug}`. Use the store's `unique_id` as `{store_id}` and the created order's `secret_slug`. This Storefront API request requires `X-Scalev-Storefront-Api-Key`; see [Storefront API authentication](/docs/storefront-api-auth) for setup and access requirements.
+
+Always use `redirect_url` from that public order response for checkout navigation, including PayLink. Open it unchanged; do not reconstruct the destination or append the current query string. If the configured destination cannot be resolved, the public order returns the Scalev-hosted payment-instructions page (`/o/{secret_slug}/success`) in `redirect_url`. The order-level `payment_url` is deprecated for checkout navigation and remains available for backward compatibility. Defensively handle older or unexpected responses without `redirect_url` by keeping the confirmation or payment UI visible and offering `public_order_url` when available. Do not fall back to `payment_url` or create another order.
 
 When `payment_method` is `payment_link`, the customer selects the final payment
 method on Scalev's PayLink page. The order keeps its PayLink
@@ -156,16 +158,16 @@ Minimal example:
 
 Call `POST /v3/orders` with the payload above.
 
-### 6. Redirect the customer to the payment page
+### 6. Open the checkout destination
 
 Use `id` for later business API calls such as `GET /v3/orders/{id}` or `PATCH /v3/orders/{id}`. Legacy numeric order IDs for migrated orders are still accepted on ID routes, but new order responses return UUIDs.
 
-Use `payment_url` from the order-create response.
+As with digital orders, the business-authenticated order-create response does not include `redirect_url`. Read the public order through `GET /v3/stores/{store_id}/public/orders/{secret_slug}` using the store's `unique_id` and its Storefront API key. Use that response's `redirect_url` for checkout navigation, including PayLink. The server falls back to the Scalev-hosted payment-instructions page (`/o/{secret_slug}/success`) when the configured destination cannot be resolved. The order-level `payment_url` is deprecated for checkout navigation. For an older or unexpected response without `redirect_url`, keep the confirmation or payment UI visible and offer `public_order_url` when available; do not fall back to the deprecated field.
 
 ## Create or reuse payment instructions
 
 `POST /v3/orders/{id}/payment` returns the gateway payload itself: the same object exposed as `pg_payment_info` on an order response. It does not wrap that payload in `pg_payment_info` or include order-level URLs. Manual methods such as `bank_transfer` and `cod` return an empty object. Gateway-specific fields vary by provider and method.
 
-Read order-level URLs from the order response. A gateway payload can also contain a provider's own `payment_url` or `redirect_url`; these fields describe the provider payment flow.
+Read the canonical `redirect_url` from the public order response for checkout navigation; the business-authenticated order and payment responses do not include that order-level field. A raw gateway payload can also contain a provider's own `payment_url` or `redirect_url`; these are provider payment fields and are not deprecated by the order-level `payment_url` deprecation.
 
 The [Storefront API payment endpoint](/docs/storefront-api-checkout-payments), `POST /v3/stores/{store_id}/public/orders/{secret_slug}/payment`, returns a full public order instead. Keep these two response shapes separate in your client.

@@ -320,9 +320,9 @@ Do not show a manual reset token input. The frontend should never ask the user t
 
 ## Payment rendering
 
-After order creation, use the returned `redirect_url` to follow the merchant's After Checkout flow. The server resolves payment routing and configured destinations, including WhatsApp. Use the URL as returned; do not rebuild it or append the current query string. If it is absent, keep the order confirmation visible and offer the returned `public_order_url` when available.
+After order creation, use the returned `redirect_url` to follow the merchant's After Checkout flow. The server resolves payment routing and configured destinations, including WhatsApp. Use the URL as returned; do not rebuild it or append the current query string. If the configured destination cannot be resolved, `redirect_url` points to the Scalev-hosted payment-instructions page (`/o/{secret_slug}/success`). Defensively handle older or unexpected responses without the field by keeping the order confirmation visible and offering the returned `public_order_url` when available.
 
-If your storefront renders its own payment page, use `payment_url` as a hosted payment fallback. It serves a different purpose from `redirect_url`, which can lead to a non-payment destination.
+The order-level `payment_url` is deprecated and remains available for backward compatibility only. Always use `redirect_url` for checkout navigation, including PayLink; do not fall back to `payment_url` if an older or unexpected response omits `redirect_url`. If your storefront renders its own payment page, use the method-specific instructions and `pg_payment_info` below.
 
 Use these order fields to render the payment page:
 
@@ -338,7 +338,6 @@ Use these order fields to render the payment page:
 - `payment_account_number`
 - `transferproof_url`
 - `transfer_time`
-- `payment_url`
 - `pg_payment_info`
 - `store.payment_accounts`
 - `handler_phone`
@@ -348,7 +347,7 @@ Use these order fields to render the payment page:
 `va_bca`. Manual bank transfer may use `store.payment_accounts` when no
 specific order-level account has been selected. Use `transferproof_url` and
 `transfer_time` to show whether the buyer has already submitted payment proof.
-Hosted or provider-backed methods may use `payment_url` or `pg_payment_info`.
+For provider-backed payment rendering, use `pg_payment_info`. Its provider URL fields, including `payment_url` and `redirect_url`, are not deprecated; they describe the provider payment flow and are separate from the order-level checkout destination.
 `payment_link_income` is any PayLink surcharge paid by the buyer, and
 `gross_revenue` is the total amount the buyer pays.
 

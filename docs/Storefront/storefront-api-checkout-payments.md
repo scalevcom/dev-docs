@@ -8,9 +8,9 @@ metadata:
 ---
 Storefront API checkout uses the same buyer-facing checkout concepts as the Scalev-hosted storefront. A browser storefront can prepare delivery options, compute the checkout summary, create a guest order, read the public order, and create or reuse payment instructions without a merchant backend.
 
-The Storefront API is designed so your storefront can render its own payment page. Use the public order and payment responses to show buyer-facing instructions directly in your UI. `payment_url` is still returned as a hosted fallback for storefronts that have not implemented a method-specific renderer or for provider flows that must open a hosted payment page.
+The Storefront API lets your storefront render its own payment page. Use the public order and payment responses to show buyer-facing instructions directly in your UI. The order-level `payment_url` is deprecated and remains available for backward compatibility only. Always use `redirect_url` for checkout navigation, including PayLink; do not fall back to `payment_url`.
 
-To follow the merchant's configured After Checkout flow instead, navigate to the created order's `redirect_url` when it is present. This is the server-selected next destination; it can be a payment page, order page, WhatsApp conversation, another landing page, or a custom URL. Do not reconstruct that destination from the payment method or append the browser's query string. When `redirect_url` is absent, keep your order confirmation or payment UI available rather than navigating to an empty URL.
+To follow the merchant's configured After Checkout flow, navigate to the created order's `redirect_url` when it is present. This is the server-selected next destination; it can be a payment page, order page, WhatsApp conversation, another landing page, or a custom URL. Do not reconstruct that destination from the payment method or append the browser's query string. When `redirect_url` is absent, keep your order confirmation or payment UI available and offer the returned `public_order_url` when available.
 
 Use only payment methods returned by `GET /v3/stores/{store_id}/public/payment-methods`. Storefront checkout does not return `no_payment`, and checkout endpoints reject it if submitted directly. When a store passes provider transaction fees to the customer, Scalev also omits configured e-payment methods that do not have an executable provider and verified fee schedule. This filtering does not disable or delete the store's saved method configuration.
 
@@ -208,15 +208,28 @@ The checkout endpoint uses the selected courier service, warehouse, destination,
 
 The created order carries the fees Scalev calculated at checkout time, which can differ from an older summary if the store settings or checkout inputs changed in between. Read the totals from the checkout response before showing the buyer a confirmation.
 
-On success, the response includes the created slim public order data, including `secret_slug`, `public_order_url`, `redirect_url`, `payment_url`, status, totals, the existing `variants` and `bundle_price_options` object maps, line items, shipping details, and payment fields. Internal order IDs, dashboard-only revenue fields, platform fees, payment-status history, and affiliate attribution are not returned. Use `secret_slug` to read or update the order.
+On success, the response includes the created slim public order data, including `secret_slug`, `public_order_url`, `redirect_url`, the deprecated compatibility field `payment_url`, status, totals, the existing `variants` and `bundle_price_options` object maps, line items, shipping details, and payment fields. Internal order IDs, dashboard-only revenue fields, platform fees, payment-status history, and affiliate attribution are not returned. Use `secret_slug` to read or update the order.
 
 | Field | Purpose |
 | --- | --- |
-| `redirect_url` | The immediate After Checkout destination, including applicable payment-method overrides and merchant settings. It is nullable when the destination is incomplete. |
-| `payment_url` | A payment-specific hosted URL, useful when your storefront cannot render the payment instructions itself. |
+| `redirect_url` | The immediate After Checkout destination, including applicable payment-method overrides and merchant settings. An unresolved destination falls back to the hosted payment-instructions page. |
+| `payment_url` | **Deprecated.** Returned for backward compatibility only. Always use `redirect_url` for checkout navigation, including PayLink. |
 | `public_order_url` | The buyer's order-details page. |
 
 For WhatsApp destinations, `redirect_url` already includes the visitor-to-store message. Use it as returned; do not encode the message again. These navigation URLs do not prove that an order has been paid.
+
+### When the configured destination is unavailable
+
+If Scalev cannot resolve the configured destination, `redirect_url` falls back to **Halaman Instruksi Pembayaran**, the hosted payment-instructions page at `/o/{secret_slug}/success`. This includes:
+
+- The order has no checkout form or storefront configuration, or its saved destination type is missing or unsupported.
+- A WhatsApp destination has no assigned or configured phone number.
+- Another landing page is selected as the destination, but that page or its slug cannot be resolved.
+- A custom URL is missing or invalid, such as a URL without an HTTP(S) scheme and host.
+
+The fallback preserves the origin recorded when the order was created, including the scheme, hostname, and port. When no valid checkout origin is recorded, Scalev uses the business's Scalev domain. An existing public order URL provides the fallback if the business domain is unavailable.
+
+For older or unexpected responses without `redirect_url`, a successful order response still means the order was created. Keep the confirmation or payment UI visible and offer `public_order_url` when available. Do not create another order or fall back to the deprecated `payment_url` to compensate for a missing redirect.
 
 New orders expose one unified customer-facing `service_fee`, including orders
 created through PayLink. `other_income` remains independent. Legacy
@@ -231,11 +244,11 @@ payment-method endpoint. Virtual accounts use flat values such as `va_bca` and
 
 When the store enables strict two-step checkout and offers `payment_link`, you
 may omit `payment_method`. Scalev resolves the order to `payment_link` and
-returns a `payment_url` for the Scalev PayLink page, where the buyer
+returns a `redirect_url` for the Scalev PayLink page, where the buyer
 selects the concrete method.
 
 Do not render `payment_link` as a virtual account or wallet. Redirect the buyer
-to `payment_url`. After payment, the order's `payment_method` becomes the
+to `redirect_url`. After payment, the order's `payment_method` becomes the
 canonical method actually used, while Scalev keeps the PayLink origin
 separately.
 
@@ -251,12 +264,13 @@ The endpoint is idempotent. If payment instructions already exist, the response 
 
 This store-scoped endpoint returns a public order, including `pg_payment_info` and `redirect_url`. The business-authenticated `POST /v3/orders/{id}/payment` endpoint has a different response: it returns only the raw gateway payload, without an order wrapper. Do not use the same response parser for both endpoints.
 
-Use this order of preference in a browser storefront:
+Always use the returned order-level `redirect_url` for checkout navigation. If it is absent, keep the confirmation or payment UI available and offer `public_order_url` when available; do not fall back to the deprecated order-level `payment_url`.
+
+If your storefront renders its own payment page:
 
 1. Render the order's method-specific instructions from the canonical `payment_method`, `epayment_provider`, and `pg_payment_info`.
-2. For provider-hosted methods, open the provider URL from `pg_payment_info` when the provider requires a redirect.
-3. Use `payment_url` only as a fallback to the Scalev-hosted payment page when your storefront does not yet support that method or provider response.
-4. Poll the public order when the method needs gateway data that may not exist immediately.
+2. For provider-hosted methods, open the provider URL from `pg_payment_info` when the provider requires a redirect. These raw provider fields, including `payment_url` and `redirect_url`, are not deprecated by the order-level `payment_url` deprecation.
+3. Poll the public order when the method needs gateway data that may not exist immediately.
 
 ## Method rendering
 
