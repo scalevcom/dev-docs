@@ -2662,7 +2662,7 @@
         ],
         "operationId": "createLandingPage",
         "summary": "Create a landing page",
-        "description": "Creates a business-scoped landing page using the same page creation behavior as Landing Page Studio. The request body below documents the HTML Mode payload. To create and publish an HTML Mode page in one call, include `is_published: true` with `page_display`. If `is_published` is omitted or false, the nested `page_display` is saved as an unpublished draft and is not returned as the page's current display; create or pick a page display, then call `PATCH /v3/pages/{id}` with `is_published: true` and `current_page_display_id` to publish it.",
+        "description": "Creates a business-scoped landing page using the same page creation behavior as Landing Page Studio. The request body below documents the HTML Mode payload. To create and publish an HTML Mode page in one call, include `is_published: true` with `page_display`. If `is_published` is omitted or false, the nested `page_display` is saved as an unpublished draft and is not returned as the page's current display; create or pick a page display, then call `PATCH /v3/pages/{id}` with `is_published: true` and `current_page_display_id` to publish it. A saved checkout form initializes an unbound page's `store_id` from `page_display.form_display.store_id`, including unpublished drafts. The store must belong to the same business.",
         "security": [
           {
             "bearerAuth": []
@@ -2824,7 +2824,7 @@
         ],
         "operationId": "updateLandingPage",
         "summary": "Update a landing page",
-        "description": "Updates business-scoped landing page metadata and publishing state using the same page update behavior as Landing Page Studio. Send `is_published: true` with `current_page_display_id` to publish a page display, or `is_published: false` with `current_page_display_id: null` to unpublish the page.\n",
+        "description": "Updates business-scoped landing page metadata and publishing state using the same page update behavior as Landing Page Studio. Send `is_published: true` with `current_page_display_id` to publish a page display, or `is_published: false` with `current_page_display_id: null` to unpublish the page. Once assigned, the page's `store_id` cannot be changed or cleared, including by unpublishing or selecting a display without a checkout form.\n",
         "security": [
           {
             "bearerAuth": []
@@ -3046,7 +3046,7 @@
         ],
         "operationId": "createLandingPageDisplay",
         "summary": "Create a landing page display",
-        "description": "Creates a new display for an existing landing page. The request body below documents the HTML Mode page display payload.",
+        "description": "Creates a new display for an existing landing page. The request body below documents the HTML Mode page display payload. Saving the first checkout form initializes an unbound page's `store_id` from `form_display.store_id` immediately, before publication. The store must belong to the same business. An existing page store association is retained and cannot be changed or cleared by later display saves.",
         "security": [
           {
             "bearerAuth": []
@@ -22373,7 +22373,7 @@
           "store_id": {
             "type": "integer",
             "nullable": true,
-            "description": "Optional top-level store association. HTML Checkout store context is configured through `page_display.form_display.store_id`."
+            "description": "Optional top-level store association within the same business. When unbound, the page takes its store from `page_display.form_display.store_id` even for an unpublished draft. Once assigned, the page store cannot be changed or cleared."
           },
           "page_display": {
             "$ref": "#/components/schemas/LandingPageDisplayRequest"
@@ -22401,7 +22401,8 @@
           },
           "store_id": {
             "type": "integer",
-            "nullable": true
+            "nullable": true,
+            "description": "Store association within the same business. An existing non-null value is retained and cannot be changed or cleared."
           },
           "is_sending_email_invoice": {
             "type": "boolean",
@@ -24029,7 +24030,8 @@
           },
           "store_id": {
             "type": "integer",
-            "nullable": true
+            "nullable": true,
+            "description": "Saved store association: null for a landing page, non-null for a checkout flow, including unpublished checkout drafts."
           }
         }
       },
@@ -24105,7 +24107,8 @@
           },
           "store_id": {
             "type": "integer",
-            "nullable": true
+            "nullable": true,
+            "description": "Saved store association: null for a landing page, non-null for a checkout flow, including unpublished checkout drafts. Once assigned, this value is retained even if a later display has no checkout form."
           },
           "store": {
             "type": "object",
@@ -28780,13 +28783,15 @@
           "payment_url": {
             "type": "string",
             "format": "uri",
-            "nullable": true
+            "nullable": true,
+            "deprecated": true,
+            "description": "Deprecated for checkout navigation. Retained for compatibility and scoped to the payment step. Always use `redirect_url` to navigate the buyer after checkout; do not use this field to infer the destination.\n"
           },
           "redirect_url": {
             "type": "string",
             "format": "uri",
             "nullable": true,
-            "description": "Canonical destination the buyer opens after checkout, resolved from the order's payment method and the page's After Checkout setting. An electronic payment method overrides the configured action and resolves to the payment page; everything else follows the configured destination (hosted instruction page, order page, WhatsApp, another page, or a custom URL). Retained attribution parameters are forwarded onto a configured page or custom URL only while it stays on the buyer's own host or a Scalev-owned one. Null when that destination is incomplete. Prefer this over `payment_url`, which stays scoped to the payment step.\n"
+            "description": "Canonical destination the buyer opens after checkout. Always prefer this field over the deprecated `payment_url`. The server resolves the destination from the payment method and After Checkout setting, including the payment page, order page, WhatsApp, another page, or a custom URL. When a destination cannot be resolved because the configuration is missing or unsupported, or a required phone number, page, or URL is unavailable, it falls back to Scalev's hosted payment instructions page (Halaman Instruksi Pembayaran) at `/o/{secret_slug}/success`, not the Thank You Page. This fallback requires a valid order identity and host. Retained attribution parameters are forwarded onto a configured page or custom URL only while it stays on the buyer's own host or a Scalev-owned one.\n"
           },
           "order_id": {
             "type": "string"

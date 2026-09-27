@@ -37,7 +37,7 @@ HTML Checkout Pages expose the selected after-checkout configuration in `Scalev.
 
 - Render payment labels from `Scalev.data.get().store.paymentMethodOptions[].display` and submit the selected option `value` as `paymentMethod`.
 - After `createOrder` succeeds, open the returned `order.redirectUrl` unchanged. Do not infer a URL from the selected payment method, append query parameters, or build a WhatsApp URL from the template yourself.
-- A missing or empty `redirectUrl` means no destination was resolved. Keep the buyer on the page and show an order-created confirmation. You can offer the returned `order.publicOrderUrl` as an order-details link. Do not resubmit the order to obtain a redirect.
+- If the configured destination cannot be resolved, Scalev returns the hosted payment-instructions page (`/o/{secret_slug}/success`) in `order.redirectUrl`. Defensively handle older or unexpected responses with a missing or empty field: keep the buyer on the page, show an order-created confirmation, and optionally offer `order.publicOrderUrl` as an order-details link. Do not resubmit the order to obtain a redirect.
 - If your page is embedded in an iframe, send the returned URL to the embedding parent's navigation handler instead of navigating only the iframe.
 
 `createOrder` returns the order object directly. Runtime response keys use camelCase; the API's `redirect_url` becomes `redirectUrl`:
@@ -53,11 +53,11 @@ HTML Checkout Pages expose the selected after-checkout configuration in `Scalev.
 }
 ```
 
-`paymentUrl` describes the payment step only. It is not a substitute for the resolved After Checkout destination when `redirectUrl` is present.
+`order.paymentUrl` (the API's order-level `payment_url`) is deprecated and returned for backward compatibility only. Always use `order.redirectUrl` for checkout navigation, including PayLink. If an older or unexpected response omits it or returns an empty value, show the confirmation described above; do not fall back to `paymentUrl`. This deprecation does not apply to URL fields inside a raw gateway payload.
 
 ## Reference implementation
 
-Use this helper after `createOrder` succeeds. It returns `false` if no destination is available, so your page can display a confirmation instead. When you control the embedding page, use its exact origin as `parentOrigin` and validate messages in its handler. The default retains the existing embedding convention.
+Use this helper after `createOrder` succeeds. It returns `false` if an older or unexpected response has no destination, so your page can display a confirmation instead. When you control the embedding page, use its exact origin as `parentOrigin` and validate messages in its handler. The default retains the existing embedding convention.
 
 ```js
 function redirectAfterOrder(order, parentOrigin = "*") {
@@ -134,7 +134,7 @@ Choose these destinations in the editor. Your HTML code uses the same `order.red
 | Self Hosted Orderan / Invoice | `order_page` | The public order or invoice page. |
 | Custom URL | `custom_url` | The configured URL. Scalev includes supported attribution parameters only for eligible destinations. |
 
-If a required destination is missing, such as an unselected landing page or an unavailable WhatsApp number, `redirectUrl` can be empty. Use the confirmation behavior above instead of reconstructing the destination from editor state.
+If a required destination is missing, such as an unselected landing page or an unavailable WhatsApp number, Scalev returns its hosted payment-instructions page (`/o/{secret_slug}/success`) in `order.redirectUrl`. Open that URL as returned; do not reconstruct a destination from editor state.
 
 ## Notes for analytics and attribution
 

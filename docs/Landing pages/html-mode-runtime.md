@@ -501,7 +501,7 @@ Response example:
 
 ### After order creation
 
-`createOrder` returns the order directly and does not navigate. The Scalev API resolves the immediate destination as `redirect_url`; the runtime exposes it as `order.redirectUrl`. This covers the configured After Checkout destination and payment-specific behavior, including PayLink and WhatsApp.
+`createOrder` returns the order directly and does not navigate. The Scalev API resolves the immediate destination as `redirect_url`; the runtime exposes it as `order.redirectUrl`. This covers the configured After Checkout destination and payment-specific behavior, including PayLink and WhatsApp. If the configured destination cannot be resolved, the server returns the Scalev-hosted payment-instructions page (`/o/{secret_slug}/success`) as `order.redirectUrl`.
 
 ```js
 const order = await Scalev.checkout.createOrder(payload);
@@ -517,13 +517,13 @@ if (target) {
     window.location.assign(target);
   }
 } else {
-  // Implement a confirmation in your page. Optionally offer the returned
+  // Handle older or unexpected responses without a redirect. Offer the returned
   // order.publicOrderUrl as a link; do not submit the order again.
   showOrderCreated(order);
 }
 ```
 
-Open the returned URL unchanged. Do not derive the destination from `afterCheckout`, infer it from a payment-method list, re-encode a WhatsApp message, or append the current query string. `paymentUrl` describes the payment step and does not replace the canonical destination. If `redirectUrl` is missing or empty, the order can still have been created successfully; keep the buyer on the page and show a confirmation.
+Open the returned URL unchanged. Do not derive the destination from `afterCheckout`, infer it from a payment-method list, re-encode a WhatsApp message, or append the current query string. `order.paymentUrl` (the API's order-level `payment_url`) is deprecated and returned for backward compatibility only. Always use `order.redirectUrl` for checkout navigation, including PayLink. If an older or unexpected response has a missing or empty `redirectUrl`, the order can still have been created successfully; keep the buyer on the page, show a confirmation, and offer `order.publicOrderUrl` when available. Do not fall back to `paymentUrl`. This deprecation does not apply to provider URL fields inside a raw gateway payload.
 
 This immediate redirect is separate from the post-payment destination snapshot. The page's post-payment setting stays private; hosted Scalev pages use the order's snapshot only after its payment status becomes `paid` or `settled`. Neither redirect proves payment. Provision external access from a verified `payment.received` webhook.
 
