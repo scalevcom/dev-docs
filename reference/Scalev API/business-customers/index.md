@@ -1,5 +1,4 @@
 ---
-title: Business Customers
-excerpt: Authenticated business customer and customer-address management endpoints.
+title: "Business Customers"
 hidden: false
 ---

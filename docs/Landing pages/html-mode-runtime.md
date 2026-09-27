@@ -12,7 +12,9 @@ This page is written for developers and AI agents that generate HTML Mode files.
 
 ## Availability
 
-The runtime is available on rendered HTML Mode pages. In local editor previews, some methods can return stubbed preview data.
+The runtime is inserted near body-close, before the trailing top-level script block. Earlier authored scripts should wait for `DOMContentLoaded` before accessing `window.Scalev`. Keep third-party script order and attributes intact; external resources also need the appropriate page CSP permission.
+
+Editor previews simulate commerce, location, and prefill behavior. They do not create real orders or send platform analytics. Simulated orders include `redirectUrl: "#scalev-preview-order"`.
 
 ```js
 const scalev = window.Scalev;

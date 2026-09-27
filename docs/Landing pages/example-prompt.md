@@ -65,7 +65,8 @@ Return only one complete HTML document inside a single fenced `html` code block.
 - Use only the selected products and selected bundle price options listed in this prompt.
 - If the selected checkout context in this prompt says Not selected or None selected, use an empty state for the missing checkout context and keep all other content grounded in the listed context.
 - Use pure HTML, CSS, and JavaScript in one importable document that runs directly in the browser.
-- Use the <head> only for standard document metadata, embedded CSS, and safe external fonts/assets that the user can allow in CSP. Scalev page settings own SEO, pixels, favicon, crawler settings, domains, slug, and publishing.
+- Return one complete HTML document. Preserve external script and stylesheet URLs and attributes. Authored head entries override managed SEO defaults; domains, checkout settings, and publishing remain separate.
+- Initialize code that needs `window.Scalev` on `DOMContentLoaded` or later.
 - Use documented `window.Scalev` methods instead of private Scalev endpoints.
 - Custom JavaScript, user-owned scripts, and browser-safe external APIs are allowed only when the user intentionally wants them and is confident about the source, privacy, and security impact.
 - Keep secret keys, API keys, access tokens, session tokens, cookies, and credentials out of the HTML, CSS, and JavaScript.
@@ -304,7 +305,8 @@ Return only one complete HTML document inside a single fenced `html` code block.
 - This is an HTML Sales Page. Build a content/lead-capture landing page focused on sections, CTA links, testimonials, FAQ, lead magnets, and brand content.
 - Use only user-provided products, prices, inventory, store ids, payment methods, shipping options, and checkout behavior.
 - Use pure HTML, CSS, and JavaScript in one importable document that runs directly in the browser.
-- Use the <head> only for standard document metadata, embedded CSS, and safe external fonts/assets that the user can allow in CSP. Scalev page settings own SEO, pixels, favicon, crawler settings, domains, slug, and publishing.
+- Return one complete HTML document. Preserve external script and stylesheet URLs and attributes. Authored head entries override managed SEO defaults; domains, checkout settings, and publishing remain separate.
+- Initialize code that needs `window.Scalev` on `DOMContentLoaded` or later.
 - Use documented `window.Scalev` methods instead of private Scalev endpoints.
 - Custom JavaScript, user-owned scripts, and browser-safe external APIs are allowed only when the user intentionally wants them and is confident about the source, privacy, and security impact.
 - Keep secret keys, API keys, access tokens, session tokens, cookies, and credentials out of the HTML, CSS, and JavaScript.

@@ -19976,9 +19976,7 @@
                   "is_published": true,
                   "page_display": {
                     "render_mode": "html_mode",
-                    "html_code": "<main>Hello</main>",
-                    "css_code": "main { color: #111827; }",
-                    "js_code": "console.log('ready')",
+                    "html_document": "<!doctype html><html lang=\"id\"><head><style>main { color: #111827; }</style></head><body><main>Hello</main><script>console.log(Scalev.data.get());</script></body></html>",
                     "meta": {
                       "lang": "id"
                     },
@@ -20001,7 +19999,7 @@
                   "is_published": true,
                   "page_display": {
                     "render_mode": "html_mode",
-                    "html_code": "<main>Checkout</main>",
+                    "html_document": "<!doctype html><html lang=\"id\"><head></head><body><main>Checkout</main></body></html>",
                     "meta": {
                       "lang": "id"
                     },
@@ -20040,21 +20038,19 @@
         }
       },
       "LandingPageDisplayRequestBody": {
-        "description": "Landing page display data to create. HTML Mode payload is documented here.",
+        "description": "A new version for an existing landing page. Omitted HTML source, metadata, CSP policy and checkout configuration retain the preceding version's values. A supplied legacy code snapshot is converted on content save.",
         "required": true,
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/LandingPageDisplayRequest"
+              "$ref": "#/components/schemas/LandingPageDisplayVersionRequest"
             },
             "examples": {
               "html_sales_display": {
                 "summary": "HTML Mode display",
                 "value": {
                   "render_mode": "html_mode",
-                  "html_code": "<main>Hello</main>",
-                  "css_code": "main { color: #111827; }",
-                  "js_code": "console.log('ready')",
+                  "html_document": "<!doctype html><html lang=\"id\"><head><style>main { color: #111827; }</style></head><body><main>Hello</main><script>console.log(Scalev.data.get());</script></body></html>",
                   "meta": {
                     "lang": "id"
                   },
@@ -22426,6 +22422,12 @@
           }
         }
       },
+      "HtmlModeDocument": {
+        "type": "string",
+        "nullable": true,
+        "description": "Complete authored HTML source for HTML Mode. A non-whitespace value is authoritative and replaces all legacy html_code, css_code, js_code and additional_head_code inputs for rendering. Null, empty and whitespace-only values on legacy records use the legacy source. Reading and validation do not persist migration. New legacy display snapshots are assembled into a document when saved. Settings-only version writes preserve the preceding source. Clearing an already migrated document returns 422; save <!doctype html><html><head></head><body></body></html> for a deliberately blank page. Platform runtime, tokens, analytics and public data are injected only when rendered and must not be included in this field. External scripts, stylesheets, import maps and document attributes are retained. Dependencies still require directive-specific permission in csp_policy. CSP meta tags are retained in source but ignored at execution with a validation warning.",
+        "example": "<!doctype html><html lang=\"id\"><head><title>My page</title><style>main { color: #111827; }</style></head><body><main>Hello</main><script>console.log(Scalev.data.get());</script></body></html>"
+      },
       "LandingPageDisplayRequest": {
         "type": "object",
         "required": [
@@ -22450,9 +22452,12 @@
             ],
             "description": "HTML Mode requests use `html_mode`. Builder payload details are intentionally not documented here and remain unsupported for public integration guidance; use HTML Mode for API-created pages."
           },
+          "html_document": {
+            "$ref": "#/components/schemas/HtmlModeDocument"
+          },
           "html_code": {
             "type": "string",
-            "description": "Body-only HTML for HTML Mode.",
+            "description": "Legacy body-only HTML. New integrations should send html_document. A new display version using legacy fields is treated as a complete snapshot.",
             "maxLength": 204800
           },
           "css_code": {
@@ -22555,6 +22560,76 @@
           "kwai_server_events_onload_parameters": {
             "type": "object",
             "additionalProperties": true
+          }
+        }
+      },
+      "LandingPageDisplayVersionRequest": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "Settings-only versions may omit source fields. An omitted form_display preserves checkout configuration; explicit null removes the form only where the page's existing store-context rules allow it. Clearing an authoritative html_document is rejected with 422.",
+        "properties": {
+          "render_mode": {
+            "$ref": "#/components/schemas/LandingPageDisplayRequest/properties/render_mode"
+          },
+          "html_document": {
+            "$ref": "#/components/schemas/HtmlModeDocument"
+          },
+          "html_code": {
+            "$ref": "#/components/schemas/LandingPageDisplayRequest/properties/html_code"
+          },
+          "css_code": {
+            "$ref": "#/components/schemas/LandingPageDisplayRequest/properties/css_code"
+          },
+          "js_code": {
+            "$ref": "#/components/schemas/LandingPageDisplayRequest/properties/js_code"
+          },
+          "additional_head_code": {
+            "$ref": "#/components/schemas/LandingPageDisplayRequest/properties/additional_head_code"
+          },
+          "csp_policy": {
+            "$ref": "#/components/schemas/HtmlModeCspPolicy"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/LandingPageDisplayRequest/properties/meta"
+          },
+          "form_display": {
+            "$ref": "#/components/schemas/LandingPageDisplayRequest/properties/form_display"
+          },
+          "fb_pixel_ids": {
+            "$ref": "#/components/schemas/LandingPageDisplayRequest/properties/fb_pixel_ids"
+          },
+          "tiktok_pixel_ids": {
+            "$ref": "#/components/schemas/LandingPageDisplayRequest/properties/tiktok_pixel_ids"
+          },
+          "kwai_client_pixel_ids": {
+            "$ref": "#/components/schemas/LandingPageDisplayRequest/properties/kwai_client_pixel_ids"
+          },
+          "kwai_server_pixel_ids": {
+            "$ref": "#/components/schemas/LandingPageDisplayRequest/properties/kwai_server_pixel_ids"
+          },
+          "onload_fb_events": {
+            "$ref": "#/components/schemas/LandingPageDisplayRequest/properties/onload_fb_events"
+          },
+          "onload_tiktok_events": {
+            "$ref": "#/components/schemas/LandingPageDisplayRequest/properties/onload_tiktok_events"
+          },
+          "onload_kwai_client_events": {
+            "$ref": "#/components/schemas/LandingPageDisplayRequest/properties/onload_kwai_client_events"
+          },
+          "onload_kwai_server_events": {
+            "$ref": "#/components/schemas/LandingPageDisplayRequest/properties/onload_kwai_server_events"
+          },
+          "fb_events_onload_parameters": {
+            "$ref": "#/components/schemas/LandingPageDisplayRequest/properties/fb_events_onload_parameters"
+          },
+          "tiktok_events_onload_parameters": {
+            "$ref": "#/components/schemas/LandingPageDisplayRequest/properties/tiktok_events_onload_parameters"
+          },
+          "kwai_client_events_onload_parameters": {
+            "$ref": "#/components/schemas/LandingPageDisplayRequest/properties/kwai_client_events_onload_parameters"
+          },
+          "kwai_server_events_onload_parameters": {
+            "$ref": "#/components/schemas/LandingPageDisplayRequest/properties/kwai_server_events_onload_parameters"
           }
         }
       },
@@ -24313,6 +24388,9 @@
               "html_mode",
               "builder"
             ]
+          },
+          "html_document": {
+            "$ref": "#/components/schemas/HtmlModeDocument"
           },
           "html_code": {
             "type": "string",
@@ -28792,6 +28870,12 @@
             "format": "uri",
             "nullable": true,
             "description": "Canonical destination the buyer opens after checkout. Always prefer this field over the deprecated `payment_url`. The server resolves the destination from the payment method and After Checkout setting, including the payment page, order page, WhatsApp, another page, or a custom URL. When a destination cannot be resolved because the configuration is missing or unsupported, or a required phone number, page, or URL is unavailable, it falls back to Scalev's hosted payment instructions page (Halaman Instruksi Pembayaran) at `/o/{secret_slug}/success`, not the Thank You Page. This fallback requires a valid order identity and host. Retained attribution parameters are forwarded onto a configured page or custom URL only while it stays on the buyer's own host or a Scalev-owned one.\n"
+          },
+          "redirect_url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "description": "Canonical destination the buyer opens after checkout, resolved from the order's payment method and the page's After Checkout setting. An electronic payment method overrides the configured action and resolves to the payment page; everything else follows the configured destination (hosted instruction page, order page, WhatsApp, another page, or a custom URL). Retained attribution parameters are forwarded onto a configured page or custom URL only while it stays on the buyer's own host or a Scalev-owned one. Null when that destination is incomplete. Prefer this over `payment_url`, which stays scoped to the payment step.\n"
           },
           "order_id": {
             "type": "string"

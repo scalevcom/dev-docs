@@ -1,7 +1,4 @@
 ---
-title: Landing Pages
-excerpt: >-
-  Authenticated business landing page endpoints. The documented payloads focus
-  on HTML Mode pages.
+title: "Landing Pages"
 hidden: false
 ---

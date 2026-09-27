@@ -1,7 +1,4 @@
 ---
-title: Storefront Setup
-excerpt: >-
-  Authenticated business setup endpoints for public storefront keys and CORS
-  origins.
+title: "Storefront Setup"
 hidden: false
 ---

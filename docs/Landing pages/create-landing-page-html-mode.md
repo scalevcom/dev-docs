@@ -25,30 +25,30 @@ The type is fixed when you create the page. A checkout page also locks its store
 2. For a checkout page, open the **Context** tab and set **Store Context**, then **Products** and **Bundle Price Options**, and the action after checkout succeeds. Store Context is locked after the page is saved.
 3. Open the **Code** tab and select **Open AI Prompt Builder** if you want an AI tool to write the document. Fill in what the page should be, its goal, and the visitor action, choose English or Indonesian, then copy the prompt. See [Example prompt](/docs/example-prompt) for the generated text.
 4. Paste the prompt into ChatGPT or Claude, then bring the returned document back with **Import HTML**. Use **Upload File** for an `.html` file or **Paste HTML** for a full document.
-5. Review the split code in **Body HTML**, **CSS**, **JavaScript**, and **Additional Head Code**. You can edit any field directly; the preview pane updates as you type.
-6. Open the **Security** tab and add every external domain the page uses. Requests to domains that are not listed are blocked.
+5. Review the **HTML document** in the **Code** tab. HTML, CSS, and JavaScript stay together in one editor. The preview updates as you type.
+6. Review **Dependencies and diagnostics**. Explicitly allow blocked origins for the relevant directive, or edit the permissions in **Security**. A script permission does not grant API connections.
 7. Upload images in the **Media** tab and copy each file URL into your HTML.
-8. Set the page name, slug, and SEO fields in the **Setting** tab, then save and publish.
+8. Set the page name, slug, and SEO fields in the **Setting** tab, then save. Publish separately after reviewing the preview and diagnostics.
 
-**Export** downloads the current page as one merged HTML document, which is useful for handing the page back to an AI tool for another round of edits.
+**Export** downloads the authored document without the runtime, platform analytics, or runtime tokens.
 
 ### What Import HTML keeps
 
-Import accepts one complete document and splits it into the page display fields:
+Import retains the complete source, including document attributes, external scripts, stylesheet and font links, module scripts, import maps, JSON data, and integrity attributes. Scalev does not split or concatenate your scripts. Fragments gain document boundaries when saved.
 
-| Source in your document | Where it lands |
-| --- | --- |
-| Body markup | **Body HTML** |
-| `<style>` inside `<body>` | **CSS** |
-| `<script>` inside `<body>` | **JavaScript** |
-| Anything left in `<head>` | **Additional Head Code** |
-| `<title>`, `meta description`, `og:title`, `og:description`, `og:image`, favicon `link`, `meta robots`, `<html lang>` | Page settings |
+Authored SEO and head entries override managed defaults. Editing SEO or language controls updates the matching document nodes. The document CSP remains a separate page setting: imported CSP meta tags stay in source but do not execute, and the editor reports a diagnostic.
 
-Scalev removes the head tags it recognizes so they do not compete with managed tags. A `<style>` block that stays in `<head>` is kept in **Additional Head Code** and still renders; move it into the body if you want it in the CSS field.
+Opening an older page assembles its legacy code in memory. Inspection, preview, and export do not save a migration. The next content save writes the unified document. Existing published content stays unchanged until you publish the saved version.
+
+### Preview behavior
+
+Preview runs on the public preview host in an isolated sandbox. Checkout, location, and prefill methods return simulated results, and platform analytics are suppressed. Network connections and embedded frames are intentionally restricted in preview. Diagnostics distinguish those restrictions from resource or execution failures.
+
+Review unresolved errors before publishing. You can explicitly choose **Publish anyway** for unresolved resource or execution errors; invalid document structure and reserved runtime identifiers must be fixed. Static dependency discovery cannot prove that every dynamically loaded dependency will work.
 
 ## Create the page with the API
 
-`POST /v3/pages` creates the page and its first display in one call. HTML Mode uses `render_mode: "html_mode"` with `html_code`, `css_code`, `js_code`, `additional_head_code`, and `csp_policy`.
+`POST /v3/pages` creates the page and its first display in one call. HTML Mode uses `render_mode: "html_mode"` with one `html_document` and a separate `csp_policy`.
 
 ```bash
 curl -X POST https://api.scalev.com/v3/pages \
@@ -60,23 +60,22 @@ curl -X POST https://api.scalev.com/v3/pages \
     "is_published": true,
     "page_display": {
       "render_mode": "html_mode",
-      "html_code": "<main><h1>Launch offer</h1></main>",
-      "css_code": "main { padding: 32px; }",
-      "js_code": "",
+      "html_document": "<!doctype html><html lang=\"id\"><head><style>main { padding: 32px; }</style></head><body><main><h1>Launch offer</h1></main></body></html>",
       "csp_policy": {},
       "meta": { "lang": "id" }
     }
   }'
 ```
 
-`html_code` is body-only. Add `page_display.form_display` with `store_id` and the selected items when the page must create orders. This example leaves out the analytics fields; send them as shown in [Landing Pages API](/docs/landing-pages-api), including when they are empty. That guide also covers the full payload and how to publish a new display.
+`html_document` is the complete authored document. Add `page_display.form_display` with `store_id` and the selected items when the page must create orders. This example leaves out the analytics fields; send them as shown in [Landing Pages API](/docs/landing-pages-api), including when they are empty. That guide also covers the full payload and how to publish a new display.
 
 ## Write the page code
 
 Keep these rules so the document imports cleanly and runs on the hosted page:
 
-- Put page markup in the body. Do not send `<!doctype>`, `<html>`, `<head>`, or `<body>` in `html_code`.
-- Keep extra head tags in **Additional Head Code**. Scalev owns SEO tags, favicon, crawler settings, pixels, domains, slug, and publishing.
+- Keep your complete HTML document in `html_document`, including `<head>`, stylesheets, styles, and scripts.
+- Initialize code that accesses `window.Scalev` on `DOMContentLoaded` or later. The runtime is inserted near body-close, immediately before a trailing block of top-level scripts.
+- Domain, slug, checkout, and publishing settings remain separate from the document.
 - Use documented `window.Scalev` methods instead of calling Scalev URLs directly.
 - Keep API keys, access tokens, and other credentials out of the page. Everything you ship is public browser code.
 - Add every external asset, script, iframe, font, and API domain to the CSP policy.
@@ -98,7 +97,7 @@ The **Security** tab writes `csp_policy` on the page display. Each field takes t
 | `worker_src` | Web workers |
 | `manifest_src` | Web app manifests |
 
-Scalev's own domains are already allowed, so a page that only uses `window.Scalev` needs no entries.
+Scalev's own domains are already allowed, so a page that only uses `window.Scalev` needs no entries. Use HTTPS dependencies, pin exact versions where possible, and retain integrity attributes. Relative assets resolve against the public page URL; importing HTML does not upload local CSS, JavaScript, font, or image files.
 
 ## Next steps
 

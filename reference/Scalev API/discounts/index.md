@@ -1,5 +1,4 @@
 ---
-title: Discounts
-excerpt: Discount-code validation and authenticated management endpoints.
+title: "Discounts"
 hidden: false
 ---

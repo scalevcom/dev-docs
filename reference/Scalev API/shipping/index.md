@@ -1,5 +1,4 @@
 ---
-title: Shipping
-excerpt: Authenticated business shipping lookup endpoints.
+title: "Shipping"
 hidden: false
 ---

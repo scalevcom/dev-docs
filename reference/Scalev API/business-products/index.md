@@ -1,7 +1,4 @@
 ---
-title: Business Products
-excerpt: >-
-  Authenticated business product, variant, taxonomy, and course management
-  endpoints.
+title: "Business Products"
 hidden: false
 ---

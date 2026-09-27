@@ -1,5 +1,4 @@
 ---
-title: Identity
-excerpt: Authenticated business identity context.
+title: "Identity"
 hidden: false
 ---

@@ -1,5 +1,4 @@
 ---
-title: WABA
-excerpt: Authenticated WhatsApp Business Account operations and related WABA resources.
+title: "WABA"
 hidden: false
 ---

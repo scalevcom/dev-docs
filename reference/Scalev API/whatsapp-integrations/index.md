@@ -1,5 +1,4 @@
 ---
-title: WhatsApp Integrations
-excerpt: Authenticated WhatsApp integration management endpoints.
+title: "WhatsApp Integrations"
 hidden: false
 ---
