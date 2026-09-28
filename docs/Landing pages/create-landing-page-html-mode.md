@@ -40,6 +40,8 @@ Authored SEO and head entries override managed defaults. Editing SEO or language
 
 Opening an older page assembles its legacy code in memory. Inspection, preview, and export do not save a migration. The next content save writes the unified document. Existing published content stays unchanged until you publish the saved version.
 
+In **Product Page Studio**, an active original custom HTML template opens automatically in the same unified editor. You do not need a separate legacy import or test panel. Opening, previewing, and exporting leave the live page unchanged; **Save & Publish** saves the unified template and makes it live. An explicitly saved Builder or HTML Mode template takes precedence over the original fallback. The original source remains stored for compatibility, and existing product and bundle scripts retain their `#scalev[data-scalev]` data access after migration. New code should use the documented `Scalev.data.get()` accessor.
+
 ### Preview behavior
 
 Preview runs on the public preview host in an isolated sandbox. Checkout, location, and prefill methods return simulated results, and platform analytics are suppressed. Network connections and embedded frames are intentionally restricted in preview. Diagnostics distinguish those restrictions from resource or execution failures.
