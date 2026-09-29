@@ -110,7 +110,7 @@ HTML Mode uses `render_mode: "html_mode"`, one authoritative `html_document`, an
 
 Send a complete document with its head, body, styles, and scripts. A non-whitespace `html_document` is rendered exclusively; accompanying legacy code is not appended. Reads return the authored source without the injected runtime, analytics, or capability tokens.
 
-Older pages can have null, empty, or whitespace-only `html_document`. Those pages still render `additional_head_code`, `html_code`, `css_code`, and `js_code`. Reading or validating them does not migrate storage. A content save using a legacy display snapshot assembles a new unified document; historical versions keep their own source. New integrations should write `html_document` directly.
+Older pages can have null, empty, or whitespace-only `html_document`. Those pages still render `additional_head_code`, `html_code`, `css_code`, and `js_code`. Reading or validating them does not migrate storage. Every HTML Mode content save using a legacy display snapshot automatically assembles a new unified document; no opt-in is required. Historical versions keep their own source. New integrations should write `html_document` directly.
 
 Existing apps and AI agents can keep sending `html_code`, `css_code`, and `js_code`, including when the preceding version uses `html_document`. These request fields remain supported. Send all three for a complete legacy snapshot, using an empty string for a blank section, and include `additional_head_code` when you need head content. Omitted code sections in a new display snapshot are empty. Do not include a nonempty `html_document` with a legacy edit: the unified document takes precedence. Reading a page does not backfill legacy fields from its unified source.
 
