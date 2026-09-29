@@ -106,26 +106,31 @@ Custom domain setup and business-user assignment management are not part of this
 
 ## HTML Mode display payload
 
-HTML Mode uses `render_mode: "html_mode"` and these code fields:
+HTML Mode uses `render_mode: "html_mode"`, one authoritative `html_document`, and a separately stored `csp_policy`.
 
-- `html_code`: body-only HTML
-- `css_code`: CSS
-- `js_code`: browser JavaScript
-- `additional_head_code`: optional extra document `<head>` code
-- `csp_policy`: optional Content Security Policy additions
+Send a complete document with its head, body, styles, and scripts. A non-whitespace `html_document` is rendered exclusively; accompanying legacy code is not appended. Reads return the authored source without the injected runtime, analytics, or capability tokens.
 
-When `js_code` is sent as an empty string, API responses may return it as `null`.
-Treat both `null` and `""` as "no JavaScript" when reading page displays.
-`css_code` and `additional_head_code` can still round-trip as empty strings.
+Older pages can have null, empty, or whitespace-only `html_document`. Those pages still render `additional_head_code`, `html_code`, `css_code`, and `js_code`. Reading or validating them does not migrate storage. Every HTML Mode content save using a legacy display snapshot automatically assembles a new unified document; no opt-in is required. Historical versions keep their own source. New integrations should write `html_document` directly.
 
-Use `additional_head_code` when you need to add supported head tags directly:
-`title`, `meta`, `link`, `style`, `script`, and `noscript`. Scalev also creates
-managed head tags from convenience settings such as `meta.title`,
-`meta.description`, `meta.thumbnail`, `meta.favicon`, and
-`meta.isDisabledSearchEngineCrawler`. If your `additional_head_code` includes a
-conflicting `title`, `meta`, or favicon `link`, your additional head entry wins.
-`meta.lang` remains the source for the rendered `<html lang="...">`; it is not
-set from `additional_head_code`.
+Existing apps and AI agents can keep sending `html_code`, `css_code`, and `js_code`, including when the preceding version uses `html_document`. These request fields remain supported. Send all three for a complete legacy snapshot, using an empty string for a blank section, and include `additional_head_code` when you need head content. Omitted code sections in a new display snapshot are empty. Do not include a nonempty `html_document` with a legacy edit: the unified document takes precedence. Reading a page does not backfill legacy fields from its unified source.
+
+For example, send this content alongside the existing display settings when creating a version:
+
+```json
+{
+  "render_mode": "html_mode",
+  "html_code": "<main>Updated by an existing integration</main>",
+  "css_code": "main { padding: 24px; }",
+  "js_code": "console.log(Scalev.data.get());",
+  "additional_head_code": "<meta name=\"theme-color\" content=\"#09AFED\">"
+}
+```
+
+Settings-only writes preserve the document. Clearing an already migrated document returns `422`. To save a deliberately blank page, send `<!doctype html><html><head></head><body></body></html>`.
+
+External script URLs, stylesheet links, script attributes, import maps, and JSON data blocks are preserved. Permissions remain explicit and directive-specific in `csp_policy`. CSP meta tags in authored source are retained but excluded from execution with a validation warning. Reserved runtime IDs, such as `scalev-runtime` and `scalev-data`, cannot be authored.
+
+Authored SEO entries and document language take precedence over managed defaults. The dashboard's SEO/language controls update the corresponding source nodes. API callers changing authored SEO should edit those nodes in `html_document`.
 
 Do not send Builder-only display fields such as `schema_version`, `banner`, `header`, `general`, `sidebar`, or `main` for HTML Mode. Scalev fills acceptable defaults internally. Responses can still include those fields.
 
@@ -134,10 +139,7 @@ Include the analytics event fields even when they are empty:
 ```json
 {
   "render_mode": "html_mode",
-  "html_code": "<main><h1>Launch offer</h1></main>",
-  "css_code": "main { padding: 32px; }",
-  "js_code": "",
-  "additional_head_code": "<meta name=\"theme-color\" content=\"#09AFED\">",
+  "html_document": "<!doctype html><html lang=\"id\"><head><meta name=\"theme-color\" content=\"#09AFED\"><style>main { padding: 32px; }</style></head><body><main><h1>Launch offer</h1></main></body></html>",
   "csp_policy": {},
   "meta": {
     "lang": "id",
@@ -163,9 +165,6 @@ Include the analytics event fields even when they are empty:
 }
 ```
 
-`html_code` must not include `<!doctype>`, `<html>`, `<head>`, `<body>`,
-metadata, favicon tags, or domain settings. Put supported head tags in
-`additional_head_code`, and keep document-level convenience settings in `meta`.
 Use the [HTML Mode runtime](/docs/html-mode-runtime) for checkout, analytics,
 prefill, and page context.
 
@@ -243,9 +242,7 @@ curl -X POST https://api.scalev.com/v3/pages \
     "is_published": true,
     "page_display": {
       "render_mode": "html_mode",
-      "html_code": "<main><h1>Launch offer</h1></main>",
-      "css_code": "main { padding: 32px; }",
-      "js_code": "",
+      "html_document": "<!doctype html><html lang=\"id\"><head><style>main { padding: 32px; }</style></head><body><main><h1>Launch offer</h1></main></body></html>",
       "csp_policy": {},
       "meta": { "lang": "id" },
       "fb_pixel_ids": [],
@@ -283,9 +280,7 @@ After a page has a saved `store_id`, every new display for that page must keep t
   "is_published": true,
   "page_display": {
     "render_mode": "html_mode",
-    "html_code": "<main><h1>Checkout offer</h1><button id=\"buy\">Buy now</button></main>",
-    "css_code": "",
-    "js_code": "",
+    "html_document": "<!doctype html><html lang=\"id\"><head></head><body><main><h1>Checkout offer</h1><button id=\"buy\">Buy now</button></main></body></html>",
     "csp_policy": {},
     "meta": { "lang": "id" },
     "fb_pixel_ids": [101],
@@ -377,9 +372,7 @@ curl -X POST https://api.scalev.com/v3/pages/123/page-displays \
   -H "Content-Type: application/json" \
   -d '{
     "render_mode": "html_mode",
-    "html_code": "<main><h1>New version</h1></main>",
-    "css_code": "",
-    "js_code": "",
+    "html_document": "<!doctype html><html lang=\"id\"><head></head><body><main><h1>New version</h1></main></body></html>",
     "csp_policy": {},
     "meta": { "lang": "id" },
     "fb_pixel_ids": [],
