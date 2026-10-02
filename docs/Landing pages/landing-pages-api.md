@@ -10,6 +10,30 @@ Use the Landing Pages API when your backend needs to create, list, update, publi
 
 The endpoints can return Builder and HTML Mode pages. This guide documents the HTML Mode payload because it is the recommended API payload for creating page code directly. Builder request payloads are intentionally not documented and will remain that way.
 
+## Builder order-bump compatibility
+
+When you read a Builder page, its `form_display.order_bumps` response can contain
+up to three offers. Each offer has a stable `key`, its product variant or bundle
+price option, and its presentation settings. Use `enabled` and `available` to
+check whether an offer is enabled and its catalog item is available.
+
+Treat the response values separately:
+
+- `null` identifies a legacy single-bump form. Retain the legacy singleton fields
+  when reading this response.
+- `[]` means the form has no configured order bumps.
+- A non-empty array contains the configured offers, including disabled offers.
+
+`form_display.form_position` identifies each collection offer as
+`order_bump:<key>`. Preserve these stable keys when processing page versions or
+checkout recovery data. Checkout-intent `selected_order_bump_keys` records the
+selected offers for recovery; the keys do not authorize products or set prices.
+Selected items and their quantities remain part of the checkout items.
+
+This collection is Builder-only. Do not send `order_bumps` in an HTML Mode
+payload; HTML Mode keeps its existing singleton behavior. This guide continues
+to cover HTML Mode authoring rather than Builder layout payloads.
+
 ## Auth
 
 Send a business API key or OAuth access token in the `Authorization` header:
