@@ -544,6 +544,106 @@ try {
 }
 ```
 
+## Checkout Flow offer pages
+
+Upsell and downsell pages appear after payment confirmation. These pages initially show only accept and decline actions. The buyer's identity, payment method, and available delivery details come from successful orders in the same journey. Do not duplicate existing details or call `Scalev.checkout.createOrder()` from an offer page.
+
+The default four-offer journey starts at Upsell 1 after the initial payment is confirmed:
+
+| Offer | Accepted and paid | Declined |
+| --- | --- | --- |
+| Upsell 1 | Upsell 2 | Downsell 1 |
+| Upsell 2 | Thank You | Downsell 2 |
+| Downsell 1 | Upsell 2 | Downsell 2 |
+| Downsell 2 | Thank You | Thank You |
+
+The page follows the published routes captured for the journey. An absent next offer ends at Thank You. Acceptance without confirmed payment stays at payment instructions. Thank You lists the successful orders from this journey.
+
+Inside an HTML Mode offer page, use `Scalev.funnel`:
+
+| Method | Result |
+| --- | --- |
+| `await Scalev.funnel.get()` | Current journey ID and status, offer metadata, selected products, customer, destination, and `expiresAt`. |
+| `await Scalev.funnel.summary()` | Current product price, shipping, fees, and total, or `requiredFields` when required details are missing. |
+| `await Scalev.funnel.accept()` | Creates or resumes the separate offer order and returns its journey status. The containing page handles navigation to payment instructions when payment is required. |
+| `await Scalev.funnel.skip()` | Declines the offer and returns the updated journey status. |
+
+These methods take no arguments. Prices, eligibility, stock, payment method, and shipping are resolved by Scalev. Digital-only offers skip shipping. Physical offers use the original address and current eligible delivery options. If required contact or delivery details are missing, `accept()` opens an inline completion step inside the Penawaran component. It requests only missing fields and shows a recalculated total before creating the offer order. Returning to the offer creates no order. The promise remains pending during this step and resolves to the current journey status on cancellation. You do not build a second checkout form or pass buyer details to these runtime methods. The original payment method is reused.
+
+`get()` includes `offer.id`, `offer.name`, `offer.kind`, `offer.slot`, and `offer.timerSeconds`. `summary()` returns `requiredFields` without totals when details are missing. Otherwise it includes an empty `requiredFields` array and `productPrice`, `shippingCost`, `otherIncome`, `otherIncomeName`, `serviceFee`, and `grossRevenue`. Currency amounts are returned in IDR and may be numeric strings. Treat the summary as a quotation: acceptance checks price and stock again.
+
+```html
+<p id="offer-total"></p>
+<button type="button" id="accept-offer">Add this offer</button>
+<button type="button" id="skip-offer">Skip this offer</button>
+<p id="offer-error" role="alert"></p>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  const accept = document.getElementById('accept-offer');
+  const skip = document.getElementById('skip-offer');
+  const error = document.getElementById('offer-error');
+  accept.disabled = true;
+  try {
+    const summary = await Scalev.funnel.summary();
+    document.getElementById('offer-total').textContent = summary.requiredFields?.length
+      ? 'Complete delivery details after accepting to see the final total.'
+      : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' })
+        .format(Number(summary.grossRevenue));
+    accept.disabled = false;
+  } catch (failure) {
+    error.textContent = failure.message;
+  }
+  for (const [button, action] of [[accept, 'accept'], [skip, 'skip']]) {
+    button.addEventListener('click', async () => {
+      accept.disabled = skip.disabled = true;
+      try {
+        await Scalev.funnel[action]();
+      } catch (failure) {
+        error.textContent = failure.message;
+      } finally {
+        accept.disabled = skip.disabled = false;
+      }
+    });
+  }
+});
+</script>
+```
+
+The containing page retains the private journey credential. Never copy it into your HTML or analytics. Offer timers start on the buyer's first actual opening, persist across devices, and do not start for previews. An invoice created before offer expiry keeps its normal payment deadline.
+
+The final Thank You page lists successful orders from this purchase attempt, including eligible offer orders paid later. Each order retains its own product access and access-link visibility window. Ordinary product-access email and WhatsApp delivery do not wait for the journey to finish.
+
+### Custom HTML for the offer component
+
+You can also replace only the **Penawaran** component with custom HTML while keeping the rest of the page in Builder mode. Write the copy directly in your HTML. Detailed text settings apply only to the built-in component.
+
+The page substitutes dynamic values in these placeholders:
+
+| Placeholder | Value |
+| --- | --- |
+| `{{offer.name}}`, `{{offer.kind}}` | Offer page name and type. |
+| `{{offer.subtotal}}`, `{{offer.quantity}}` | Formatted product subtotal and total quantity. |
+| `{{offer.countdown}}` | Remaining offer time. |
+| `{{item.name}}`, `{{item.quantity}}` | Selected item's name and quantity. |
+| `{{item.unit_price}}`, `{{item.line_total}}` | Formatted unit price and line total. |
+| `{{quote.total}}`, `{{quote.shipping}}`, `{{quote.fees}}` | Formatted quoted total, shipping, and other fees. |
+
+Repeat item markup inside `{{#items}}...{{/items}}`. Outside that block, `item` refers to the first selected item. Values are escaped before insertion.
+
+```html
+<section>
+  <h2>Complete your purchase</h2>
+  {{#items}}
+  <p>{{item.name}} × {{item.quantity}}: {{item.line_total}}</p>
+  {{/items}}
+  <strong>{{quote.total}}</strong>
+  <button type="button" data-offer-action="accept">Add this offer</button>
+  <button type="button" data-offer-action="skip">Skip this offer</button>
+</section>
+```
+
+Include both action buttons. The component supports HTML and inline CSS. It does not accept checkout form controls or the retired `{{checkout_fields}}` placeholder. Full-page JavaScript uses `Scalev.funnel`; component HTML uses the two `data-offer-action` buttons.
+
 ## `Scalev.analytics.track(provider, payload)`
 
 Forwards configured advertising-provider events through Scalev. These events are separate from [Web Analytics reports](/docs/web-analytics); this method does not create a first-party page view. Use the Web Analytics reporting API from your backend to read hosted-page traffic.

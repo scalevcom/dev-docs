@@ -3,7 +3,7 @@
   "info": {
     "title": "Scalev API",
     "version": "3.0.0",
-    "description": "Public v3 commerce contract for storefront, customer, and authenticated business\ncommerce flows.\n\nThis specification intentionally documents only the `/v3` namespace.\nStore-derived public storefront routes under `/v3/stores/{store_id}/public/*` require `X-Scalev-Storefront-Api-Key`.\nHTML Mode public page runtime routes under `/v3/pages/{page_unique_id}/*` require `X-Scalev-Page-Api-Key` and do not accept storefront public API keys.\nStorefront API requests made with `X-Scalev-Storefront-Api-Key`, page runtime requests made with `X-Scalev-Page-Api-Key`, and guest-cart requests made with `X-Scalev-Guest-Token` are browser client requests and use the direct client/IP rate limiter. Machine-authenticated business requests are rate-limited per API key or OAuth installation. Rate-limit metadata is returned in `X-Ratelimit-*` headers, and `429` responses may be plain text.\n",
+    "description": "Public v3 commerce contract for storefront, customer, and authenticated business\ncommerce flows.\n\nThis specification intentionally documents only the `/v3` namespace.\nStore-derived public storefront routes under `/v3/stores/{store_id}/public/*` require `X-Scalev-Storefront-Api-Key`, except checkout-journey routes, which require the journey-specific bearer credential.\nHTML Mode public page runtime routes under `/v3/pages/{page_unique_id}/*` require `X-Scalev-Page-Api-Key` and do not accept storefront public API keys.\nStorefront API requests made with `X-Scalev-Storefront-Api-Key`, page runtime requests made with `X-Scalev-Page-Api-Key`, and guest-cart requests made with `X-Scalev-Guest-Token` are browser client requests and use the direct client/IP rate limiter. Machine-authenticated business requests are rate-limited per API key or OAuth installation. Rate-limit metadata is returned in `X-Ratelimit-*` headers, and `429` responses may be plain text.\n",
     "license": {
       "name": "Proprietary"
     }
@@ -16,6 +16,10 @@
   ],
   "security": [],
   "tags": [
+    {
+      "name": "Checkout Journeys",
+      "description": "Private buyer purchase journeys and post-payment upsell/downsell operations."
+    },
     {
       "name": "Checkout Intents",
       "description": "Checkout capture, recovery prefill and authenticated merchant access to contactable checkout intents.",
@@ -150,6 +154,764 @@
     }
   ],
   "paths": {
+    "/v3/stores/{store_id}/public/checkout-journeys/{journey_id}": {
+      "get": {
+        "tags": [
+          "Checkout Journeys"
+        ],
+        "operationId": "getCheckoutJourney",
+        "summary": "Read a checkout journey",
+        "description": "Authorize with the opaque journey credential from the private resume link. It is bound to this store and purchase attempt. Storefront, page, business and customer API credentials do not authorize these operations. Responses are private and must not be cached. Read current state without activating an offer or starting its timer. Use resume to synchronize payment and expiry progress.",
+        "security": [
+          {
+            "checkoutJourneyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/StoreId"
+          },
+          {
+            "name": "journey_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current journey state or recalculated quote.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "no-store"
+                  ]
+                }
+              },
+              "X-Robots-Tag": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "noindex, nofollow"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckoutJourney"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestResponse"
+          },
+          "404": {
+            "description": "Journey, store or credential is missing, invalid or mismatched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequestsResponse"
+          }
+        }
+      }
+    },
+    "/v3/stores/{store_id}/public/checkout-journeys/{journey_id}/resume": {
+      "post": {
+        "tags": [
+          "Checkout Journeys"
+        ],
+        "operationId": "resumeCheckoutJourney",
+        "summary": "Resume a checkout journey",
+        "description": "Authorize with the opaque journey credential from the private resume link. It is bound to this store and purchase attempt. Storefront, page, business and customer API credentials do not authorize these operations. Responses are private and must not be cached. Synchronize confirmed payments and expiry, then return the current destination. A payment-provider return or invoice creation alone does not confirm payment. Active journeys retain their published snapshot. Subscription expiry bypasses new offers.",
+        "security": [
+          {
+            "checkoutJourneyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/StoreId"
+          },
+          {
+            "name": "journey_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current journey state or recalculated quote.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "no-store"
+                  ]
+                }
+              },
+              "X-Robots-Tag": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "noindex, nofollow"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckoutJourney"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestResponse"
+          },
+          "404": {
+            "description": "Journey, store or credential is missing, invalid or mismatched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequestsResponse"
+          }
+        }
+      }
+    },
+    "/v3/stores/{store_id}/public/checkout-journeys/{journey_id}/finish": {
+      "post": {
+        "tags": [
+          "Checkout Journeys"
+        ],
+        "operationId": "finishCheckoutJourney",
+        "summary": "Finish a checkout journey",
+        "description": "Authorize with the opaque journey credential from the private resume link. It is bound to this store and purchase attempt. Storefront, page, business and customer API credentials do not authorize these operations. Responses are private and must not be cached. Continue to the combined Thank You page, preserving successful purchases and any pending invoice. Later invoice payment is included in the original journey without rewinding its progress.",
+        "security": [
+          {
+            "checkoutJourneyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/StoreId"
+          },
+          {
+            "name": "journey_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current journey state or recalculated quote.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "no-store"
+                  ]
+                }
+              },
+              "X-Robots-Tag": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "noindex, nofollow"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckoutJourney"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestResponse"
+          },
+          "404": {
+            "description": "Journey, store or credential is missing, invalid or mismatched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequestsResponse"
+          }
+        }
+      }
+    },
+    "/v3/stores/{store_id}/public/checkout-journeys/{journey_id}/offers/{offer_id}/activate": {
+      "post": {
+        "tags": [
+          "Checkout Journeys"
+        ],
+        "operationId": "activateCheckoutJourneyOffer",
+        "summary": "Activate an offer",
+        "description": "Authorize with the opaque journey credential from the private resume link. It is bound to this store and purchase attempt. Storefront, page, business and customer API credentials do not authorize these operations. Responses are private and must not be cached. Call only when the buyer actually opens the current offer. Starts its persisted deadline once. Repeated activation preserves the deadline; passive fetching and previews must not activate it. No request body is required. Buyer, address, shipping, payment and total overrides are ignored; all checkout data is derived from the successful initial order and selected offer items. ",
+        "security": [
+          {
+            "checkoutJourneyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/StoreId"
+          },
+          {
+            "name": "journey_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "offer_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current journey state or recalculated quote.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "no-store"
+                  ]
+                }
+              },
+              "X-Robots-Tag": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "noindex, nofollow"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckoutJourney"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestResponse"
+          },
+          "404": {
+            "description": "Journey, store or credential is missing, invalid or mismatched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "This offer is no longer current, including after expiry or a concurrent transition. Resume the journey to obtain its canonical state.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequestsResponse"
+          }
+        }
+      }
+    },
+    "/v3/stores/{store_id}/public/checkout-journeys/{journey_id}/offers/{offer_id}/accept": {
+      "post": {
+        "tags": [
+          "Checkout Journeys"
+        ],
+        "operationId": "acceptCheckoutJourneyOffer",
+        "summary": "Accept an offer",
+        "description": "Authorize with the opaque journey credential from the private resume link. It is bound to this store and purchase attempt. Storefront, page, business and customer API credentials do not authorize these operations. Responses are private and must not be cached. Creates a separate order through the existing checkout pipeline after activation. Repeated acceptance of its pending invoice returns that invoice. The accepted route advances only after confirmed payment. Digital items bypass shipping; physical items use the original destination and an eligible current shipping rate. Missing details return 422 with error_code checkout_details_required and errors.required_fields. An unusable original payment method prevents acceptance. An invoice created before offer expiry remains payable until its normal deadline. An optional checkout_details object supplies only missing required contact or delivery data. Existing values are inherited from successful orders within this journey. Top-level overrides, ownership, payment method, shipping selection and totals are ignored. ",
+        "security": [
+          {
+            "checkoutJourneyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/StoreId"
+          },
+          {
+            "name": "journey_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "offer_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckoutJourneyOfferInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Current journey state or recalculated quote.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "no-store"
+                  ]
+                }
+              },
+              "X-Robots-Tag": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "noindex, nofollow"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckoutJourney"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestResponse"
+          },
+          "404": {
+            "description": "Journey, store or credential is missing, invalid or mismatched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "This offer is no longer current, including after expiry or a concurrent transition. Resume the journey to obtain its canonical state.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Required contact or delivery details are missing. No order is created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiErrorResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error_code": {
+                          "type": "string",
+                          "enum": [
+                            "checkout_details_required"
+                          ]
+                        },
+                        "errors": {
+                          "type": "object",
+                          "properties": {
+                            "required_fields": {
+                              "$ref": "#/components/schemas/CheckoutJourneyRequiredFields"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequestsResponse"
+          }
+        }
+      }
+    },
+    "/v3/stores/{store_id}/public/checkout-journeys/{journey_id}/offers/{offer_id}/skip": {
+      "post": {
+        "tags": [
+          "Checkout Journeys"
+        ],
+        "operationId": "skipCheckoutJourneyOffer",
+        "summary": "Decline an offer",
+        "description": "Authorize with the opaque journey credential from the private resume link. It is bound to this store and purchase attempt. Storefront, page, business and customer API credentials do not authorize these operations. Responses are private and must not be cached. Consume the current offer and follow its configured decline route. With all four offers configured, Upsell 1 declines to Downsell 1; Upsell 2 and Downsell 1 decline to Downsell 2; Downsell 2 declines to Thank You. Only confirmed payment advances an accepted offer. Declining, expiry and successful purchase suppress future repeats for the same resolved customer, Checkout Flow and stable offer identity. Pending invoices remain owned by their original journey. No request body is required. Buyer, address, shipping, payment and total overrides are ignored; all checkout data is derived from the successful initial order and selected offer items. ",
+        "security": [
+          {
+            "checkoutJourneyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/StoreId"
+          },
+          {
+            "name": "journey_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "offer_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current journey state or recalculated quote.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "no-store"
+                  ]
+                }
+              },
+              "X-Robots-Tag": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "noindex, nofollow"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckoutJourney"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestResponse"
+          },
+          "404": {
+            "description": "Journey, store or credential is missing, invalid or mismatched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "This offer is no longer current, including after expiry or a concurrent transition. Resume the journey to obtain its canonical state.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequestsResponse"
+          }
+        }
+      }
+    },
+    "/v3/stores/{store_id}/public/checkout-journeys/{journey_id}/offers/{offer_id}/shipping-options": {
+      "post": {
+        "tags": [
+          "Checkout Journeys"
+        ],
+        "operationId": "getCheckoutJourneyOfferShippingOptions",
+        "summary": "Read eligible offer delivery options",
+        "description": "Authorize with the opaque journey credential from the private resume link. It is bound to this store and purchase attempt. Storefront, page, business and customer API credentials do not authorize these operations. Responses are private and must not be cached. Returns eligible options calculated from the initial order destination and offered products. Digital-only offers return an empty collection. Offer pages do not ask buyers to select delivery; acceptance determines the option server-side. An optional checkout_details object supplies only missing required contact or delivery data. Existing values are inherited from successful orders within this journey. Top-level overrides, ownership, payment method, shipping selection and totals are ignored. ",
+        "security": [
+          {
+            "checkoutJourneyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/StoreId"
+          },
+          {
+            "name": "journey_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "offer_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckoutJourneyOfferInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Current journey state or recalculated quote.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "no-store"
+                  ]
+                }
+              },
+              "X-Robots-Tag": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "noindex, nofollow"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StorefrontCheckoutShippingOptionsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestResponse"
+          },
+          "404": {
+            "description": "Journey, store or credential is missing, invalid or mismatched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "This offer is no longer current, including after expiry or a concurrent transition. Resume the journey to obtain its canonical state.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequestsResponse"
+          }
+        }
+      }
+    },
+    "/v3/stores/{store_id}/public/checkout-journeys/{journey_id}/offers/{offer_id}/summary": {
+      "post": {
+        "tags": [
+          "Checkout Journeys"
+        ],
+        "operationId": "getCheckoutJourneyOfferSummary",
+        "summary": "Quote an offer",
+        "description": "Authorize with the opaque journey credential from the private resume link. It is bound to this store and purchase attempt. Storefront, page, business and customer API credentials do not authorize these operations. Responses are private and must not be cached. Recalculate item prices, fees and delivery from the selected offer and initial successful order. Digital-only offers skip shipping calculation. Physical offers prefer the original courier, aggregator and warehouse when eligible, otherwise use an eligible option by current cost. Quotes do not create orders or reserve stock. Missing details return required_fields without totals. A complete quote includes required_fields as an empty array. An optional checkout_details object supplies only missing required contact or delivery data. Existing values are inherited from successful orders within this journey. Top-level overrides, ownership, payment method, shipping selection and totals are ignored. ",
+        "security": [
+          {
+            "checkoutJourneyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/StoreId"
+          },
+          {
+            "name": "journey_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "offer_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckoutJourneyOfferInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Current journey state or recalculated quote.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "no-store"
+                  ]
+                }
+              },
+              "X-Robots-Tag": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "noindex, nofollow"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckoutJourneyOfferSummary"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestResponse"
+          },
+          "404": {
+            "description": "Journey, store or credential is missing, invalid or mismatched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "This offer is no longer current, including after expiry or a concurrent transition. Resume the journey to obtain its canonical state.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequestsResponse"
+          }
+        }
+      }
+    },
     "/v3/me": {
       "get": {
         "tags": [
@@ -18211,6 +18973,12 @@
   },
   "components": {
     "securitySchemes": {
+      "checkoutJourneyAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "Opaque journey credential",
+        "description": "Private capability for exactly one store and checkout journey. Read from the private resume URL fragment; never publish it or include it in public caches."
+      },
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer",
@@ -21850,6 +22618,410 @@
       }
     },
     "schemas": {
+      "CheckoutJourneyRequiredFields": {
+        "type": "array",
+        "uniqueItems": true,
+        "items": {
+          "type": "string",
+          "enum": [
+            "customer_name",
+            "customer_email",
+            "customer_phone",
+            "address",
+            "location_id",
+            "postal_code"
+          ]
+        }
+      },
+      "CheckoutJourneyOfferInput": {
+        "type": "object",
+        "properties": {
+          "checkout_details": {
+            "type": "object",
+            "description": "Fill only fields reported in required_fields. Known values remain unchanged.",
+            "properties": {
+              "customer_name": {
+                "type": "string"
+              },
+              "customer_email": {
+                "type": "string",
+                "format": "email"
+              },
+              "customer_phone": {
+                "type": "string"
+              },
+              "address": {
+                "type": "string"
+              },
+              "location_id": {
+                "oneOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "postal_code": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "CheckoutJourneyOfferSummary": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "required_fields"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "required_fields": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CheckoutJourneyRequiredFields"
+                  },
+                  {
+                    "minItems": 1
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StorefrontCheckoutSummaryResponse"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "required_fields"
+                ],
+                "properties": {
+                  "required_fields": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/CheckoutJourneyRequiredFields"
+                      },
+                      {
+                        "maxItems": 0
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "CheckoutJourneyDestination": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Private resume URL on the originating checkout domain. The fragment carries the journey credential; do not log or share it."
+          }
+        },
+        "nullable": true,
+        "required": [
+          "id",
+          "url"
+        ],
+        "additionalProperties": false
+      },
+      "CheckoutJourneyOffer": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "upsell",
+              "downsell"
+            ]
+          },
+          "slot": {
+            "type": "integer",
+            "enum": [
+              1,
+              2
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "content": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Published child-page display snapshot for the current journey."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "variant",
+                    "bundle"
+                  ]
+                },
+                "unique_id": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              },
+              "required": [
+                "type",
+                "unique_id",
+                "quantity"
+              ]
+            }
+          },
+          "timer_seconds": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "nullable": true,
+        "required": [
+          "id",
+          "kind",
+          "slot",
+          "name",
+          "content",
+          "items",
+          "timer_seconds"
+        ]
+      },
+      "CheckoutJourneyProducts": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "integer"
+                },
+                "price": {
+                  "$ref": "#/components/schemas/StorefrontMoneyValue"
+                },
+                "physical": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "name",
+                "quantity",
+                "price",
+                "physical"
+              ]
+            }
+          },
+          "requires_shipping": {
+            "type": "boolean"
+          },
+          "error": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "nullable": true,
+        "description": "Current selected items and availability. The summary operation recalculates the payable total."
+      },
+      "CheckoutJourneyAccess": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "link": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "link",
+          "password"
+        ],
+        "additionalProperties": false,
+        "description": "Digital download, course or subscription access. A password may be empty. Access links expire per order under the existing one-hour visibility policy."
+      },
+      "CheckoutJourney": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "waiting_payment",
+              "offering",
+              "payment",
+              "complete"
+            ]
+          },
+          "current_offer": {
+            "$ref": "#/components/schemas/CheckoutJourneyOffer"
+          },
+          "offer_products": {
+            "$ref": "#/components/schemas/CheckoutJourneyProducts"
+          },
+          "opened_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "server_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "payment_order": {
+            "type": "object",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StorefrontPublicOrder"
+              }
+            ]
+          },
+          "redirect_url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "description": "Canonical hosted payment-instructions destination for the pending order. Payment confirmation is required before proceeding to an offer."
+          },
+          "orders": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "order": {
+                  "$ref": "#/components/schemas/StorefrontPublicOrder"
+                },
+                "access": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CheckoutJourneyAccess"
+                  }
+                }
+              },
+              "required": [
+                "order",
+                "access"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "store": {
+            "type": "object",
+            "properties": {
+              "unique_id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "logo": {
+                "type": "string",
+                "nullable": true
+              },
+              "contact_email": {
+                "type": "string",
+                "nullable": true
+              },
+              "payment_methods": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "customer": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "nullable": true
+              },
+              "email": {
+                "type": "string",
+                "nullable": true
+              },
+              "phone": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          },
+          "destination": {
+            "type": "object",
+            "properties": {
+              "address": {
+                "type": "string",
+                "nullable": true
+              },
+              "location_id": {
+                "type": "integer",
+                "nullable": true
+              },
+              "postal_code": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "current_offer",
+          "offer_products",
+          "opened_at",
+          "expires_at",
+          "server_time",
+          "payment_order",
+          "redirect_url",
+          "orders",
+          "store",
+          "customer",
+          "destination"
+        ],
+        "description": "One buyer purchase attempt with a published flow snapshot. Successful linked orders appear in purchase order, excluding failed, cancelled and unpaid offers. Expired access links do not remove the order. A late payment remains linked and appears after refresh without reopening a completed branch.",
+        "additionalProperties": false
+      },
       "FlexibleObject": {
         "type": "object",
         "additionalProperties": true
@@ -28956,6 +30128,9 @@
           "orderlines"
         ],
         "properties": {
+          "checkout_journey": {
+            "$ref": "#/components/schemas/CheckoutJourneyDestination"
+          },
           "id": {
             "$ref": "#/components/schemas/OrderPrimaryKey"
           },
@@ -29001,7 +30176,7 @@
             "type": "string",
             "format": "uri",
             "nullable": true,
-            "description": "Canonical destination the buyer opens after checkout. Always prefer this field over the deprecated `payment_url`. The server resolves the destination from the payment method and After Checkout setting, including the payment page, order page, WhatsApp, another page, or a custom URL. When a destination cannot be resolved because the configuration is missing or unsupported, or a required phone number, page, or URL is unavailable, it falls back to Scalev's hosted payment instructions page (Halaman Instruksi Pembayaran) at `/o/{secret_slug}/success`, not the Thank You Page. This fallback requires a valid order identity and host. Retained attribution parameters are forwarded onto a configured page or custom URL only while it stays on the buyer's own host or a Scalev-owned one.\n"
+            "description": "Canonical destination the buyer opens after checkout. Always prefer this field over the deprecated `payment_url`. The server resolves the destination from the payment method and After Checkout setting, including the payment page, order page, WhatsApp, another page, or a custom URL. When a destination cannot be resolved because the configuration is missing or unsupported, or a required phone number, page, or URL is unavailable, it falls back to Scalev's hosted payment instructions page (Halaman Instruksi Pembayaran) at `/o/{secret_slug}/success`, not the Thank You Page. This fallback requires a valid order identity and host. Storefront checkout records the normalized request Origin header, never body-supplied metadata.origin. Hosted order and Scalev PayLink URLs use HTTPS on that host only while it is a verified custom domain of the same business, connected to Scalev hosting. Otherwise links use the store's configured default domain if verified and owned by the same business, then the business's default Scalev domain if no eligible store domain exists. A CORS allowlist entry alone is insufficient. The same validation applies when generating later order responses and follow-up chat or WABA links. External provider URLs and configured custom destinations retain their existing behavior. Retained attribution parameters are forwarded onto a configured page or custom URL only while it stays on the currently validated checkout host or a Scalev-owned one. Null only when required order identity or host data is unavailable.\n"
           },
           "order_id": {
             "type": "string"
@@ -33252,13 +34427,13 @@
             "type": "string"
           },
           "public_order_url": {
-            "description": "Public order URL built from metadata.custom_domain_full_url and secret_slug.",
+            "description": "Public order URL on the verified checkout hostname for orders created through a hosted page or storefront. Otherwise uses the store's verified default domain, then the business's default Scalev domain. Custom domains must belong to the same business. Revalidated when rendered; stale domain metadata is not authoritative.\n",
             "nullable": true,
             "type": "string",
             "format": "uri"
           },
           "payment_url": {
-            "description": "Payment URL built from public_order_url with /success appended.",
+            "description": "Scalev PayLink URL rebuilt from its identity on the currently resolved order domain, or public_order_url with /success appended for other payment methods.",
             "nullable": true,
             "type": "string",
             "format": "uri"
@@ -35271,13 +36446,13 @@
             "type": "string"
           },
           "public_order_url": {
-            "description": "Public order URL built from metadata.custom_domain_full_url and secret_slug.",
+            "description": "Public order URL on the verified checkout hostname for orders created through a hosted page or storefront. Otherwise uses the store's verified default domain, then the business's default Scalev domain. Custom domains must belong to the same business. Revalidated when rendered; stale domain metadata is not authoritative.\n",
             "nullable": true,
             "type": "string",
             "format": "uri"
           },
           "payment_url": {
-            "description": "Payment URL built from public_order_url with /success appended.",
+            "description": "Scalev PayLink URL rebuilt from its identity on the currently resolved order domain, or public_order_url with /success appended for other payment methods.",
             "nullable": true,
             "type": "string",
             "format": "uri"
@@ -35768,13 +36943,13 @@
             "type": "string"
           },
           "public_order_url": {
-            "description": "Public order URL built from metadata.custom_domain_full_url and secret_slug.",
+            "description": "Public order URL on the verified checkout hostname for orders created through a hosted page or storefront. Otherwise uses the store's verified default domain, then the business's default Scalev domain. Custom domains must belong to the same business. Revalidated when rendered; stale domain metadata is not authoritative.\n",
             "nullable": true,
             "type": "string",
             "format": "uri"
           },
           "payment_url": {
-            "description": "Payment URL built from public_order_url with /success appended.",
+            "description": "Scalev PayLink URL rebuilt from its identity on the currently resolved order domain, or public_order_url with /success appended for other payment methods.",
             "nullable": true,
             "type": "string",
             "format": "uri"
@@ -35909,13 +37084,13 @@
             "type": "string"
           },
           "public_order_url": {
-            "description": "Public order URL built from metadata.custom_domain_full_url and secret_slug.",
+            "description": "Public order URL on the verified checkout hostname for orders created through a hosted page or storefront. Otherwise uses the store's verified default domain, then the business's default Scalev domain. Custom domains must belong to the same business. Revalidated when rendered; stale domain metadata is not authoritative.\n",
             "nullable": true,
             "type": "string",
             "format": "uri"
           },
           "payment_url": {
-            "description": "Payment URL built from public_order_url with /success appended.",
+            "description": "Scalev PayLink URL rebuilt from its identity on the currently resolved order domain, or public_order_url with /success appended for other payment methods.",
             "nullable": true,
             "type": "string",
             "format": "uri"
@@ -36013,13 +37188,13 @@
             "type": "string"
           },
           "public_order_url": {
-            "description": "Public order URL built from metadata.custom_domain_full_url and secret_slug.",
+            "description": "Public order URL on the verified checkout hostname for orders created through a hosted page or storefront. Otherwise uses the store's verified default domain, then the business's default Scalev domain. Custom domains must belong to the same business. Revalidated when rendered; stale domain metadata is not authoritative.\n",
             "nullable": true,
             "type": "string",
             "format": "uri"
           },
           "payment_url": {
-            "description": "Payment URL built from public_order_url with /success appended.",
+            "description": "Scalev PayLink URL rebuilt from its identity on the currently resolved order domain, or public_order_url with /success appended for other payment methods.",
             "nullable": true,
             "type": "string",
             "format": "uri"
@@ -36110,13 +37285,13 @@
                   "type": "string"
                 },
                 "public_order_url": {
-                  "description": "Public order URL built from metadata.custom_domain_full_url and secret_slug.",
+                  "description": "Public order URL on the verified checkout hostname for orders created through a hosted page or storefront. Otherwise uses the store's verified default domain, then the business's default Scalev domain. Custom domains must belong to the same business. Revalidated when rendered; stale domain metadata is not authoritative.\n",
                   "nullable": true,
                   "type": "string",
                   "format": "uri"
                 },
                 "payment_url": {
-                  "description": "Payment URL built from public_order_url with /success appended.",
+                  "description": "Scalev PayLink URL rebuilt from its identity on the currently resolved order domain, or public_order_url with /success appended for other payment methods.",
                   "nullable": true,
                   "type": "string",
                   "format": "uri"
@@ -36562,13 +37737,13 @@
             "type": "string"
           },
           "public_order_url": {
-            "description": "Public order URL built from metadata.custom_domain_full_url and secret_slug.",
+            "description": "Public order URL on the verified checkout hostname for orders created through a hosted page or storefront. Otherwise uses the store's verified default domain, then the business's default Scalev domain. Custom domains must belong to the same business. Revalidated when rendered; stale domain metadata is not authoritative.\n",
             "nullable": true,
             "type": "string",
             "format": "uri"
           },
           "payment_url": {
-            "description": "Payment URL built from public_order_url with /success appended.",
+            "description": "Scalev PayLink URL rebuilt from its identity on the currently resolved order domain, or public_order_url with /success appended for other payment methods.",
             "nullable": true,
             "type": "string",
             "format": "uri"
@@ -36659,13 +37834,13 @@
             "type": "string"
           },
           "public_order_url": {
-            "description": "Public order URL built from metadata.custom_domain_full_url and secret_slug.",
+            "description": "Public order URL on the verified checkout hostname for orders created through a hosted page or storefront. Otherwise uses the store's verified default domain, then the business's default Scalev domain. Custom domains must belong to the same business. Revalidated when rendered; stale domain metadata is not authoritative.\n",
             "nullable": true,
             "type": "string",
             "format": "uri"
           },
           "payment_url": {
-            "description": "Payment URL built from public_order_url with /success appended.",
+            "description": "Scalev PayLink URL rebuilt from its identity on the currently resolved order domain, or public_order_url with /success appended for other payment methods.",
             "nullable": true,
             "type": "string",
             "format": "uri"
@@ -36849,13 +38024,13 @@
             "$ref": "#/components/schemas/OrderPrimaryKey"
           },
           "public_order_url": {
-            "description": "Public order URL built from metadata.custom_domain_full_url and secret_slug.",
+            "description": "Public order URL on the verified checkout hostname for orders created through a hosted page or storefront. Otherwise uses the store's verified default domain, then the business's default Scalev domain. Custom domains must belong to the same business. Revalidated when rendered; stale domain metadata is not authoritative.\n",
             "nullable": true,
             "type": "string",
             "format": "uri"
           },
           "payment_url": {
-            "description": "Payment URL built from public_order_url with /success appended.",
+            "description": "Scalev PayLink URL rebuilt from its identity on the currently resolved order domain, or public_order_url with /success appended for other payment methods.",
             "nullable": true,
             "type": "string",
             "format": "uri"
