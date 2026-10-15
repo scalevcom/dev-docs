@@ -136,7 +136,7 @@ POST /v3/stores/{store_id}/public/analytics/tiktok/events
 POST /v3/stores/{store_id}/public/analytics/snackvideo/events
 ```
 
-The endpoints return `204 No Content` after accepting the payload for asynchronous delivery. See [Advertising conversion events](/docs/storefront-api-advertising-conversion-events) for client pixel setup, attribution cookies, event naming, payload examples, and Meta/TikTok deduplication.
+The endpoints return `202 Accepted` after accepting the payload for asynchronous delivery. See [Advertising conversion events](/docs/storefront-api-advertising-conversion-events) for client pixel setup, attribution cookies, event naming, payload examples, and Meta/TikTok deduplication.
 
 ## Payment responses
 
