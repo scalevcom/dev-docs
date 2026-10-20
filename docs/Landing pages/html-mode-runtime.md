@@ -580,7 +580,7 @@ checkoutButton.addEventListener("click", () => {
 });
 ```
 
-The browser event starts immediately. Server event requests use `keepalive` so they can continue during navigation, subject to browser and network limits. Analytics must not hold up the buyer's next step.
+The browser event starts immediately. Server event requests use `keepalive` so they can continue during navigation, subject to browser and network limits. Keep click-event payloads small: requests larger than the 64 KiB keepalive limit use ordinary fetch and can be interrupted by navigation. Analytics must not hold up the buyer's next step.
 
 Supported provider names:
 
