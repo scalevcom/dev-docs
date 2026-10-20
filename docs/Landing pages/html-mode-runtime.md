@@ -546,7 +546,9 @@ try {
 
 ## `Scalev.analytics.track(provider, payload)`
 
-Forwards configured advertising-provider events through Scalev. These events are separate from [Web Analytics reports](/docs/web-analytics); this method does not create a first-party page view. Use the Web Analytics reporting API from your backend to read hosted-page traffic.
+Sends configured advertising-provider events through Scalev. For `facebook` (also accepted as `fb` or `meta`), one call starts both the browser Pixel event and the server conversion request, subject to the page configuration and current visitor permissions. You do not need to call `fbq` yourself. TikTok and Kwai payloads continue to use their server event endpoints.
+
+These events are separate from [Web Analytics reports](/docs/web-analytics); this method does not create a first-party page view. Use the Web Analytics reporting API from your backend to read hosted-page traffic.
 
 ```js
 await Scalev.analytics.track("facebook", {
@@ -561,6 +563,24 @@ await Scalev.analytics.track("facebook", {
   ]
 });
 ```
+
+For Meta, the runtime targets only the page's configured, permitted pixels. Each event uses the same ID in the browser and server requests for deduplication. Supply `eventId` to reuse your own ID, or omit it to generate a new ID for each event. A missing or failing browser SDK does not prevent the server request, and a server failure does not prevent the browser event.
+
+For a button that navigates to checkout, start tracking without waiting for its response:
+
+```js
+checkoutButton.addEventListener("click", () => {
+  void Scalev.analytics.track("facebook", {
+    events: [{
+      eventName: "AddToCart",
+      parameters: { content_name: "Example course", content_type: "product" }
+    }]
+  });
+  window.location.assign(checkoutUrl);
+});
+```
+
+The browser event starts immediately. Server event requests use `keepalive` so they can continue during navigation, subject to browser and network limits. Keep click-event payloads small: requests larger than the 64 KiB keepalive limit use ordinary fetch and can be interrupted by navigation. Analytics must not hold up the buyer's next step.
 
 Supported provider names:
 
@@ -583,7 +603,9 @@ If no provider is passed, the runtime skips the call without contacting Scalev:
 }
 ```
 
-If the analytics request fails, the checkout flow should continue and the runtime returns:
+A successful response means the server request was accepted; it is not a delivery receipt from the advertising provider. If current permissions disallow server tracking, the result is `{ "skipped": true, "reason": "privacy" }`. Browser and server permissions are checked independently.
+
+If the server request fails, the checkout flow should continue and the runtime returns the following result. A browser event may already have been sent:
 
 ```json
 {
