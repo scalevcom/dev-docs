@@ -24,15 +24,23 @@ if (!scalev) {
 }
 ```
 
-Most methods are asynchronous and return a `Promise`. `Scalev.data.get()` and `Scalev.diagnostics.get()` are synchronous.
+Most methods are asynchronous and return a `Promise`. `Scalev.data.get()`, `Scalev.diagnostics.get()`, `Scalev.checkout.updateIntent()` and `Scalev.ui.mount()` are synchronous.
 
 Runtime method payloads and responses use camelCase object keys. The runtime handles the backend casing internally, so page JavaScript should not send snake_case keys. Runtime methods also return the JavaScript-visible result directly. They remove backend collection containers such as `data` and `is_paginated` before returning arrays.
 
 String enum values and provider-owned blobs keep their original values. For example, `success_page`, `direct_to_whatsapp`, analytics `parameters`, `metadata`, and `customData` are not renamed.
 
+## `Scalev.ui.mount(document)`
+
+Attaches shared interactions to pre-rendered builder markup: navigation, tabs, sliders, folding and checkout controls. Compiled builder pages call this automatically. Calling it again for the same document does not attach duplicate handlers.
+
+The compiler supplies HTML, CSS and controller configuration. The runtime owns behavior and calls the existing checkout, location, prefill and analytics methods. It does not recreate the page from a saved widget tree. A compatible behavior fix updates the shared runtime; changes to generated HTML or CSS require rebuilding the affected pages. Neither operation creates a new merchant content revision.
+
+Use the `scalev:compiled-ready` document event or `document.documentElement.dataset.scalevCompiledReady === "true"` to detect that handlers have attached. A form also sets `data-scalev-form-ready="true"` after attaching its handlers. Readiness does not mean its shipping or summary requests have completed; wait until its submit control is enabled before submitting. Never use a tracking event as a readiness signal.
+
 ## Store context
 
-When Store Context is selected, `Scalev.data.get().store` includes only the selected store summary, products, and bundle price options. Treat it as the page-specific checkout catalog.
+When Store Context is selected, `Scalev.data.get().store` includes only the selected store summary, products, and bundle price options. Treat it as the page-specific checkout catalog. Compiled builder pages also include the available products and bundles used by their published order bumps. This does not expand the catalog of authored HTML Mode pages.
 
 When HTML Checkout Page is selected, `Scalev.data.get().afterCheckout` describes the selected after-checkout type and its public destination configuration. It is editor state, not the resolved destination for an order. After checkout, use `order.redirectUrl` from `Scalev.checkout.createOrder()` instead of rebuilding a URL from this configuration.
 
@@ -129,13 +137,34 @@ const subdistricts = await Scalev.location.subdistricts(cities[0].id);
 const postalCodes = await Scalev.location.postalCodes(subdistricts[0].id);
 ```
 
-`provinces`, `cities`, and `subdistricts` accept optional query objects:
+Use `Scalev.location.search({ search: "Cakung", pageSize: 20 })` to search kelurahan/desa across cities. It returns normalized location rows. Use **Kecamatan/Kelurahan** as the picker label. `subdistricts(cityId)` is a cascading lookup and requires a selected city; it is not a global search.
+
+For a search picker that loads more results, pass `{ pagination: true }` as the second argument. The response then contains `data`, `hasNext`, and `nextCursor`. Pass the returned cursor with the same search query to load the next batch. Numeric `page` parameters are not supported.
+
+```js
+const first = await Scalev.location.search(
+  { search: "Bandung", pageSize: 25 },
+  { pagination: true }
+);
+if (first.hasNext && first.nextCursor) {
+  const next = await Scalev.location.search(
+    { search: "Bandung", pageSize: 25, nextCursor: first.nextCursor },
+    { pagination: true }
+  );
+}
+```
+
+Omit the second argument to keep the default array response.
+
+`search`, `provinces`, `cities`, and `subdistricts` accept optional query objects:
 
 ```js
 const provinces = await Scalev.location.provinces({ search: "Jawa" });
 ```
 
-Province and city responses use `{ id, name }`. Subdistrict responses use `id` and `name` for the subdistrict, plus `cityName`, `provinceName`, and `display` for address labels.
+Province and city responses use `{ id, name }`. Location search and subdistrict responses use `id`, `name`, `kelurahanName`, `cityName`, `provinceName`, and `display`. The `name` combines the kecamatan and kelurahan, such as `Coblong, Sekeloa`; `kelurahanName` is `null` on legacy kecamatan rows. Render full labels with `[row.provinceName, row.cityName, row.name].filter(Boolean).join(", ")`. Do not split `display` to infer administrative fields.
+
+Despite its historical name, `destination.subdistrictId` takes the selected location row ID, including a kelurahan/desa row. Pass that same ID to `postalCodes` and checkout helpers. Saved legacy kecamatan IDs remain valid; never replace a selected row with its parent ID.
 
 Response examples:
 
@@ -162,6 +191,7 @@ Response examples:
   {
     "id": 9090,
     "name": "Gambir",
+    "kelurahanName": null,
     "cityName": "Kota Jakarta Pusat",
     "provinceName": "DKI Jakarta",
     "display": "Gambir, Kota Jakarta Pusat, DKI Jakarta"
@@ -176,6 +206,14 @@ Response examples:
   }
 ]
 ```
+
+## `Scalev.checkout.updateIntent(payload)`
+
+Schedules a debounced checkout-intent snapshot and returns synchronously. Use the same `customer`, `destination`, `items`, `paymentMethod` and `discountCode` fields as your checkout payload when your controls are not represented by the standard form fields the runtime observes.
+
+For a compiled builder form, the shared controls collect these values automatically. They also pass `selectedOrderBumpKeys`, an array of up to three published bump keys. Keep each form's contact fields separate. Invalid nonempty controls, including quantity and price controls outside the form, cancel a queued snapshot until corrected.
+
+This method does not complete an intent. Completion belongs to a successful `Scalev.checkout.createOrder()` response. Do not mark checkout complete on a click, failed request or redirect attempt.
 
 ## `Scalev.checkout.validateDiscount(payload)`
 
@@ -239,6 +277,10 @@ const shippingOptions = await Scalev.checkout.shippingOptions({
 ```
 
 Pass the chosen option back as one `shipping` field in `estimateSummary` and `createOrder`. The runtime prepares the checkout request from that option. Options include `logoUrl` when a courier code is available.
+
+For the current published builder form, you can pass `allowIncomplete: true` to preview shipping before the visitor selects a postcode. The shared builder controls use this option while the address is being completed. The postcode remains required by the form and final order validation. Authored HTML pages and storefronts keep their existing postcode requirements. A shipping quote never authorizes an order.
+
+For the current published builder form, pass both `allowIncomplete: true` and `includeProvisional: true` when you need shipping options while a customer-entered price is blank, zero or below its minimum. This is a non-payable preview. The backend still validates current items, quantities, destination and shipping availability. Authored HTML pages, ordinary shipping requests and order creation retain strict price validation.
 
 Response example:
 
@@ -345,6 +387,18 @@ Response example:
   "grossRevenue": 292300
 }
 ```
+
+During delivery selection, you can explicitly pass `allowIncomplete: true`. If the address or shipping choice is incomplete, the response contains `{ isComplete: false, productPrice }` with current product pricing and no payable total. Display it as a product subtotal and keep checkout disabled until a later complete summary succeeds. Invalid items and unavailable shipping still return errors. Omitting this flag keeps the existing validation behavior. For the current published builder form, an unselected postcode alone does not prevent a shipping quote or complete price summary; form and order validation still enforce postcode collection. Never use an incomplete subtotal as `grossRevenue` or as permission to create an order.
+
+Pass `includeBreakdown: true` to request backend-owned receipt details. The response additionally contains `lines` with `{ name, quantity, unitPrice, amount }`, `productDiscount`, and, for complete quotes, `discountCodeDiscount`. Amounts are decimal strings. Display these returned amounts directly; do not recalculate bundle discounts, eligibility or payment fees in page code. An incomplete quote can include lines but still has no payable total. Older servers may omit these optional fields; retain the aggregate subtotal in that case. Compiled builder controllers request the breakdown automatically.
+
+You can also pass `includeProvisional: true` with `allowIncomplete: true`. While delivery is missing, the response can include a separate `provisional` receipt with backend-calculated product prices, fees, discounts and `grossRevenue`, excluding shipping. Render those amounts directly. Keep `isComplete: false` authoritative: the provisional receipt never permits creating an order. You may allow the form button to show required-field validation, but do not call `createOrder` until a complete summary succeeds. When an unfinished customer-entered price produces `invalidCustomerPrices`, the response also includes `isDeliveryComplete`. If true, the provisional receipt includes the current shipping quote, including free shipping; render that backend shipping amount. If false, delivery is still incomplete and the provisional receipt excludes shipping. `isComplete: false` still prevents order creation in both cases.
+
+Older servers may omit `provisional`; continue showing only the product subtotal in that case.
+
+The shared builder UI also uses this receipt while a customer-entered price is blank, zero or below the minimum. These responses include `invalidCustomerPrices` entries with `variantId` and `minimumCustomerPrice`, keep `isComplete: false`, and disable submission until corrected. The backend resolves all amounts and still enforces normal order validation. This unfinished-price behavior is restricted to the currently published builder form; authored HTML pages retain their existing strict price validation.
+
+Published builder forms preserve the normal landing-page draft order policy: insufficient stock alone does not block a price quote or shipping preview. Orders and later status transitions remain responsible for inventory decisions. A complete summary is a price quote, not inventory authorization. Inactive or foreign catalog items still fail validation. Authored HTML pages and storefronts retain their existing stock checks.
 
 Use `estimateSummary` when the checkout UI displays totals before submit. Refresh it whenever the selected items, quantities, destination, shipping option, discount, or payment method changes. Render `otherIncome` with `otherIncomeName` when it is non-zero, and render one `Biaya layanan` or `Service fee` row from `serviceFee` when it is non-zero.
 
@@ -535,6 +589,17 @@ See [HTML Mode checkout success types](/docs/html-mode-checkout-success-paths) f
 
 Runtime methods reject the `Promise` with a JavaScript `Error`. Use `error.message` for UI copy. Use `error.status`, `error.data`, and `Scalev.diagnostics.get()` only for debugging.
 
+Order errors also expose `error.orderOutcome`:
+
+| Value | Meaning | Next action |
+| --- | --- | --- |
+| `not_submitted` | Validation or security verification failed before sending the order. | Correct the problem and allow another explicit submission. |
+| `rejected` | The order endpoint rejected the request. | Show the error and allow the visitor to correct it. |
+| `unknown` | The response was lost or the service could not confirm the outcome. An order may already exist. | Keep repeat submission blocked until the outcome is checked. |
+
+Disable submission while a request is in flight. Do not automatically retry an order. A successful order remains successful if saving prefill or forwarding analytics later fails.
+
+
 ```js
 try {
   const order = await Scalev.checkout.createOrder(payload);
@@ -562,11 +627,13 @@ await Scalev.analytics.track("facebook", {
 });
 ```
 
+For Meta events, the runtime sends the configured browser pixel and server event with the same event ID. Recipient consent applies to both; unrelated pixels initialized by your own code are not targeted. A missing browser SDK does not prevent an allowed server event. Requests use keepalive when the final encoded body fits its 64 KiB limit; larger events use ordinary delivery and are not guaranteed to finish during navigation.
+
 Supported provider names:
 
-- `facebook`
+- `facebook` (aliases: `fb`, `meta`)
 - `tiktok`
-- `kwai`
+- `kwai` (alias: `snackvideo`)
 
 Response example:
 
