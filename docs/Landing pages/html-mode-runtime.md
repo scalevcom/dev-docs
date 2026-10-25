@@ -14,7 +14,9 @@ This page is written for developers and AI agents that generate HTML Mode files.
 
 The runtime is inserted near body-close, before the trailing top-level script block. Earlier authored scripts should wait for `DOMContentLoaded` before accessing `window.Scalev`. Keep third-party script order and attributes intact; external resources also need the appropriate page CSP permission.
 
-Editor previews simulate commerce, location, and prefill behavior. They do not create real orders or send platform analytics. Simulated orders include `redirectUrl: "#scalev-preview-order"`.
+Authored HTML Mode editor previews simulate commerce, location, and prefill behavior. They do not create real orders or send platform analytics. Simulated orders include `redirectUrl: "#scalev-preview-order"`.
+
+[Fast mode](/docs/compiled-builder-delivery) uses the same public runtime for Builder interactions, but its Studio preview keeps order submission disabled and does not request live quotes, run merchant scripts, send tracking events, or write visitor prefill. Do not use either editor preview as proof that a real checkout succeeded.
 
 ```js
 const scalev = window.Scalev;
@@ -32,15 +34,17 @@ String enum values and provider-owned blobs keep their original values. For exam
 
 ## `Scalev.ui.mount(document)`
 
-Attaches shared interactions to pre-rendered builder markup: navigation, tabs, sliders, folding and checkout controls. Compiled builder pages call this automatically. Calling it again for the same document does not attach duplicate handlers.
+Attaches shared interactions to pre-rendered Builder markup: navigation, tabs, sliders, folding, and checkout controls. Fast mode pages call this automatically. Calling it again for the same document does not attach duplicate handlers. Authored HTML Mode pages still own their custom form markup and submit handlers.
 
-The compiler supplies HTML, CSS and controller configuration. The runtime owns behavior and calls the existing checkout, location, prefill and analytics methods. It does not recreate the page from a saved widget tree. A compatible behavior fix updates the shared runtime; changes to generated HTML or CSS require rebuilding the affected pages. Neither operation creates a new merchant content revision.
+Fast mode supplies the initial HTML and CSS. The runtime attaches behavior and calls the checkout, location, prefill, and analytics methods; it does not reconstruct the visible page in the browser. Compatible runtime updates reach existing and new Fast mode pages when cached public documents refresh, without a merchant republish. Changes to prepared HTML or CSS may require Scalev to rebuild the page. Neither operation adds a content version.
+
+Fast mode forms show the shared full-page loading overlay during submission and block duplicate submissions. The overlay is part of the shared Builder controls, not a side effect of calling `Scalev.checkout.createOrder()` from arbitrary authored HTML. For a custom HTML Mode form, provide your own pending state and follow the order error-handling rules below.
 
 Use the `scalev:compiled-ready` document event or `document.documentElement.dataset.scalevCompiledReady === "true"` to detect that handlers have attached. A form also sets `data-scalev-form-ready="true"` after attaching its handlers. Readiness does not mean its shipping or summary requests have completed; wait until its submit control is enabled before submitting. Never use a tracking event as a readiness signal.
 
 ## Store context
 
-When Store Context is selected, `Scalev.data.get().store` includes only the selected store summary, products, and bundle price options. Treat it as the page-specific checkout catalog. Compiled builder pages also include the available products and bundles used by their published order bumps. This does not expand the catalog of authored HTML Mode pages.
+When Store Context is selected, `Scalev.data.get().store` includes only the selected store summary, products, and bundle price options. Treat it as the page-specific checkout catalog. Fast mode pages also include the available products and bundles used by their published order bumps. This does not expand the catalog of authored HTML Mode pages.
 
 When HTML Checkout Page is selected, `Scalev.data.get().afterCheckout` describes the selected after-checkout type and its public destination configuration. It is editor state, not the resolved destination for an order. After checkout, use `order.redirectUrl` from `Scalev.checkout.createOrder()` instead of rebuilding a URL from this configuration.
 
@@ -211,7 +215,7 @@ Response examples:
 
 Schedules a debounced checkout-intent snapshot and returns synchronously. Use the same `customer`, `destination`, `items`, `paymentMethod` and `discountCode` fields as your checkout payload when your controls are not represented by the standard form fields the runtime observes.
 
-For a compiled builder form, the shared controls collect these values automatically. They also pass `selectedOrderBumpKeys`, an array of up to three published bump keys. Keep each form's contact fields separate. Invalid nonempty controls, including quantity and price controls outside the form, cancel a queued snapshot until corrected.
+For a Fast mode form, the shared controls collect these values automatically. They also pass `selectedOrderBumpKeys`, an array of up to three published bump keys. Keep each form's contact fields separate. Invalid nonempty controls, including quantity and price controls outside the form, cancel a queued snapshot until corrected.
 
 This method does not complete an intent. Completion belongs to a successful `Scalev.checkout.createOrder()` response. Do not mark checkout complete on a click, failed request or redirect attempt.
 
@@ -390,7 +394,7 @@ Response example:
 
 During delivery selection, you can explicitly pass `allowIncomplete: true`. If the address or shipping choice is incomplete, the response contains `{ isComplete: false, productPrice }` with current product pricing and no payable total. Display it as a product subtotal and keep checkout disabled until a later complete summary succeeds. Invalid items and unavailable shipping still return errors. Omitting this flag keeps the existing validation behavior. For the current published builder form, an unselected postcode alone does not prevent a shipping quote or complete price summary; form and order validation still enforce postcode collection. Never use an incomplete subtotal as `grossRevenue` or as permission to create an order.
 
-Pass `includeBreakdown: true` to request backend-owned receipt details. The response additionally contains `lines` with `{ name, quantity, unitPrice, amount }`, `productDiscount`, and, for complete quotes, `discountCodeDiscount`. Amounts are decimal strings. Display these returned amounts directly; do not recalculate bundle discounts, eligibility or payment fees in page code. An incomplete quote can include lines but still has no payable total. Older servers may omit these optional fields; retain the aggregate subtotal in that case. Compiled builder controllers request the breakdown automatically.
+Pass `includeBreakdown: true` to request backend-owned receipt details. The response additionally contains `lines` with `{ name, quantity, unitPrice, amount }`, `productDiscount`, and, for complete quotes, `discountCodeDiscount`. Amounts are decimal strings. Display these returned amounts directly; do not recalculate bundle discounts, eligibility or payment fees in page code. An incomplete quote can include lines but still has no payable total. Older servers may omit these optional fields; retain the aggregate subtotal in that case. Fast mode forms request the breakdown automatically.
 
 You can also pass `includeProvisional: true` with `allowIncomplete: true`. While delivery is missing, the response can include a separate `provisional` receipt with backend-calculated product prices, fees, discounts and `grossRevenue`, excluding shipping. Render those amounts directly. Keep `isComplete: false` authoritative: the provisional receipt never permits creating an order. You may allow the form button to show required-field validation, but do not call `createOrder` until a complete summary succeeds. When an unfinished customer-entered price produces `invalidCustomerPrices`, the response also includes `isDeliveryComplete`. If true, the provisional receipt includes the current shipping quote, including free shipping; render that backend shipping amount. If false, delivery is still incomplete and the provisional receipt excludes shipping. `isComplete: false` still prevents order creation in both cases.
 
@@ -598,7 +602,6 @@ Order errors also expose `error.orderOutcome`:
 | `unknown` | The response was lost or the service could not confirm the outcome. An order may already exist. | Keep repeat submission blocked until the outcome is checked. |
 
 Disable submission while a request is in flight. Do not automatically retry an order. A successful order remains successful if saving prefill or forwarding analytics later fails.
-
 
 ```js
 try {
