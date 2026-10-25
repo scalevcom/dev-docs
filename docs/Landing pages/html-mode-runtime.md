@@ -1,30 +1,45 @@
 ---
-title: "HTML Mode runtime"
-excerpt: "Use the window.Scalev runtime methods available inside Scalev HTML Mode pages."
+title: "Landing page runtime"
+excerpt: "Use window.Scalev for page data, checkout, location lookup, analytics, and visitor prefill."
 deprecated: false
 hidden: false
 metadata:
   robots: index
 ---
-Scalev HTML Mode pages can use `window.Scalev` from browser JavaScript. The runtime gives your page safe page context, selected store context, checkout helpers, analytics forwarding, form prefill helpers, and diagnostics while keeping private API tokens server-side.
+The landing page runtime exposes `window.Scalev` to your page JavaScript. Use it to read public page and store data, look up locations, handle checkout, send analytics events, and manage visitor prefill.
 
-This page is written for developers and AI agents that generate HTML Mode files. Use these methods instead of calling private Scalev URLs directly.
+Use the documented methods instead of calling private Scalev URLs directly. Scalev manages authentication and validates checkout requests for the current page.
 
 ## Availability
 
-The runtime is inserted near body-close, before the trailing top-level script block. Earlier authored scripts should wait for `DOMContentLoaded` before accessing `window.Scalev`. Keep third-party script order and attributes intact; external resources also need the appropriate page CSP permission.
+The runtime is available on published HTML Mode pages and Builder pages served in **Fast mode**. Check for the methods you need before enabling controls that depend on them; a standard Builder page may not expose this API.
 
-Editor previews simulate commerce, location, and prefill behavior. They do not create real orders or send platform analytics. Simulated orders include `redirectUrl: "#scalev-preview-order"`.
+On HTML Mode pages, Scalev inserts the runtime before the trailing top-level script block. Scripts that run earlier should initialize after `DOMContentLoaded`. This pattern also handles scripts loaded after that event:
 
 ```js
-const scalev = window.Scalev;
+function initializePage() {
+  const scalev = window.Scalev;
+  if (!scalev?.data?.get) {
+    // Leave controls that require the runtime disabled.
+    return;
+  }
 
-if (!scalev) {
-  // Keep the page usable while runtime data loads.
+  const data = scalev.data.get();
+  // Render your controls from data, then attach handlers before enabling them.
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initializePage, { once: true });
+} else {
+  initializePage();
 }
 ```
 
-Most methods are asynchronous and return a `Promise`. `Scalev.data.get()` and `Scalev.diagnostics.get()` are synchronous.
+External scripts and resources need the appropriate page CSP permission. Preserve script order when one script depends on another.
+
+HTML Mode editor previews simulate commerce, location, and prefill behavior. They do not create real orders or send platform analytics. Simulated orders include `redirectUrl: "#scalev-preview-order"`. Verify your integration on a published page before treating it as a working checkout.
+
+Most methods are asynchronous and return a `Promise`. `Scalev.data.get()`, `Scalev.diagnostics.get()`, and `Scalev.checkout.updateIntent()` are synchronous.
 
 Runtime method payloads and responses use camelCase object keys. The runtime handles the backend casing internally, so page JavaScript should not send snake_case keys. Runtime methods also return the JavaScript-visible result directly. They remove backend collection containers such as `data` and `is_paginated` before returning arrays.
 
@@ -32,11 +47,11 @@ String enum values and provider-owned blobs keep their original values. For exam
 
 ## Store context
 
-When Store Context is selected, `Scalev.data.get().store` includes only the selected store summary, products, and bundle price options. Treat it as the page-specific checkout catalog.
+`Scalev.data.get().store` contains the store summary, products, and bundle price options available to the current page. Treat it as the page-specific checkout catalog. For an HTML Mode page, select **Store Context** and the products or bundles you want to make available.
 
-When HTML Checkout Page is selected, `Scalev.data.get().afterCheckout` describes the selected after-checkout type and its public destination configuration. It is editor state, not the resolved destination for an order. After checkout, use `order.redirectUrl` from `Scalev.checkout.createOrder()` instead of rebuilding a URL from this configuration.
+`Scalev.data.get().afterCheckout`, when present, describes the page's after-checkout configuration. After checkout, use the resolved `order.redirectUrl` from `Scalev.checkout.createOrder()` instead of rebuilding a URL from this configuration.
 
-When Store Context is unselected, treat `store` as unavailable. Build a regular landing page and rely only on page-safe methods such as `Scalev.data.get()`, `Scalev.analytics.track()`, and `Scalev.prefill.get()`.
+If the page has no store context, treat `store` as unavailable. Rely on methods such as `Scalev.data.get()`, `Scalev.analytics.track()`, and `Scalev.prefill.get()` without adding checkout controls.
 
 ## Security rules
 
@@ -48,7 +63,7 @@ When Store Context is unselected, treat `store` as unavailable. Build a regular 
 
 ## `Scalev.data.get()`
 
-Returns public page data injected into the rendered page.
+Returns the current page's public data synchronously. Visitor prefill and internal analytics configuration are excluded. Read visitor-specific form values through `Scalev.prefill.get()`.
 
 ```js
 const data = Scalev.data.get();
@@ -129,13 +144,34 @@ const subdistricts = await Scalev.location.subdistricts(cities[0].id);
 const postalCodes = await Scalev.location.postalCodes(subdistricts[0].id);
 ```
 
-`provinces`, `cities`, and `subdistricts` accept optional query objects:
+Use `Scalev.location.search({ search: "Cakung", pageSize: 20 })` to search kelurahan/desa across cities. It returns normalized location rows. Use **Kecamatan/Kelurahan** as the picker label. `subdistricts(cityId)` is a cascading lookup and requires a selected city; it is not a global search.
+
+For a search picker that loads more results, pass `{ pagination: true }` as the second argument. The response then contains `data`, `hasNext`, and `nextCursor`. Pass the returned cursor with the same search query to load the next batch. Numeric `page` parameters are not supported.
+
+```js
+const first = await Scalev.location.search(
+  { search: "Bandung", pageSize: 25 },
+  { pagination: true }
+);
+if (first.hasNext && first.nextCursor) {
+  const next = await Scalev.location.search(
+    { search: "Bandung", pageSize: 25, nextCursor: first.nextCursor },
+    { pagination: true }
+  );
+}
+```
+
+Omit the second argument to keep the default array response.
+
+`search`, `provinces`, `cities`, and `subdistricts` accept optional query objects:
 
 ```js
 const provinces = await Scalev.location.provinces({ search: "Jawa" });
 ```
 
-Province and city responses use `{ id, name }`. Subdistrict responses use `id` and `name` for the subdistrict, plus `cityName`, `provinceName`, and `display` for address labels.
+Province and city responses use `{ id, name }`. Location search and subdistrict responses use `id`, `name`, `kelurahanName`, `cityName`, `provinceName`, and `display`. The `name` combines the kecamatan and kelurahan, such as `Coblong, Sekeloa`; `kelurahanName` is `null` on legacy kecamatan rows. Render full labels with `[row.provinceName, row.cityName, row.name].filter(Boolean).join(", ")`. Do not split `display` to infer administrative fields.
+
+Despite its historical name, `destination.subdistrictId` takes the selected location row ID, including a kelurahan/desa row. Pass that same ID to `postalCodes` and checkout helpers. Saved legacy kecamatan IDs remain valid; never replace a selected row with its parent ID.
 
 Response examples:
 
@@ -162,6 +198,7 @@ Response examples:
   {
     "id": 9090,
     "name": "Gambir",
+    "kelurahanName": null,
     "cityName": "Kota Jakarta Pusat",
     "provinceName": "DKI Jakarta",
     "display": "Gambir, Kota Jakarta Pusat, DKI Jakarta"
@@ -176,6 +213,12 @@ Response examples:
   }
 ]
 ```
+
+## `Scalev.checkout.updateIntent(payload)`
+
+Schedules a debounced checkout-intent snapshot and returns synchronously. Use the same `customer`, `destination`, `items`, `paymentMethod` and `discountCode` fields as your checkout payload when your controls are not represented by the standard form fields the runtime observes.
+
+This method does not complete an intent. Completion belongs to a successful `Scalev.checkout.createOrder()` response. Do not mark checkout complete on a click, failed request or redirect attempt.
 
 ## `Scalev.checkout.validateDiscount(payload)`
 
@@ -346,6 +389,14 @@ Response example:
 }
 ```
 
+During delivery selection, you can explicitly pass `allowIncomplete: true`. If the address or shipping choice is incomplete, the response contains `{ isComplete: false, productPrice }` with current product pricing and no payable total. Display it as a product subtotal and keep checkout disabled until a later complete summary succeeds. Invalid items and unavailable shipping still return errors. Omitting this flag keeps the existing validation behavior. Never use an incomplete subtotal as `grossRevenue` or as permission to create an order.
+
+Pass `includeBreakdown: true` to request backend-owned receipt details. The response additionally contains `lines` with `{ name, quantity, unitPrice, amount }`, `productDiscount`, and, for complete quotes, `discountCodeDiscount`. Amounts are decimal strings. Display these returned amounts directly; do not recalculate bundle discounts, eligibility or payment fees in page code. An incomplete quote can include lines but still has no payable total. Older servers may omit these optional fields; retain the aggregate subtotal in that case.
+
+You can also pass `includeProvisional: true` with `allowIncomplete: true`. While delivery is missing, the response can include a separate `provisional` receipt with backend-calculated product prices, fees, discounts and `grossRevenue`, excluding shipping. Render those amounts directly. Keep `isComplete: false` authoritative: the provisional receipt never permits creating an order. You may allow the form button to show required-field validation, but do not call `createOrder` until a complete summary succeeds.
+
+Older servers may omit `provisional`; continue showing only the product subtotal in that case.
+
 Use `estimateSummary` when the checkout UI displays totals before submit. Refresh it whenever the selected items, quantities, destination, shipping option, discount, or payment method changes. Render `otherIncome` with `otherIncomeName` when it is non-zero, and render one `Biaya layanan` or `Service fee` row from `serviceFee` when it is non-zero.
 
 `otherIncome` remains the store's existing Other Charges concept. `serviceFee` is one combined customer-facing fee for direct e-payment. Both can be non-zero in the same checkout. Scalev calculates Other Charges first, then uses the checkout amount plus `otherIncome` as the base for the Service Fee, and `grossRevenue` is the displayed and charged total.
@@ -361,6 +412,7 @@ Creates a real public order and validates the payload. Call this only after a vi
 ```js
 async function submitOrder(event) {
   event.preventDefault();
+  const form = event.currentTarget;
 
   const data = Scalev.data.get();
   const store = data.store;
@@ -384,12 +436,12 @@ async function submitOrder(event) {
 
   const payload = {
     customer: {
-      name: event.currentTarget.elements.customerName.value,
-      phone: event.currentTarget.elements.customerPhone.value,
-      email: event.currentTarget.elements.customerEmail.value
+      name: form.elements.customerName.value,
+      phone: form.elements.customerPhone.value,
+      email: form.elements.customerEmail.value
     },
     destination: {
-      address: event.currentTarget.elements.address.value,
+      address: form.elements.address.value,
       ...destination
     },
     items,
@@ -535,6 +587,16 @@ See [HTML Mode checkout success types](/docs/html-mode-checkout-success-paths) f
 
 Runtime methods reject the `Promise` with a JavaScript `Error`. Use `error.message` for UI copy. Use `error.status`, `error.data`, and `Scalev.diagnostics.get()` only for debugging.
 
+Order errors also expose `error.orderOutcome`:
+
+| Value | Meaning | Next action |
+| --- | --- | --- |
+| `not_submitted` | Validation or security verification failed before sending the order. | Correct the problem and allow another explicit submission. |
+| `rejected` | The order endpoint rejected the request. | Show the error and allow the visitor to correct it. |
+| `unknown` | The response was lost or the service could not confirm the outcome. An order may already exist. | Keep repeat submission blocked until the outcome is checked. |
+
+Provide a loading state for your custom form and disable submission while a request is in flight. Calling `createOrder` does not add loading UI to your custom markup. Do not automatically retry an order. A successful order remains successful if saving prefill or forwarding analytics later fails.
+
 ```js
 try {
   const order = await Scalev.checkout.createOrder(payload);
@@ -562,11 +624,13 @@ await Scalev.analytics.track("facebook", {
 });
 ```
 
+For Meta events, the runtime sends the configured browser pixel and server event with the same event ID. Visitor consent applies to both; unrelated pixels initialized by your own code are not targeted. A missing browser SDK does not prevent an allowed server event. Requests use keepalive when the final encoded body fits its 64 KiB limit; larger events use ordinary delivery and are not guaranteed to finish during navigation.
+
 Supported provider names:
 
-- `facebook`
+- `facebook` (aliases: `fb`, `meta`)
 - `tiktok`
-- `kwai`
+- `kwai` (alias: `snackvideo`)
 
 Response example:
 
@@ -622,7 +686,7 @@ Response example:
 
 ## `Scalev.prefill.save(form, metadata)`
 
-Persists safe browser-scoped form prefill data in the encrypted `scv_fd` cookie. This is handled locally by fe-public and does not call a Storefront or page runtime API endpoint.
+Persists safe browser-scoped form prefill data in an encrypted cookie. Use this method rather than reading or writing the cookie yourself.
 
 ```js
 await Scalev.prefill.save(
