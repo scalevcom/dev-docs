@@ -105,6 +105,6 @@ Scalev's own domains are already allowed, so a page that only uses `window.Scale
 
 ## Next steps
 
-- [HTML Mode runtime](/docs/html-mode-runtime) documents every `window.Scalev` method, its payload, and its response.
+- [Landing page runtime](/docs/html-mode-runtime) documents the public `window.Scalev` methods, its payload, and its response.
 - [HTML Mode checkout success types](/docs/html-mode-checkout-success-paths) covers where to send the buyer after `Scalev.checkout.createOrder()` succeeds.
 - [Example prompt](/docs/example-prompt) is the prompt the dashboard generates for AI tools.

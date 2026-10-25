@@ -189,7 +189,7 @@ Include the analytics event fields even when they are empty:
 }
 ```
 
-Use the [HTML Mode runtime](/docs/html-mode-runtime) for checkout, analytics,
+Use the [Landing page runtime](/docs/html-mode-runtime) for checkout, analytics,
 prefill, and page context.
 
 ## Analytics pixels and events
