@@ -35,7 +35,7 @@ if (document.readyState === "loading") {
 }
 ```
 
-External scripts and resources need the appropriate page CSP permission. Preserve script order when one script depends on another.
+On HTML Mode pages, external scripts and resources need the appropriate page CSP permission. Preserve script order when one script depends on another.
 
 HTML Mode editor previews simulate commerce, location, and prefill behavior. They do not create real orders or send platform analytics. Simulated orders include `redirectUrl: "#scalev-preview-order"`. Verify your integration on a published page before treating it as a working checkout.
 
