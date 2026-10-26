@@ -773,3 +773,7 @@ Response example:
   }
 ]
 ```
+
+Scalev editors display the Google conversion-action name with its Scalev trigger
+as context. The trigger remains the stable API key, so changing a display label
+does not change event identity or Purchase eligibility.
