@@ -3412,6 +3412,786 @@
         }
       }
     },
+    "/v3/google-ads/destinations": {
+      "get": {
+        "tags": [
+          "Analytics Setup"
+        ],
+        "operationId": "listGoogleAdsDestinations",
+        "summary": "List Google Ads destinations",
+        "description": "Requires the `google_ads:list` scope.",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          },
+          {
+            "scalevOAuth": [
+              "google_ads:list"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/GoogleAdsDestination"
+                      }
+                    },
+                    "is_paginated": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "is_paginated"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedResponse"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundResponse"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Analytics Setup"
+        ],
+        "operationId": "createGoogleAdsDestination",
+        "summary": "Create a Google Ads destination",
+        "description": "Requires the `google_ads:create` scope. An existing business-owned Google connection is required. The selected enabled website Purchase conversion is verified with Google. OAuth connection and account discovery are dashboard-only.",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          },
+          {
+            "scalevOAuth": [
+              "google_ads:create"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleAdsDestination"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedResponse"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundResponse"
+          },
+          "502": {
+            "$ref": "#/components/responses/BadGatewayResponse"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleAdsDestinationCreate"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/google-ads/destinations/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Scalev Google Ads destination ID."
+        }
+      ],
+      "get": {
+        "tags": [
+          "Analytics Setup"
+        ],
+        "operationId": "getGoogleAdsDestination",
+        "summary": "Get a Google Ads destination",
+        "description": "Requires the `google_ads:read` scope.",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          },
+          {
+            "scalevOAuth": [
+              "google_ads:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleAdsDestination"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedResponse"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundResponse"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Analytics Setup"
+        ],
+        "operationId": "updateGoogleAdsDestination",
+        "summary": "Update a Google Ads destination",
+        "description": "Requires the `google_ads:update` scope. Name, enabled, event mappings and remarketing may change. Purchase account and conversion identity are immutable. New mappings require compatible non-Purchase website actions. Existing destinations remain Purchase-only until mappings are explicitly enabled.",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          },
+          {
+            "scalevOAuth": [
+              "google_ads:update"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleAdsDestination"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedResponse"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundResponse"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "enabled": {
+                    "type": "boolean"
+                  },
+                  "event_mappings": {
+                    "type": "array",
+                    "maxItems": 32,
+                    "description": "Complete replacement of the child mappings. Omission preserves existing mappings; an empty array disables all funnel mappings.",
+                    "items": {
+                      "$ref": "#/components/schemas/GoogleAdsEventMapping"
+                    }
+                  },
+                  "remarketing": {
+                    "$ref": "#/components/schemas/GoogleAdsRemarketing"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Analytics Setup"
+        ],
+        "operationId": "disableGoogleAdsDestination",
+        "summary": "Disable a Google Ads destination",
+        "description": "Requires the `google_ads:delete` scope. Disables delivery and the managed browser tag; keeps historical diagnostics.",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          },
+          {
+            "scalevOAuth": [
+              "google_ads:delete"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedResponse"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundResponse"
+          }
+        }
+      }
+    },
+    "/v3/google-ads/destinations/{id}/validate": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Scalev Google Ads destination ID."
+        }
+      ],
+      "post": {
+        "tags": [
+          "Analytics Setup"
+        ],
+        "operationId": "validateGoogleAdsDestination",
+        "summary": "Validate Google Ads integration",
+        "description": "Requires the `google_ads:update` scope. Sends a synthetic request using Google Data Manager validateOnly. Records no conversion, changes no delivery state, and does not prove attribution.",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          },
+          {
+            "scalevOAuth": [
+              "google_ads:update"
+            ]
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "event_name": {
+                    "type": "string",
+                    "default": "Purchase",
+                    "description": "Purchase or the exact name of a configured event mapping, including a disabled mapping. Records no conversion and does not enable the mapping."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "validated": {
+                      "type": "boolean"
+                    },
+                    "executed": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "warning_count": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedResponse"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundResponse"
+          },
+          "502": {
+            "$ref": "#/components/responses/BadGatewayResponse"
+          }
+        }
+      }
+    },
+    "/v3/google-ads/destinations/{id}/deliveries": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Scalev Google Ads destination ID."
+        }
+      ],
+      "get": {
+        "tags": [
+          "Analytics Setup"
+        ],
+        "operationId": "getGoogleAdsPurchaseDeliveries",
+        "summary": "Read Google Ads ingestion diagnostics for an order or funnel interaction",
+        "description": "Requires the `google_ads:read` scope. Supply exactly one of order_id or event_id, belonging to the current business. Submitted means Google accepted a request for processing. Success and partial_success are batch ingestion results, not attribution evidence.",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          },
+          {
+            "scalevOAuth": [
+              "google_ads:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/GoogleAdsDelivery"
+                      }
+                    },
+                    "is_paginated": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "is_paginated"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedResponse"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundResponse"
+          }
+        },
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "event_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      }
+    },
+    "/v3/google-ads/destinations/{id}/retry": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Scalev Google Ads destination ID."
+        }
+      ],
+      "post": {
+        "tags": [
+          "Analytics Setup"
+        ],
+        "operationId": "retryGoogleAdsPurchase",
+        "summary": "Retry a failed Google Ads conversion",
+        "description": "Requires the `google_ads:update` scope. Supply exactly one of order_id or event_id. Queues an existing failed or reconnect_required obligation with its original payload and transaction ID. Does not backfill orders or change trigger eligibility.",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          },
+          {
+            "scalevOAuth": [
+              "google_ads:update"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleAdsDelivery"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedResponse"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundResponse"
+          },
+          "409": {
+            "$ref": "#/components/responses/ConflictResponse"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "order_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "event_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                },
+                "oneOf": [
+                  {
+                    "required": [
+                      "order_id"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "event_id"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/google-ads/orders/{order_id}/deliveries": {
+      "get": {
+        "tags": [
+          "Analytics Setup"
+        ],
+        "operationId": "getGoogleAdsOrderDeliveries",
+        "summary": "Read all Google purchase destinations and history for an order",
+        "description": "Requires the `order:read` scope. Uses the order's frozen destination snapshots. Success confirms ingestion, not attribution or bidding use. No configured destinations returns an empty collection.",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          },
+          {
+            "scalevOAuth": [
+              "order:read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Frozen purchase destination delivery summaries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "is_paginated",
+                    "can_manual_trigger"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/GoogleAdsOrderDelivery"
+                      }
+                    },
+                    "is_paginated": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "can_manual_trigger": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedResponse"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundResponse"
+          }
+        }
+      }
+    },
+    "/v3/public/google-ads/events": {
+      "post": {
+        "tags": [
+          "Analytics Setup"
+        ],
+        "operationId": "ingestManagedGoogleAdsEvents",
+        "summary": "Submit native non-Purchase events using a signed public surface context",
+        "description": "Separate from first-party analytics ingestion. The token binds the current page or store and configured destinations. Purchase and arbitrary Google targets are rejected. Batches are limited to 20 events and 32 KiB of event data, with per-business and per-IP limits. Tokens expire after seven days; renewal requires a valid original signature no older than 30 days and current assignments. Acceptance is not ingestion or attribution confirmation.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "token"
+                ],
+                "properties": {
+                  "token": {
+                    "type": "string",
+                    "maxLength": 16384
+                  },
+                  "refresh_context": {
+                    "type": "boolean",
+                    "description": "Request a fresh token instead of submitting events."
+                  },
+                  "privacy": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "description": "Current visit policy token and recipient choices."
+                  },
+                  "events": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 20,
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "event_id",
+                        "event_name"
+                      ],
+                      "properties": {
+                        "event_id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "event_name": {
+                          "type": "string",
+                          "pattern": "^[A-Za-z][A-Za-z0-9_]{0,39}$"
+                        },
+                        "value": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1000000000000
+                        },
+                        "currency": {
+                          "type": "string",
+                          "enum": [
+                            "IDR"
+                          ]
+                        },
+                        "gclid": {
+                          "type": "string",
+                          "maxLength": 512
+                        },
+                        "gbraid": {
+                          "type": "string",
+                          "maxLength": 512
+                        },
+                        "wbraid": {
+                          "type": "string",
+                          "maxLength": 512
+                        },
+                        "customer_email": {
+                          "type": "string",
+                          "description": "Optional actual customer email, normalized and hashed before Google delivery; requires applicable permission."
+                        },
+                        "customer_phone": {
+                          "type": "string",
+                          "description": "Optional actual customer phone, normalized and hashed before Google delivery; requires applicable permission."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted for managed delivery, or a renewed signed context",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accepted": {
+                      "type": "boolean"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedResponse"
+          },
+          "429": {
+            "description": "Tracking rate limit reached"
+          },
+          "503": {
+            "description": "Tracking temporarily unavailable"
+          }
+        }
+      }
+    },
     "/v3/fb-pixels": {
       "get": {
         "tags": [
@@ -18039,7 +18819,7 @@
                       "id": "plscope_0198cfa0-283a-7491-850a-48b7f0a1d84e",
                       "store_id": 10,
                       "created_at": "2026-09-20T01:30:00Z",
-                      "label": "Payment link \u00b7 2026-09-20 01:30:00 UTC \u00b7 f0a1d84e"
+                      "label": "Payment link · 2026-09-20 01:30:00 UTC · f0a1d84e"
                     }
                   ],
                   "is_paginated": true,
@@ -18252,6 +19032,11 @@
               "store:list": "List Stores.",
               "store:read": "View Stores.",
               "store:update": "Update Stores.",
+              "google_ads:list": "list Google Ads destinations.",
+              "google_ads:read": "read Google Ads destinations.",
+              "google_ads:create": "create Google Ads destinations.",
+              "google_ads:update": "update Google Ads destinations.",
+              "google_ads:delete": "delete Google Ads destinations.",
               "fb_pixel:list": "List Facebook Pixels.",
               "fb_pixel:read": "View Facebook Pixels.",
               "fb_pixel:create": "Create Facebook Pixels.",
@@ -18978,7 +19763,7 @@
         "in": "query",
         "name": "page_size",
         "required": false,
-        "description": "Number of scope options per page; numeric values are clamped to 1\u201325.",
+        "description": "Number of scope options per page; numeric values are clamped to 1–25.",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -20637,6 +21422,16 @@
           }
         }
       },
+      "BadGatewayResponse": {
+        "description": "The provider could not complete the request.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ApiErrorResponse"
+            }
+          }
+        }
+      },
       "ConflictResponse": {
         "description": "Conflict",
         "content": {
@@ -21850,6 +22645,352 @@
       }
     },
     "schemas": {
+      "GoogleAdsEventMapping": {
+        "type": "object",
+        "required": [
+          "event_name",
+          "conversion_action_id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "event_name": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_]{0,39}$",
+            "description": "Scalev event name. Purchase is forbidden, case-insensitively."
+          },
+          "conversion_action_id": {
+            "type": "string",
+            "pattern": "^\\d{1,30}$"
+          },
+          "enabled": {
+            "type": "boolean",
+            "default": true
+          },
+          "tag_id": {
+            "type": "string",
+            "readOnly": true
+          },
+          "conversion_label": {
+            "type": "string",
+            "readOnly": true
+          }
+        }
+      },
+      "GoogleAdsRemarketing": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "default": false
+          },
+          "feed_id_source": {
+            "type": "string",
+            "enum": [
+              "sku",
+              "explicit"
+            ]
+          },
+          "feed_ids": {
+            "type": "object",
+            "maxProperties": 1000,
+            "description": "Explicit mappings from variant:<numeric ID> or bundle:<numeric bundle-price-option ID> to the exact existing Google feed item ID. Bundle options always need explicit mappings.",
+            "additionalProperties": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 150
+            }
+          }
+        }
+      },
+      "GoogleAdsDeliveryHistory": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string"
+          },
+          "attempts": {
+            "type": "integer"
+          },
+          "request_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "error_code": {
+            "type": "string",
+            "nullable": true
+          },
+          "diagnostics": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "inserted_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "GoogleAdsOrderDelivery": {
+        "type": "object",
+        "properties": {
+          "destination_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "customer_id": {
+            "type": "string"
+          },
+          "conversion_action_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "can_retry": {
+            "type": "boolean"
+          },
+          "last_error": {
+            "type": "string",
+            "nullable": true
+          },
+          "request_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "history": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GoogleAdsDeliveryHistory"
+            }
+          }
+        }
+      },
+      "GoogleAdsDestination": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "connection_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "customer_id": {
+            "type": "string",
+            "pattern": "^\\d{10}$"
+          },
+          "login_customer_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "conversion_action_id": {
+            "type": "string"
+          },
+          "tag_id": {
+            "type": "string"
+          },
+          "conversion_label": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "IDR"
+            ]
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "event_mappings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GoogleAdsEventMapping"
+            }
+          },
+          "remarketing": {
+            "$ref": "#/components/schemas/GoogleAdsRemarketing"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "connection_id",
+          "customer_id",
+          "conversion_action_id",
+          "tag_id",
+          "conversion_label",
+          "currency",
+          "enabled"
+        ]
+      },
+      "GoogleAdsDestinationCreate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "connection_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "customer_id": {
+            "type": "string",
+            "pattern": "^\\d{10}$"
+          },
+          "login_customer_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "conversion_action_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "connection_id",
+          "customer_id",
+          "conversion_action_id"
+        ]
+      },
+      "GoogleAdsDelivery": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "order_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "event_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "event_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "history": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GoogleAdsDeliveryHistory"
+            }
+          },
+          "destination_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "sending",
+              "submitted",
+              "success",
+              "partial_success",
+              "failed",
+              "skipped",
+              "reconnect_required"
+            ]
+          },
+          "event_timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "request_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "attempts": {
+            "type": "integer"
+          },
+          "last_error": {
+            "type": "string",
+            "nullable": true
+          },
+          "diagnostics": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "GoogleAdsCommerceItem": {
+        "type": "object",
+        "properties": {
+          "variant_id": {
+            "type": "integer",
+            "nullable": true
+          },
+          "bundle_price_option_id": {
+            "type": "integer",
+            "nullable": true
+          },
+          "sku": {
+            "type": "string",
+            "nullable": true
+          },
+          "quantity": {
+            "type": "number"
+          }
+        }
+      },
+      "GoogleAdsBrowserPurchase": {
+        "type": "object",
+        "properties": {
+          "remarketing": {
+            "$ref": "#/components/schemas/GoogleAdsRemarketing"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "tag_id": {
+            "type": "string"
+          },
+          "conversion_label": {
+            "type": "string"
+          },
+          "transaction_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "value": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "IDR"
+            ]
+          }
+        }
+      },
       "FlexibleObject": {
         "type": "object",
         "additionalProperties": true
@@ -22403,7 +23544,7 @@
           "is_sending_email_invoice": {
             "type": "boolean",
             "deprecated": true,
-            "description": "Deprecated and ignored. Scalev always sends the invoice email; the store notification settings remain the only control. Accepted for compatibility and echoed as stored."
+            "description": "Deprecated page-level compatibility field; accepted and echoed as stored but not used for delivery. Configure form_display.is_sending_email_invoice on the page display instead. E-Payment invoices are exempt from the form preference, and store notification settings still apply."
           },
           "is_disable_custom_font": {
             "type": "boolean"
@@ -22490,6 +23631,15 @@
               }
             ],
             "description": "HTML Checkout configuration. Omit or send null for HTML Sales pages."
+          },
+          "google_ads_destination_ids": {
+            "type": "array",
+            "maxItems": 10,
+            "description": "Business-owned Scalev Google Ads destination IDs. Server purchase timing follows the store Meta CAPI triggers.",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
           },
           "fb_pixel_ids": {
             "type": "array",
@@ -22596,6 +23746,15 @@
           },
           "form_display": {
             "$ref": "#/components/schemas/LandingPageDisplayRequest/properties/form_display"
+          },
+          "google_ads_destination_ids": {
+            "type": "array",
+            "maxItems": 10,
+            "description": "Business-owned Scalev Google Ads destination IDs. Server purchase timing follows the store Meta CAPI triggers.",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
           },
           "fb_pixel_ids": {
             "$ref": "#/components/schemas/LandingPageDisplayRequest/properties/fb_pixel_ids"
@@ -22739,6 +23898,11 @@
         "additionalProperties": true,
         "description": "Checkout form configuration. When creating a new display for an existing page, omitted after-submit destination, WhatsApp recipient, assignment, and chat-template settings retain the values from the latest saved display. Explicitly supplied settings take precedence.\n",
         "properties": {
+          "is_sending_email_invoice": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether invoice emails are enabled for non-E-Payment orders from this checkout form. Applies to Builder and HTML checkout. E-Payment invoices remain enabled regardless of this preference. Store email notification settings and allowed statuses still apply. Does not control offer invitations or purchased-product access emails.\n"
+          },
           "order_bumps": {
             "type": "array",
             "maxItems": 3,
@@ -24355,7 +25519,7 @@
               "is_sending_email_invoice": {
                 "type": "boolean",
                 "deprecated": true,
-                "description": "Deprecated and ignored. Scalev always sends the invoice email; the store notification settings remain the only control. Accepted for compatibility and echoed as stored."
+                "description": "Deprecated page-level compatibility field; accepted and echoed as stored but not used for delivery. Configure form_display.is_sending_email_invoice on the page display instead. E-Payment invoices are exempt from the form preference, and store notification settings still apply."
               },
               "is_disable_custom_font": {
                 "type": "boolean"
@@ -24419,7 +25583,7 @@
           "is_sending_email_invoice": {
             "type": "boolean",
             "deprecated": true,
-            "description": "Deprecated and ignored. Scalev always sends the invoice email; the store notification settings remain the only control. Accepted for compatibility and echoed as stored."
+            "description": "Deprecated page-level compatibility field; accepted and echoed as stored but not used for delivery. Configure form_display.is_sending_email_invoice on the page display instead. E-Payment invoices are exempt from the form preference, and store notification settings still apply."
           },
           "is_disable_custom_font": {
             "type": "boolean"
@@ -24570,6 +25734,11 @@
         "type": "object",
         "additionalProperties": true,
         "properties": {
+          "is_sending_email_invoice": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether invoice emails are enabled for non-E-Payment orders from this checkout form. Applies to Builder and HTML checkout. E-Payment invoices remain enabled regardless of this preference. Store email notification settings and allowed statuses still apply. Does not control offer invitations or purchased-product access emails.\n"
+          },
           "order_bumps": {
             "type": "array",
             "nullable": true,
@@ -28590,6 +29759,14 @@
             "type": "string",
             "nullable": true
           },
+          "gbraid": {
+            "type": "string",
+            "nullable": true
+          },
+          "wbraid": {
+            "type": "string",
+            "nullable": true
+          },
           "ttp": {
             "type": "string",
             "nullable": true
@@ -29210,6 +30387,22 @@
           "orderlines"
         ],
         "properties": {
+          "google_ads_items": {
+            "type": "array",
+            "readOnly": true,
+            "description": "Purchased items for explicitly configured browser remarketing. Feed matching uses the destination configuration.",
+            "items": {
+              "$ref": "#/components/schemas/GoogleAdsCommerceItem"
+            }
+          },
+          "google_ads_purchase": {
+            "type": "array",
+            "readOnly": true,
+            "description": "Eligible Google browser conversions using the immutable server transaction ID and value. Empty before the configured purchase trigger.",
+            "items": {
+              "$ref": "#/components/schemas/GoogleAdsBrowserPurchase"
+            }
+          },
           "id": {
             "$ref": "#/components/schemas/OrderPrimaryKey"
           },
@@ -34059,6 +35252,22 @@
       },
       "Order": {
         "properties": {
+          "google_ads_items": {
+            "type": "array",
+            "readOnly": true,
+            "description": "Purchased items for explicitly configured browser remarketing. Feed matching uses the destination configuration.",
+            "items": {
+              "$ref": "#/components/schemas/GoogleAdsCommerceItem"
+            }
+          },
+          "google_ads_purchase": {
+            "type": "array",
+            "readOnly": true,
+            "description": "Eligible Google browser conversions with the immutable server transaction ID and value. Empty before the configured trigger.",
+            "items": {
+              "$ref": "#/components/schemas/GoogleAdsBrowserPurchase"
+            }
+          },
           "gross_revenue_for_dropshipper": {
             "description": "Gross revenue for dropshipper after discounts",
             "format": "decimal",
@@ -37226,7 +38435,7 @@
       "CreateOrderPaymentResponseBody": {
         "type": "object",
         "additionalProperties": true,
-        "description": "The payment gateway payload for the order, returned as the response body itself \u2014 the same object the order responses expose as `pg_payment_info`. Manual methods such as `bank_transfer` and `cod` return an empty object. Virtual account methods expose provider reference and account details under the provider's `payment_method` object. QRIS responses expose QR data or a QR image payload. E-wallet, card, and invoice methods may expose provider actions or hosted provider URLs. SingaPay payments use normalized keys such as `payment_gateway`, `payment_url`, `deeplink_url`, `qr_string`, `qr_image_url`, `va_number`, and `va_name`. Order-level fields (`public_order_url`, `payment_url`, `redirect_url`, `payment_method`) are not part of this body; read them from the order responses.\n"
+        "description": "The payment gateway payload for the order, returned as the response body itself — the same object the order responses expose as `pg_payment_info`. Manual methods such as `bank_transfer` and `cod` return an empty object. Virtual account methods expose provider reference and account details under the provider's `payment_method` object. QRIS responses expose QR data or a QR image payload. E-wallet, card, and invoice methods may expose provider actions or hosted provider URLs. SingaPay payments use normalized keys such as `payment_gateway`, `payment_url`, `deeplink_url`, `qr_string`, `qr_image_url`, `va_number`, and `va_name`. Order-level fields (`public_order_url`, `payment_url`, `redirect_url`, `payment_method`) are not part of this body; read them from the order responses.\n"
       },
       "UpdateOrderCustomerRequest": {
         "properties": {
@@ -37346,6 +38555,11 @@
       },
       "TriggerPurchase": {
         "properties": {
+          "google": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Google purchase queue result; ingestion status is asynchronous."
+          },
           "kwai": {
             "additionalProperties": true,
             "description": "Kwai purchase trigger response",
@@ -43130,6 +44344,16 @@
             "nullable": true,
             "maxLength": 1000
           },
+          "gbraid": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 1000
+          },
+          "wbraid": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 1000
+          },
           "kwai_clickid": {
             "type": "string",
             "nullable": true,
@@ -45246,7 +46470,7 @@
           "label": {
             "type": "string",
             "description": "Generic UTC creation-time label with an opaque short suffix; contains no order/customer data.",
-            "example": "Payment link \u00b7 2026-09-20 01:30:00 UTC \u00b7 f0a1d84e"
+            "example": "Payment link · 2026-09-20 01:30:00 UTC · f0a1d84e"
           }
         }
       },

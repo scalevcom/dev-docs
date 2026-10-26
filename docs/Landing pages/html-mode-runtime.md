@@ -631,6 +631,36 @@ Supported provider names:
 - `facebook` (aliases: `fb`, `meta`)
 - `tiktok`
 - `kwai` (alias: `snackvideo`)
+- `google_ads` (alias: `google`)
+
+For native Google Ads, first connect Google and configure the event-to-action
+mapping in **Settings → Analytics → Google Ads**, then assign the destination
+to this page or storefront. GTM is not required. The Google runtime sends browser
+and server conversions with the same interaction ID:
+
+```js
+const interactionId = crypto.randomUUID();
+await Scalev.analytics.track("google_ads", {
+  eventName: "Contact",
+  interactionId,
+  parameters: { value: 0, currency: "IDR" }
+});
+```
+
+Keep `interactionId` when retrying the same interaction. Generate a new ID for a
+new interaction. If you also configure a widget event for the same interaction,
+pass that ID to `Scalev.analytics.trackWidgetEvents({ googleAdsEvents: ["Contact"],
+googleAdsEventsParameters: {}, interactionId })`. Google deduplicates only within
+the same conversion action. Use the page and widget event editors for normal
+configuration; you do not need to write JavaScript for those events.
+
+The native cart and checkout methods already send their automatic events.
+`Purchase` is not accepted by this generic method or by page/button mappings;
+it follows the order's payment and eligibility rules. A resolved call does not
+prove Google ingestion, attribution or bidding use. Inspect delivery diagnostics
+in Scalev. Advertising permission applies to both channels. Product remarketing
+requires explicit feed-ID configuration and applicable consent; missing feed
+mappings do not disable conversion tracking.
 
 Response example:
 

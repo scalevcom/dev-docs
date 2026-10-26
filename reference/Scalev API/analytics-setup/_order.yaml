@@ -1,6 +1,16 @@
 - listfacebookstandardevents
 - listtiktokstandardevents
 - listkwaistandardevents
+- listgoogleadsdestinations
+- creategoogleadsdestination
+- getgoogleadsdestination
+- updategoogleadsdestination
+- disablegoogleadsdestination
+- validategoogleadsdestination
+- getgoogleadspurchasedeliveries
+- retrygoogleadspurchase
+- getgoogleadsorderdeliveries
+- ingestmanagedgoogleadsevents
 - listfacebookpixels
 - createfacebookpixel
 - getfacebookpixel
