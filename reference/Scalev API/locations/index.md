@@ -1,5 +1,4 @@
 ---
-title: Locations
-excerpt: Authenticated business location lookup endpoints.
+title: "Locations"
 hidden: false
 ---

@@ -1,5 +1,4 @@
 ---
-title: Customer Subscriptions
-excerpt: Authenticated customer subscription and subscription-item endpoints.
+title: "Customer Subscriptions"
 hidden: false
 ---

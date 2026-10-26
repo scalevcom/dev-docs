@@ -1,5 +1,4 @@
 ---
-title: Customer Courses
-excerpt: Authenticated customer digital course access and progress endpoints.
+title: "Customer Courses"
 hidden: false
 ---

@@ -1,5 +1,4 @@
 ---
-title: Customer Auth
-excerpt: Public customer authentication and password-reset endpoints.
+title: "Customer Auth"
 hidden: false
 ---

@@ -1,5 +1,4 @@
 ---
-title: OAuth Billing
-excerpt: OAuth billing runtime, refund, and developer finance endpoints.
+title: "OAuth Billing"
 hidden: false
 ---

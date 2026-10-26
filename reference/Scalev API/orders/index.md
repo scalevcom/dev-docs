@@ -1,5 +1,4 @@
 ---
-title: Orders
-excerpt: Authenticated business order management endpoints.
+title: "Orders"
 hidden: false
 ---
