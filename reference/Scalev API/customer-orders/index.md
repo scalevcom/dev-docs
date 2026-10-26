@@ -1,4 +1,5 @@
 ---
-title: "Customer Orders"
+title: Customer Orders
+excerpt: Authenticated customer order read endpoints.
 hidden: false
 ---

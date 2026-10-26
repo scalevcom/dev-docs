@@ -1,4 +1,5 @@
 ---
-title: "Customer Account"
+title: Customer Account
+excerpt: Authenticated customer profile endpoints.
 hidden: false
 ---
