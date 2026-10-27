@@ -781,10 +781,11 @@ does not change event identity or Purchase eligibility.
 
 ## Configured tracking interactions
 
-Assign provider assets in **Tracking Assets**, then select native events or actual
-Google conversion actions in **Tracking Triggers**. Landing-page and checkout-flow
+In **Tracking**, assign provider assets under **Assets**, then select native events
+or actual Google conversion actions under **Triggers**. Landing-page and checkout-flow
 settings belong to that page version. Storefront, PayLink and LMS settings belong
-to the store. Empty selections send no events; pausing retains your selections.
+to the store. Selected events fire when the interaction occurs; removing a selection stops it.
+There are no trigger-level or per-event enablement switches.
 
 The runtime installs SDKs automatically. Its commerce hooks invoke the configured
 interactions after successful cart additions, checkout starts and form submissions.
