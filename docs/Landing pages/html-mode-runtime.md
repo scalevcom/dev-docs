@@ -777,3 +777,44 @@ Response example:
 Scalev editors display the Google conversion-action name with its Scalev trigger
 as context. The trigger remains the stable API key, so changing a display label
 does not change event identity or Purchase eligibility.
+
+
+## Configured tracking interactions
+
+Assign provider assets in **Tracking Assets**, then select native events or actual
+Google conversion actions in **Tracking Triggers**. Landing-page and checkout-flow
+settings belong to that page version. Storefront, PayLink and LMS settings belong
+to the store. Empty selections send no events; pausing retains your selections.
+
+The runtime installs SDKs automatically. Its commerce hooks invoke the configured
+interactions after successful cart additions, checkout starts and form submissions.
+You can invoke a configured interaction from custom HTML:
+
+```js
+const interactionId = crypto.randomUUID()
+Scalev.analytics.trigger('widget_click', { value: 0, currency: 'IDR' }, {
+  context: 'page/widget:contact-button',
+  interactionId
+})
+```
+
+Use the stable widget context saved in the page's `tracking_config`. The interaction
+selects the configured provider events; it is not a provider event name. Reuse the
+identity for retries or overlapping handlers for one interaction. A genuinely new
+interaction needs a new identity. Standard runtime hooks already dispatch their
+interactions, so custom handlers should not also send provider events directly.
+
+Supported interaction keys are `page_open`, `product_view`, `search`, `cart_add`,
+`checkout_start`, `form_submit`, `widget_click`, `payment_methods_opened`,
+`payment_method_selected`, and `banner_click`. Only use interactions supported by
+the current surface. Purchase is reserved for eligible server-confirmed orders.
+
+Google selections reference an account-specific conversion action. Browser and
+server delivery share the transaction identity and target the same action.
+Remarketing is separate and still requires applicable permission and explicit feed
+ID mapping. Missing feed mappings do not block conversion-action delivery.
+
+Tracking uses current visit permission and never blocks checkout. A server-accepted
+request does not prove Google ingestion, attribution or bidding use. Existing
+`Scalev.analytics.track` integrations remain compatibility APIs; new integrations
+should use configured interactions.
