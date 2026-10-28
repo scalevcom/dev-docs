@@ -3482,7 +3482,7 @@
         ],
         "operationId": "createGoogleAdsDestination",
         "summary": "Create a Google Ads destination",
-        "description": "Requires the `google_ads:create` scope. An existing business-owned Google connection is required. The selected enabled website Purchase conversion is verified with Google. OAuth connection and account discovery are dashboard-only.",
+        "description": "Requires the `google_ads:create` scope and an existing business-owned Google connection. Creates an account asset without selecting a Purchase conversion. Select the receiving Purchase action independently for each store through its `purchase_tracking.google_ads` settings, using the revision from the latest store detail response. An account-only asset sends no Purchase conversions until selected in that store and assigned to the relevant page or storefront. Clearing the store selection stops Google Purchase tracking for new orders; existing order snapshots remain unchanged. The optional `conversion_action_id` remains supported for legacy clients and is verified with Google when supplied. OAuth connection and account discovery are dashboard-only.",
         "security": [
           {
             "bearerAuth": []
@@ -22835,13 +22835,16 @@
             "nullable": true
           },
           "conversion_action_id": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "tag_id": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "conversion_label": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "currency": {
             "type": "string",
@@ -22876,6 +22879,7 @@
       },
       "GoogleAdsDestinationCreate": {
         "type": "object",
+        "description": "Connect a Google Ads account. Choose Purchase actions per store using purchase_tracking; page and widget triggers select their own actions.",
         "properties": {
           "name": {
             "type": "string",
@@ -22894,14 +22898,16 @@
             "nullable": true
           },
           "conversion_action_id": {
-            "type": "string"
+            "type": "string",
+            "nullable": true,
+            "deprecated": true,
+            "description": "Legacy Purchase default. Omit for account-only connections; use the store Purchase settings."
           }
         },
         "required": [
           "name",
           "connection_id",
-          "customer_id",
-          "conversion_action_id"
+          "customer_id"
         ]
       },
       "GoogleAdsDelivery": {
@@ -23670,8 +23676,21 @@
           "triggers"
         ],
         "additionalProperties": false,
-        "description": "Authoritative merchant tracking selections, limited to 256 KiB. Empty selections send nothing. Defaults are materialized at resource creation, never on read. Purchase eligibility remains controlled by store settings. Asset credentials and delivery history are not part of this document.",
+        "description": "Authoritative merchant tracking selections, limited to 256 KiB. Empty selections send nothing. Trigger and event enablement flags are not used; remove an event selection to stop sending it. Defaults are materialized at resource creation, never on read. Purchase eligibility remains controlled by store settings. Asset credentials and delivery history are not part of this document.",
         "properties": {
+          "purchase": {
+            "type": "object",
+            "readOnly": true,
+            "description": "Store-owned Purchase selections, present only on store configurations. Update through the store purchase_tracking fields. General tracking edits preserve this block and cannot change it.",
+            "properties": {
+              "google_ads": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/StoreGooglePurchaseSelection"
+                }
+              }
+            }
+          },
           "schema_version": {
             "type": "integer",
             "enum": [
@@ -23726,10 +23745,6 @@
                   ],
                   "description": "Interaction that invokes selected provider events. This is not a provider event name. Only interactions supported by the current surface are invoked."
                 },
-                "enabled": {
-                  "type": "boolean",
-                  "default": true
-                },
                 "events": {
                   "type": "array",
                   "maxItems": 100,
@@ -23765,10 +23780,6 @@
             "minLength": 1,
             "maxLength": 100,
             "description": "Exact native event or Google conversion-action name. Purchase, CompletePayment and EVENT_PURCHASE are reserved for eligible orders."
-          },
-          "enabled": {
-            "type": "boolean",
-            "default": true
           },
           "channels": {
             "type": "array",
@@ -24906,6 +24917,81 @@
         },
         "additionalProperties": false
       },
+      "StorePurchaseTracking": {
+        "type": "object",
+        "description": "Store-owned Google Purchase action selections. Only assigned Google accounts receive events. Existing order and delivery snapshots keep their original targets. Legacy destinations supply defaults until this store saves an explicit selection, including an empty list.",
+        "properties": {
+          "revision": {
+            "type": "string",
+            "readOnly": true
+          },
+          "google_ads": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/StoreGooglePurchaseSelection"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "provider": {
+                      "type": "string",
+                      "enum": [
+                        "google_ads"
+                      ]
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "tag_id": {
+                      "type": "string"
+                    },
+                    "conversion_label": {
+                      "type": "string"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "StorePurchaseTrackingUpdate": {
+        "type": "object",
+        "required": [
+          "google_ads"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "google_ads": {
+            "type": "array",
+            "maxItems": 100,
+            "description": "One action per connected destination. An empty list stops Google Purchase tracking for new orders in this store. Only enabled website PURCHASE actions from the destination's conversion owner are accepted.",
+            "items": {
+              "$ref": "#/components/schemas/StoreGooglePurchaseSelection"
+            }
+          }
+        }
+      },
+      "StoreGooglePurchaseSelection": {
+        "type": "object",
+        "required": [
+          "destination_id",
+          "action_id"
+        ],
+        "properties": {
+          "destination_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "action_id": {
+            "type": "string",
+            "pattern": "^\\d{1,30}$"
+          }
+        }
+      },
       "BusinessStore": {
         "type": "object",
         "additionalProperties": true,
@@ -24948,6 +25034,9 @@
             "nullable": true,
             "type": "object",
             "additionalProperties": true
+          },
+          "purchase_tracking": {
+            "$ref": "#/components/schemas/StorePurchaseTracking"
           },
           "payment_methods": {
             "type": "array",
@@ -25155,6 +25244,13 @@
           },
           "is_whatsapp_link_download": {
             "type": "boolean"
+          },
+          "purchase_tracking": {
+            "$ref": "#/components/schemas/StorePurchaseTrackingUpdate"
+          },
+          "purchase_tracking_revision": {
+            "type": "string",
+            "description": "Required with purchase_tracking. Use the revision from the latest store detail response; stale writes return 409 and change neither timing nor actions."
           },
           "non_cod_purchase_triggers": {
             "type": "array",
