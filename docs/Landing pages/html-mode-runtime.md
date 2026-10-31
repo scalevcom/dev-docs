@@ -787,9 +787,22 @@ settings belong to that page version. Storefront, PayLink and LMS settings belon
 to the store. Selected events fire when the interaction occurs; removing a selection stops it.
 There are no trigger-level or per-event enablement switches.
 
-The runtime installs SDKs automatically. Its commerce hooks invoke the configured
-interactions after successful cart additions, checkout starts and form submissions.
-You can invoke a configured interaction from custom HTML:
+The runtime installs SDKs automatically. Configured interactions activate only
+when the public response contains a saved `tracking_config`. A `null` value keeps
+the page on its existing legacy tracking path. An empty saved configuration sends
+no configured events; it does not restore defaults. New pages materialize their
+defaults at creation. Editor responses may resolve legacy defaults for editing
+without activating them in the public runtime.
+
+Preserve an event's `initialization: true` metadata when retaining an SDK
+`PageView` default. Explicitly selected `PageView` events omit that marker and use
+the provider's event call, including the configured parameters and interaction ID.
+Use the editor response's `tracking_config_revision` when saving changes; a public
+runtime response is not a source for editing revisions.
+
+Commerce hooks invoke the configured interactions after successful cart additions,
+checkout starts and form submissions. You can invoke a configured interaction from
+custom HTML on pages with a saved tracking configuration:
 
 ```js
 const interactionId = crypto.randomUUID()
@@ -809,6 +822,12 @@ Supported interaction keys are `page_open`, `product_view`, `search`, `cart_add`
 `checkout_start`, `form_submit`, `widget_click`, `payment_methods_opened`,
 `payment_method_selected`, and `banner_click`. Only use interactions supported by
 the current surface. Purchase is reserved for eligible server-confirmed orders.
+
+The default GTM submission event retains the existing `form_submit` data-layer
+contract: `scalev_event: 'order_created'`, `scalev_event_version: 2`, the order's
+`transaction_id`, currency, gross-revenue value, and `scalev_is_probably_spam` flag.
+The runtime supplies order values from the saved order. Removing that event from
+the configured submission trigger stops the data-layer push.
 
 Google selections reference an account-specific conversion action. Browser and
 server delivery share the transaction identity and target the same action.

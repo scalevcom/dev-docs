@@ -22717,7 +22717,7 @@
         "properties": {
           "enabled": {
             "type": "boolean",
-            "default": false
+            "description": "New account connections initialize this to true. Existing saved settings are preserved; disabling it stops browser remarketing. Consent and feed-ID requirements still apply."
           },
           "feed_id_source": {
             "type": "string",
@@ -22855,6 +22855,46 @@
           "enabled": {
             "type": "boolean"
           },
+          "connection_status": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Google integration authorization status. Reconnect through dashboard Integrations when required.",
+            "enum": [
+              "connected",
+              "disconnected",
+              "reconnect_required",
+              "removed"
+            ]
+          },
+          "access_status": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Last known account access status; transient refresh failures preserve it.",
+            "enum": [
+              "unknown",
+              "accessible",
+              "access_lost"
+            ]
+          },
+          "access_checked_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "readOnly": true,
+            "description": "Time of the latest attempted account access check, including unsuccessful attempts."
+          },
+          "access_error": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true,
+            "description": "Safe provider error code from the latest check. No provider payload or credentials."
+          },
+          "account_status": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true,
+            "description": "Last known Google customer lifecycle status, such as ENABLED, CANCELED, or SUSPENDED."
+          },
           "event_mappings": {
             "type": "array",
             "items": {
@@ -22879,7 +22919,7 @@
       },
       "GoogleAdsDestinationCreate": {
         "type": "object",
-        "description": "Connect a Google Ads account. Choose Purchase actions per store using purchase_tracking; page and widget triggers select their own actions.",
+        "description": "Connect a Google Ads account with remarketing enabled by default. Existing accounts retain their saved remarketing settings. Consent evidence, configured triggers and explicit feed-ID matching still govern delivery. Choose Purchase actions per store using purchase_tracking; page and widget triggers select their own actions.",
         "properties": {
           "name": {
             "type": "string",
@@ -23676,7 +23716,7 @@
           "triggers"
         ],
         "additionalProperties": false,
-        "description": "Authoritative merchant tracking selections, limited to 256 KiB. Empty selections send nothing. Trigger and event enablement flags are not used; remove an event selection to stop sending it. Defaults are materialized at resource creation, never on read. Purchase eligibility remains controlled by store settings. Asset credentials and delivery history are not part of this document.",
+        "description": "Authoritative merchant tracking selections, limited to 256 KiB. Empty selections send nothing. Trigger and event enablement flags are not used; remove an event selection to stop sending it. New-resource defaults are materialized at creation. A populated document never acquires defaults on read. Editor responses can resolve legacy selections for an owner without a saved document; public runtime responses keep tracking_config null and use legacy tracking until that owner has a saved document. Purchase eligibility remains controlled by store settings. Asset credentials and delivery history are not part of this document.",
         "properties": {
           "purchase": {
             "type": "object",
@@ -23780,6 +23820,13 @@
             "minLength": 1,
             "maxLength": 100,
             "description": "Exact native event or Google conversion-action name. Purchase, CompletePayment and EVENT_PURCHASE are reserved for eligible orders."
+          },
+          "initialization": {
+            "type": "boolean",
+            "enum": [
+              true
+            ],
+            "description": "Marks a preserved SDK default allowed only on page_open triggers with name PageView, provider fb, tiktok, or kwai_client, and channels exactly [browser]. Keep this metadata when retaining that selection. Explicit merchant-selected PageView events omit it and use the provider event call with their parameters and interaction identity."
           },
           "channels": {
             "type": "array",
@@ -26001,6 +26048,7 @@
           "tracking_config": {
             "type": "object",
             "nullable": true,
+            "description": "Public runtime responses return null until this display has saved tracking configuration and continue using its legacy settings. Editor responses may expose resolved legacy defaults without saving or activating them. A populated document is authoritative, including empty selections.",
             "allOf": [
               {
                 "$ref": "#/components/schemas/TrackingConfig"
@@ -26009,7 +26057,8 @@
           },
           "tracking_config_revision": {
             "type": "string",
-            "description": "Opaque revision from the current display. Send it with tracking_config when creating the next display version; stale edits are rejected with 409. Asset and trigger changes are atomic."
+            "nullable": true,
+            "description": "Authoring revision from the editor response. Send it with tracking_config when creating the next display version; stale edits are rejected with 409. Asset and trigger changes are atomic. Public runtime responses may return null; do not use those responses as an editing revision."
           },
           "tracking_config_error": {
             "type": "string",
