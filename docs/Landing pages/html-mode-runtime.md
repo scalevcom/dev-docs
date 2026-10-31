@@ -631,6 +631,36 @@ Supported provider names:
 - `facebook` (aliases: `fb`, `meta`)
 - `tiktok`
 - `kwai` (alias: `snackvideo`)
+- `google_ads` (alias: `google`)
+
+For native Google Ads, first connect Google and configure the event-to-action
+mapping in **Settings → Analytics → Google Ads**, then assign the destination
+to this page or storefront. GTM is not required. The Google runtime sends browser
+and server conversions with the same interaction ID:
+
+```js
+const interactionId = crypto.randomUUID();
+await Scalev.analytics.track("google_ads", {
+  eventName: "Contact",
+  interactionId,
+  parameters: { value: 0, currency: "IDR" }
+});
+```
+
+Keep `interactionId` when retrying the same interaction. Generate a new ID for a
+new interaction. If you also configure a widget event for the same interaction,
+pass that ID to `Scalev.analytics.trackWidgetEvents({ googleAdsEvents: ["Contact"],
+googleAdsEventsParameters: {}, interactionId })`. Google deduplicates only within
+the same conversion action. Use the page and widget event editors for normal
+configuration; you do not need to write JavaScript for those events.
+
+The native cart and checkout methods already send their automatic events.
+`Purchase` is not accepted by this generic method or by page/button mappings;
+it follows the order's payment and eligibility rules. A resolved call does not
+prove Google ingestion, attribution or bidding use. Inspect delivery diagnostics
+in Scalev. Advertising permission applies to both channels. Product remarketing
+requires explicit feed-ID configuration and applicable consent; missing feed
+mappings do not disable conversion tracking.
 
 Response example:
 
@@ -743,3 +773,68 @@ Response example:
   }
 ]
 ```
+
+Scalev editors display the Google conversion-action name with its Scalev trigger
+as context. The trigger remains the stable API key, so changing a display label
+does not change event identity or Purchase eligibility.
+
+
+## Configured tracking interactions
+
+In **Tracking**, assign provider assets under **Assets**, then select native events
+or actual Google conversion actions under **Triggers**. Landing-page and checkout-flow
+settings belong to that page version. Storefront, PayLink and LMS settings belong
+to the store. Selected events fire when the interaction occurs; removing a selection stops it.
+There are no trigger-level or per-event enablement switches.
+
+The runtime installs SDKs automatically. Configured interactions activate only
+when the public response contains a saved `tracking_config`. A `null` value keeps
+the page on its existing legacy tracking path. An empty saved configuration sends
+no configured events; it does not restore defaults. New pages materialize their
+defaults at creation. Editor responses may resolve legacy defaults for editing
+without activating them in the public runtime.
+
+Preserve an event's `initialization: true` metadata when retaining an SDK
+`PageView` default. Explicitly selected `PageView` events omit that marker and use
+the provider's event call, including the configured parameters and interaction ID.
+Use the editor response's `tracking_config_revision` when saving changes; a public
+runtime response is not a source for editing revisions.
+
+Commerce hooks invoke the configured interactions after successful cart additions,
+checkout starts and form submissions. You can invoke a configured interaction from
+custom HTML on pages with a saved tracking configuration:
+
+```js
+const interactionId = crypto.randomUUID()
+Scalev.analytics.trigger('widget_click', { value: 0, currency: 'IDR' }, {
+  context: 'page/widget:contact-button',
+  interactionId
+})
+```
+
+Use the stable widget context saved in the page's `tracking_config`. The interaction
+selects the configured provider events; it is not a provider event name. Reuse the
+identity for retries or overlapping handlers for one interaction. A genuinely new
+interaction needs a new identity. Standard runtime hooks already dispatch their
+interactions, so custom handlers should not also send provider events directly.
+
+Supported interaction keys are `page_open`, `product_view`, `search`, `cart_add`,
+`checkout_start`, `form_submit`, `widget_click`, `payment_methods_opened`,
+`payment_method_selected`, and `banner_click`. Only use interactions supported by
+the current surface. Purchase is reserved for eligible server-confirmed orders.
+
+The default GTM submission event retains the existing `form_submit` data-layer
+contract: `scalev_event: 'order_created'`, `scalev_event_version: 2`, the order's
+`transaction_id`, currency, gross-revenue value, and `scalev_is_probably_spam` flag.
+The runtime supplies order values from the saved order. Removing that event from
+the configured submission trigger stops the data-layer push.
+
+Google selections reference an account-specific conversion action. Browser and
+server delivery share the transaction identity and target the same action.
+Remarketing is separate and still requires applicable permission and explicit feed
+ID mapping. Missing feed mappings do not block conversion-action delivery.
+
+Tracking uses current visit permission and never blocks checkout. A server-accepted
+request does not prove Google ingestion, attribution or bidding use. Existing
+`Scalev.analytics.track` integrations remain compatibility APIs; new integrations
+should use configured interactions.
