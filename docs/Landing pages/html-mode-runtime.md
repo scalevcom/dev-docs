@@ -809,6 +809,14 @@ and read the latest editor response before retrying. Once configuration is saved
 changes through legacy tracking fields also need the current revision; unchanged
 legacy echoes remain compatible.
 
+Migrated page, checkout-flow step, and storefront page-open selections can include
+`legacy_document_server_only: true`. Preserve this marker when retaining a
+selection. It keeps that event's server channel tied to a newly rendered document,
+including its initial hydration, rather than a client-only mount or SPA navigation.
+Browser delivery is unchanged. New selections omit the marker and retain their
+configured server behavior. It is not a pause switch and does not apply to widget
+clicks or form submissions.
+
 Migrated events may contain `parameter_variants` with complete `vue_browser`,
 `vue_server`, `html_browser`, and `html_server` parameter maps. Keep these maps
 and all same-name channel bindings when saving a configuration. A present empty
