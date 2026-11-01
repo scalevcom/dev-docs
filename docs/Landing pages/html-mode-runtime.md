@@ -842,11 +842,23 @@ These values select stored parameters and do not expand the caller's permissions
 New orders freeze the renderer and form selections. Later order edits preserve
 that snapshot. Older clients and historical snapshots without a renderer use Vue.
 
-Configured form submission has one authoritative server delivery after the server
-creates the order. The browser retains the same logical interaction identity; retries
-reuse it. Do not add a second native server send from custom HTML after order
-creation. This removes the old competing direct and worker sends while retaining
-the actual renderer's configured parameters in the frozen order snapshot.
+For configured form submissions, the runtime negotiates server delivery when
+creating the order. A public response with saved configuration advertises
+`tracking_form_delivery: "server_v1"`. The runtime copies this into
+`metadata.tracking_form_delivery` for checkout creation, or top-level
+`tracking_form_delivery` for offer acceptance. It stops its direct Meta, TikTok and
+SnackVideo server sends only when the accepted order also returns
+`tracking_form_delivery: "server_v1"` (inside `payment_order` for an offer).
+This acknowledgment confirms who owns delivery; it does not confirm provider
+acceptance or attribution. An empty saved selection still acknowledges ownership
+and sends no events. Without both the capability and acknowledgment, the runtime
+keeps its compatible direct delivery path.
+
+`Scalev.checkout.createOrder` handles this exchange for your HTML page. Do not
+supply or spoof the protocol field, or add a second native server send after order
+creation. The browser uses the accepted order's interaction identity; server retries
+reuse that identity and the frozen renderer-specific parameters. Browser events,
+Google Ads, GTM and the store's Purchase rules keep their existing delivery paths.
 
 Commerce hooks invoke the configured interactions after successful cart additions,
 checkout starts and form submissions. You can invoke a configured interaction from
