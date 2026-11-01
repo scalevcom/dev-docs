@@ -2692,6 +2692,9 @@
           "403": {
             "$ref": "#/components/responses/ForbiddenResponse"
           },
+          "409": {
+            "$ref": "#/components/responses/ConflictResponse"
+          },
           "422": {
             "$ref": "#/components/responses/ValidationFailedResponse"
           }
@@ -3079,6 +3082,9 @@
           "404": {
             "$ref": "#/components/responses/NotFoundResponse"
           },
+          "409": {
+            "$ref": "#/components/responses/ConflictResponse"
+          },
           "422": {
             "$ref": "#/components/responses/ValidationFailedResponse"
           }
@@ -3126,6 +3132,9 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFoundResponse"
+          },
+          "409": {
+            "$ref": "#/components/responses/ConflictResponse"
           }
         }
       }
@@ -23909,6 +23918,14 @@
           }
         }
       },
+      "TrackingConfigWriteVersion": {
+        "type": "integer",
+        "enum": [
+          1
+        ],
+        "writeOnly": true,
+        "description": "Required beside every supplied tracking_config, including new page creation. Version 1 declares that the writer preserves same-name channel bindings, initialization markers, parameter_variants and additional event metadata. It is a request capability, separate from tracking_config.schema_version. Missing or unsupported versions return 409; update the client and reload the current editor response before retrying. Omit for legacy-only writes."
+      },
       "LandingPageDisplayRequest": {
         "type": "object",
         "required": [
@@ -23916,13 +23933,33 @@
           "meta"
         ],
         "additionalProperties": true,
+        "anyOf": [
+          {
+            "not": {
+              "properties": {
+                "tracking_config": {}
+              },
+              "required": [
+                "tracking_config"
+              ]
+            }
+          },
+          {
+            "required": [
+              "tracking_config_write_version"
+            ]
+          }
+        ],
         "properties": {
+          "tracking_config_write_version": {
+            "$ref": "#/components/schemas/TrackingConfigWriteVersion"
+          },
           "tracking_config": {
             "$ref": "#/components/schemas/TrackingConfig"
           },
           "tracking_config_revision": {
             "type": "string",
-            "description": "Opaque revision from the current display. Send it with tracking_config when creating the next display version; stale edits are rejected with 409. Asset and trigger changes are atomic."
+            "description": "Omit when creating a new page. For an existing owner, use the current editor response revision together with tracking_config_write_version; stale edits are rejected with 409. Asset and trigger changes are atomic."
           },
           "render_mode": {
             "type": "string",
@@ -24057,14 +24094,34 @@
       "LandingPageDisplayVersionRequest": {
         "type": "object",
         "additionalProperties": true,
-        "description": "Settings-only versions may omit source fields. An omitted form_display preserves checkout configuration; explicit null removes the form only where the page's existing store-context rules allow it. Clearing an authoritative html_document is rejected with 422.",
+        "anyOf": [
+          {
+            "not": {
+              "properties": {
+                "tracking_config": {}
+              },
+              "required": [
+                "tracking_config"
+              ]
+            }
+          },
+          {
+            "required": [
+              "tracking_config_write_version"
+            ]
+          }
+        ],
+        "description": "Settings-only versions may omit source fields. An omitted form_display preserves checkout configuration; explicit null removes the form only where the page's existing store-context rules allow it. Clearing an authoritative html_document is rejected with 422. Once the owner has saved tracking_config, effective changes through legacy tracking fields also require its current tracking_config_revision; unchanged legacy echoes remain compatible. Stale legacy changes return 409.",
         "properties": {
+          "tracking_config_write_version": {
+            "$ref": "#/components/schemas/TrackingConfigWriteVersion"
+          },
           "tracking_config": {
             "$ref": "#/components/schemas/TrackingConfig"
           },
           "tracking_config_revision": {
             "type": "string",
-            "description": "Opaque revision from the current display. Send it with tracking_config when creating the next display version; stale edits are rejected with 409. Asset and trigger changes are atomic."
+            "description": "Required with tracking_config for an existing owner. Use the current editor response revision and tracking_config_write_version; stale edits or unsupported writers are rejected with 409. Asset and trigger changes are atomic."
           },
           "render_mode": {
             "$ref": "#/components/schemas/LandingPageDisplayRequest/properties/render_mode"

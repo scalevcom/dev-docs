@@ -384,6 +384,48 @@ To unpublish:
 }
 ```
 
+## Save configured tracking
+
+When you send a complete `tracking_config`, include
+`tracking_config_write_version: 1` beside it. This applies both to the nested
+`page_display` in page creation and to display-version requests. Existing owners
+also require the current editor response's `tracking_config_revision`; omit that
+revision when creating a new page.
+
+The write version declares that your client preserves all same-name channel
+bindings, initialization markers, parameter variants, and additional event
+metadata. It is separate from `tracking_config.schema_version`. Keep the full
+configuration from the editor response and change only the intended selections
+or parameters. Do not rebuild it from legacy pixel/event fields or public runtime
+responses. See [configured tracking interactions](/docs/html-mode-runtime#configured-tracking-interactions)
+for parameter-edit semantics.
+
+For example, after loading the current editor display into `display`, this body
+retains its tracking selections in a new version:
+
+```javascript
+const body = {
+  tracking_config: display.tracking_config,
+  tracking_config_revision: display.tracking_config_revision,
+  tracking_config_write_version: 1
+};
+```
+
+Send this body to `POST /v3/pages/{page_id}/page-displays`, adding any required
+checkout store context. Only use it when the editor supplied a configuration;
+omitting `tracking_config` preserves the existing configuration. An empty saved
+configuration explicitly clears selections. Missing or unsupported write versions
+and stale revisions return HTTP 409. Update your client and reload the current
+editor display before retrying. Do not simply add the capability to an older
+serializer that drops metadata.
+
+Once an owner has saved `tracking_config`, changing tracking through legacy
+pixel/event fields also requires its current `tracking_config_revision`.
+Unchanged legacy fields and content-only saves remain compatible. A legacy change
+that cannot preserve separate bindings is rejected with HTTP 409; reload the
+current editor display and edit the full configuration with a compatible client.
+Owners still using legacy settings retain their existing write behavior.
+
 ## Create and publish a new display
 
 To change HTML, CSS, JavaScript, pixels, or checkout context, create a new page display:

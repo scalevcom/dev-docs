@@ -798,7 +798,16 @@ Preserve an event's `initialization: true` metadata when retaining an SDK
 `PageView` default. Explicitly selected `PageView` events omit that marker and use
 the provider's event call, including the configured parameters and interaction ID.
 Use the editor response's `tracking_config_revision` when saving changes; a public
-runtime response is not a source for editing revisions.
+runtime response is not a source for editing revisions. Every request containing
+`tracking_config` must also include `tracking_config_write_version: 1` beside it.
+This capability confirms that your client preserves channel bindings, parameter
+variants, initialization markers, and additional event metadata. It is separate
+from the document's `schema_version: 1` and is not stored in the document. New-page
+creation requires the capability but no previous-owner revision. Missing or
+unsupported capabilities, or a stale revision, return HTTP 409. Update your client
+and read the latest editor response before retrying. Once configuration is saved,
+changes through legacy tracking fields also need the current revision; unchanged
+legacy echoes remain compatible.
 
 Migrated events may contain `parameter_variants` with complete `vue_browser`,
 `vue_server`, `html_browser`, and `html_server` parameter maps. Keep these maps
