@@ -818,8 +818,8 @@ These values select stored parameters and do not expand the caller's permissions
 New orders freeze the renderer and form selections. Later order edits preserve
 that snapshot. Older clients and historical snapshots without a renderer use Vue.
 
-Configured form submission has one authoritative server delivery through the
-order worker. The browser retains the same logical interaction identity; retries
+Configured form submission has one authoritative server delivery after the server
+creates the order. The browser retains the same logical interaction identity; retries
 reuse it. Do not add a second native server send from custom HTML after order
 creation. This removes the old competing direct and worker sends while retaining
 the actual renderer's configured parameters in the frozen order snapshot.
