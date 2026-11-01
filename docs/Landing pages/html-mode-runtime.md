@@ -800,6 +800,30 @@ the provider's event call, including the configured parameters and interaction I
 Use the editor response's `tracking_config_revision` when saving changes; a public
 runtime response is not a source for editing revisions.
 
+Migrated events may contain `parameter_variants` with complete `vue_browser`,
+`vue_server`, `html_browser`, and `html_server` parameter maps. Keep these maps
+and all same-name channel bindings when saving a configuration. A present empty
+map means no custom parameters for that path; an absent map uses `parameters`.
+These maps preserve differences in the old renderers, including their treatment
+of zero, false, empty values, and duplicate parameter rows. An intentional edit
+updates only the edited binding's changed/deleted keys in its base map and existing
+variants; it must not replace every variant with the displayed base map.
+
+The runtime identifies the renderer actually serving the interaction. Compiled
+Builder pages use HTML variants; a Vue fallback uses Vue variants, regardless of
+the page's saved render mode. Configured native event intake sends
+`tracking_renderer`. Checkout creation sends `metadata.tracking_renderer`; offer
+acceptance sends top-level `tracking_renderer` for the actual offer renderer.
+These values select stored parameters and do not expand the caller's permissions.
+New orders freeze the renderer and form selections. Later order edits preserve
+that snapshot. Older clients and historical snapshots without a renderer use Vue.
+
+Configured form submission has one authoritative server delivery through the
+order worker. The browser retains the same logical interaction identity; retries
+reuse it. Do not add a second native server send from custom HTML after order
+creation. This removes the old competing direct and worker sends while retaining
+the actual renderer's configured parameters in the frozen order snapshot.
+
 Commerce hooks invoke the configured interactions after successful cart additions,
 checkout starts and form submissions. You can invoke a configured interaction from
 custom HTML on pages with a saved tracking configuration:
