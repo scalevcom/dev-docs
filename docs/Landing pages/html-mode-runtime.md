@@ -817,6 +817,13 @@ Browser delivery is unchanged. New selections omit the marker and retain their
 configured server behavior. It is not a pause switch and does not apply to widget
 clicks or form submissions.
 
+Migrated Google Ads page-open selections on a page or checkout-flow step can
+include `legacy_document_only: true`. It preserves their document-load timing
+for both browser and server delivery. Retain it when editing the existing
+selection. A newly selected Google Ads event or GTM data-layer event has no such
+marker and runs on the configured page-open interaction, including client-side
+navigation. Neither marker applies to widget clicks or form submissions.
+
 Migrated events may contain `parameter_variants` with complete `vue_browser`,
 `vue_server`, `html_browser`, and `html_server` parameter maps. Keep these maps
 and all same-name channel bindings when saving a configuration. A present empty
