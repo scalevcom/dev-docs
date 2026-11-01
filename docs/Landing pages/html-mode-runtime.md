@@ -851,8 +851,11 @@ SnackVideo server sends only when the accepted order also returns
 `tracking_form_delivery: "server_v1"` (inside `payment_order` for an offer).
 This acknowledgment confirms who owns delivery; it does not confirm provider
 acceptance or attribution. An empty saved selection still acknowledges ownership
-and sends no events. Without both the capability and acknowledgment, the runtime
-keeps its compatible direct delivery path.
+and sends no events. Page and cart checkouts keep their compatible direct delivery
+path when either value is absent. Checkout-flow offers do not have that legacy
+direct path: their configured native server form events require the acknowledgment.
+Keep compatible server support in place before enabling canonical offer editing
+or migrating a flow. Browser events and Google Ads delivery remain separate.
 
 `Scalev.checkout.createOrder` handles this exchange for your HTML page. Do not
 supply or spoof the protocol field, or add a second native server send after order
