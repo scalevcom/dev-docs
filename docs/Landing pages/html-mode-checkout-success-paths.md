@@ -140,6 +140,6 @@ If a required destination is missing, such as an unselected landing page or an u
 
 Scalev includes supported attribution in the resolved URL where allowed. Open `order.redirectUrl` unchanged; do not copy the browser's raw query string onto it or encode its WhatsApp message again.
 
-After `Scalev.checkout.createOrder(payload)` succeeds, HTML Checkout Pages automatically fire the configured form-submit analytics events for analytics pixels configured on the page. Keep navigation after `createOrder` resolves and add custom analytics only for intentionally separate events.
+After `Scalev.checkout.createOrder(payload)` succeeds, HTML Checkout Pages dispatch the configured form-submit tracking. The runtime coordinates browser and server delivery, including the server acknowledgment described in [Configured tracking interactions](/docs/html-mode-runtime#configured-tracking-interactions). Keep navigation after `createOrder` resolves. Do not add a duplicate server send for the same submission; custom tracking should represent a separate interaction.
 
 Order creation and browser navigation do not prove payment. Use a verified `payment.received` webhook to provision external access.

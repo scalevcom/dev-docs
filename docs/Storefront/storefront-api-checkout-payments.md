@@ -218,6 +218,20 @@ On success, the response includes the created slim public order data, including 
 
 For WhatsApp destinations, `redirect_url` already includes the visitor-to-store message. Use it as returned; do not encode the message again. These navigation URLs do not prove that an order has been paid.
 
+### Configured form tracking delivery
+
+A compatible hosted checkout can receive `tracking_form_delivery: "server_v1"`
+beside its saved public tracking configuration. It sends that value as
+`metadata.tracking_form_delivery` when creating the order. Only an accepted order
+that also returns `tracking_form_delivery: "server_v1"` hands the matching Meta,
+TikTok and SnackVideo server form events to Scalev. Without both values, retain
+the compatible direct delivery path. The acknowledgment does not confirm provider
+acceptance or attribution, and an explicitly empty selection sends nothing.
+
+Do not add this field to a custom checkout without implementing the handoff, or
+copy an acknowledgment from another order. It does not select provider accounts
+or events, grant permissions, or change browser events and Purchase timing.
+
 ### When the configured destination is unavailable
 
 If Scalev cannot resolve the configured destination, `redirect_url` falls back to **Halaman Instruksi Pembayaran**, the hosted payment-instructions page at `/o/{secret_slug}/success`. This includes:
